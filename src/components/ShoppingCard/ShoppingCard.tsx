@@ -122,12 +122,12 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 icon={<FormOutlined />}
                 onClick={() => openShoppingItem(item)}
               />
-              <Button
+              {/* <Button
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<DeleteOutlined />}
                 onClick={() => removeShoppingItem(item.id!)}
-              />
+              /> */}
             </Col>
           </Row>
         </Col>

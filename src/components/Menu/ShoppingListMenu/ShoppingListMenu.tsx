@@ -3,20 +3,20 @@ import useMenuStore from "@/stores/useMenuStore";
 import {
   Button,
   Checkbox,
-  Divider,
   Drawer,
   Input,
-  Radio,
-  RadioChangeEvent,
+  Popconfirm,
   Space,
-  Switch,
   Tooltip,
+  Modal
 } from "antd";
 const { TextArea } = Input;
+const { confirm } = Modal;
 import {
   ShoppingCartOutlined,
   QuestionCircleOutlined,
   CopyOutlined,
+  ExclamationCircleFilled,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingListMenu.module.scss";
@@ -38,13 +38,28 @@ export function ShoppingListMenu() {
     initialFormData(openList);
   }, [openList]);
 
+  const showDeleteConfirm = () => {
+    confirm({
+      title: '買物リストを削除します',
+      icon: <ExclamationCircleFilled />,
+      content: '削除したリストは元に戻せませんが削除してよろしいですか？',
+      okText: '削除',
+      okType: 'danger',
+      cancelText: 'キャンセル',
+      onOk() {
+        removeShoppingList(formData.id!);
+          closeShoppingList();
+      },
+    });
+  };
+
   return (
     <>
       <Drawer
         title={
           <>
             <ShoppingCartOutlined />
-            <span style={{ paddingLeft: 4 }}>リストの設定</span>
+            <span style={{ paddingLeft: 4 }}>リストの編集</span>
           </>
         }
         placement={"left"}
@@ -55,6 +70,7 @@ export function ShoppingListMenu() {
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
             placeholder="リストの名前"
+            maxLength={50}
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
           />
@@ -62,6 +78,7 @@ export function ShoppingListMenu() {
           <TextArea
             rows={4}
             placeholder="メモ"
+            maxLength={500}
             value={formData.memo}
             onChange={(e) => handleChange("memo", e.target.value)}
           />
@@ -84,9 +101,11 @@ export function ShoppingListMenu() {
                   bordered={false}
                   style={{ color: "#000", backgroundColor: "#323232" }}
                 />
-                <Button type="primary" ghost>
+                <Tooltip title="クリップボードにコピー">
+                <Button  onClick={()=>navigator.clipboard.writeText(openList?.url_key || "")}>
                   <CopyOutlined />
                 </Button>
+                </Tooltip>
               </Space.Compact>
             </>
           ) : null}
@@ -106,13 +125,12 @@ export function ShoppingListMenu() {
             type="primary"
             danger
             style={{ width: "100%" }}
-            onClick={() => {
-              removeShoppingList(formData.id!);
-              closeShoppingList();
-            }}
+            onClick={showDeleteConfirm}
           >
             削除
           </Button>
+  
+          
 
           <Button
             style={{ width: "100%" }}

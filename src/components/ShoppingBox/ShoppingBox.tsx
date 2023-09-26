@@ -26,7 +26,7 @@ import {
 } from "antd";
 import {
   PlusCircleOutlined,
-  LinkOutlined,
+  BorderOutlined,
   DeleteOutlined,
   DeleteFilled,
   MenuOutlined,
@@ -184,6 +184,18 @@ const ShoppingBox = ({ list_id }: ShoppingListProps) => {
   const { openAddItem } = useMenuStore();
 
   const menuItems: MenuProps["items"] = [
+    {
+      key: "0",
+      label: (
+        <>
+          <BorderOutlined />
+          全て買い物前に戻す
+        </>
+      ),
+      onClick : ()=>{
+        shoppingItems.forEach(item=>updateShoppingItem(item.id!,  {finished_at: null}));
+      }
+    },
     {
       key: "1",
       label: (

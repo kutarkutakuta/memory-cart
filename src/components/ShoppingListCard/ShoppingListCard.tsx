@@ -1,10 +1,13 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, Checkbox, Col, Row, Tag } from "antd";
+import { Button, Checkbox, Col, Row, Tag, Tooltip } from "antd";
+
 import {
   ArrowRightOutlined,
   FormOutlined,
   LinkOutlined,
+  FolderAddOutlined,
+  ExclamationCircleFilled,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingListCard.module.scss";
@@ -27,6 +30,9 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
   // メニュー制御用Hook
   const { openShoppingList } = useMenuStore();
 
+  // 買い物リスト制御用Hook
+  const { addShoppingList } = useShoppingListStore();
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -37,17 +43,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     cursor: "grab",
   };
 
-  const onChangeShopped = () => {
-    // const updateItem = item;
-    // if (item.finished_at) {
-    //   item.finished_at = null;
-    //   item.finished_user = null;
-    // } else {
-    //   item.finished_at = new Date();
-    //   item.finished_user = user ? user.id! : null;
-    // }
-    // updateShoppingItem(updateItem);
-  };
+
 
   return (
     <div
@@ -58,7 +54,17 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       {...listeners}
     >
       <Row>
-        <Col flex="none" style={{ padding: 5 }}>
+        <Col flex="none">
+              <Tooltip title="コピーしたリストを追加">
+              <Button
+                data-dndkit-disabled-dnd-flag="true"
+                type="text"
+                icon={<FolderAddOutlined />}
+                onClick={() => {
+                  addShoppingList(item);
+                }}
+              ></Button>
+              </Tooltip>
           {item.name}
         </Col>
         <Col flex="auto">

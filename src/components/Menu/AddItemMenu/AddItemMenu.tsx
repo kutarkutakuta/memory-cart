@@ -4,6 +4,7 @@ import {
   Button,
   Drawer,
   Select,
+  SelectProps,
   Space,
   Tag,
   message,
@@ -80,6 +81,15 @@ export function AddItemMenu() {
 
   const { shoppingItems, addShoppingItem } = useShoppingItemStore();
 
+  const [itemOptions, setItemOptions] = useState<SelectProps['options']>([]);
+  const handleItemSearch = (newValue: string) => {
+    const newOptions = newValue.length > 0 ? commonItems.filter(itm => itm.name?.startsWith(newValue)).map(itm => ({
+      value: itm.name,
+                  label:itm.name,
+    })) : [];
+    setItemOptions(newOptions);
+  };
+
   return (
     <>
       <Drawer
@@ -89,13 +99,17 @@ export function AddItemMenu() {
               {" "}
               <Select
                 mode="tags"
-                suffixIcon={null}
-                allowClear
                 style={{ width: "100%" }}
                 placeholder="品物の名前(複数可)"
                 value={addItems}
-                options={getItemOption()}
-                onChange={(e) => handleItemChange(e)}
+                suffixIcon={null}
+                notFoundContent={null}
+                onSearch={handleItemSearch}
+                options={(itemOptions || []).map((d) => ({
+                  value: d.value,
+                  label: d.text,
+                }))}
+                onChange={handleItemChange}
               />
             </span>
           </>
@@ -109,6 +123,8 @@ export function AddItemMenu() {
           <Select
             showSearch
             allowClear
+            maxTagCount={50}
+            maxLength={500}
             style={{ width: "100%" }}
             placeholder="カテゴリで絞り込み"
             onChange={handleCategoryChange}

@@ -31,7 +31,7 @@ export function EditItemMenu() {
   const { categories, units } = useMasterStore();
 
   // 品物制御用Hook
-  const { updateShoppingItem } = useShoppingItemStore();
+  const { updateShoppingItem, removeShoppingItem } = useShoppingItemStore();
 
   // フォーム用Hook
   const { formData, initialFormData, handleChange } = useEditItemMenu();
@@ -61,6 +61,7 @@ export function EditItemMenu() {
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
             placeholder="品物の名前"
+            maxLength={50}
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
           />
@@ -77,6 +78,8 @@ export function EditItemMenu() {
           <Space.Compact block>
             <InputNumber
               placeholder="数量"
+              maxLength={10}
+              inputMode="decimal"
               style={{ width: "200px" }}
               value={formData.amount}
               onChange={(e) => handleChange("amount", e)}
@@ -104,6 +107,7 @@ export function EditItemMenu() {
           <TextArea
             rows={4}
             placeholder="メモ"
+            maxLength={500}
             value={formData.memo}
             onChange={(e) => handleChange("memo", e.target.value)}
           />
@@ -117,6 +121,18 @@ export function EditItemMenu() {
             }}
           >
             更新
+          </Button>
+
+          <Button
+            type="primary"
+            danger
+            style={{ width: "100%" }}
+            onClick={() => {
+              removeShoppingItem(formData.id!);
+              closeShoppingItem();
+            }}
+          >
+            削除
           </Button>
 
           <Button style={{ width: "100%" }} onClick={()=>closeShoppingItem()}>キャンセル</Button>
