@@ -2,21 +2,12 @@
 import useMenuStore from "@/stores/useMenuStore";
 import {
   Button,
-  Checkbox,
-  Divider,
   Drawer,
-  Input,
   Select,
-  SelectProps,
   Space,
   Tag,
   message,
 } from "antd";
-import {
-  ShoppingOutlined,
-  LinkOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
 
 import styles from "./AddItemMenu.module.scss";
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";

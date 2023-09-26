@@ -13,7 +13,6 @@ import {
   Tooltip,
 } from "antd";
 const { TextArea } = Input;
-import { CheckboxChangeEvent } from "antd/es/checkbox";
 import {
   ShoppingCartOutlined,
   QuestionCircleOutlined,

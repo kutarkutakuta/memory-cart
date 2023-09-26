@@ -17,7 +17,7 @@ import { PlusCircleOutlined, LinkOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
 import type { KeyboardEvent, MouseEventHandler, PointerEvent } from "react";
 import useShoppingListStore from "@/stores/useShoppingListStore";
-import ShoppingListCard from "./ShoppingListCard/ShoppingListCard";
+import ShoppingListCard from "../ShoppingListCard/ShoppingListCard";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
 // #region dnd-kit用の制御

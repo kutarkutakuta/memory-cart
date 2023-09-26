@@ -14,8 +14,6 @@ import {
 } from "antd";
 import {
   ShoppingOutlined,
-  LinkOutlined,
-  CloseCircleOutlined,
 } from "@ant-design/icons";
 const {TextArea} = Input;
 

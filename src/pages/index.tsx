@@ -2,8 +2,8 @@
 import React, { useEffect } from "react";
 
 import MyHeader from "@/components/MyHeader";
-import ShoppingListBox from "@/components/ShoppingListBox";
-import { ShoppingListMenu } from "@/components/ShoppingListMenu/ShoppingListMenu";
+import ShoppingListBox from "@/components/ShoppingListBox/ShoppingListBox";
+import { ShoppingListMenu } from "@/components/Menu/ShoppingListMenu/ShoppingListMenu";
 import useMasterStore from "@/stores/useMasterStore";
 
 const HomePage = () => {

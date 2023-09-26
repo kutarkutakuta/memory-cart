@@ -41,7 +41,7 @@ import {
 } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
 import type { KeyboardEvent, MouseEventHandler, PointerEvent } from "react";
-import ShoppingCard from "./ShoppingCard/ShoppingCard";
+import ShoppingCard from "../ShoppingCard/ShoppingCard";
 import useMenuStore from "@/stores/useMenuStore";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 

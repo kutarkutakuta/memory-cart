@@ -4,13 +4,13 @@ import { Button, Col, ConfigProvider, Row, ThemeConfig } from "antd";
 
 import style from "./page.module.scss";
 import MyHeader from "@/components/MyHeader";
-import ShoppingBox from "@/components/kaimono/ShoppingBox";
+import ShoppingBox from "@/components/ShoppingBox/ShoppingBox";
 import useShoppingListStore, {
   ShoppingList,
 } from "@/stores/useShoppingListStore";
-import { AddItemMenu } from "@/components/AddItemMenu/AddItemMenu";
-import { EditItemMenu } from "@/components/EditItemMenu/EditItemMenu";
-import { PriceMenu } from "@/components/PriceMenu/PriceMenu";
+import { AddItemMenu } from "@/components/Menu/AddItemMenu/AddItemMenu";
+import { EditItemMenu } from "@/components/Menu/EditItemMenu/EditItemMenu";
+import { PriceMenu } from "@/components/Menu/PriceMenu/PriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
 import { usePathname, useSearchParams } from "next/navigation";
 
