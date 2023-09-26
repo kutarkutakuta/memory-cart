@@ -40,7 +40,6 @@ class PointerSensor extends LibPointerSensor {
     {
       eventName: "onPointerDown" as const,
       handler: ({ nativeEvent: event }: PointerEvent): boolean => {
-        event.preventDefault();  // デフォルトのテキスト選択を防ぐ？
         return shouldHandleEvent(event.target as HTMLElement);
       },
     },
@@ -170,6 +169,7 @@ const ShoppingListBox = () => {
               flexWrap: "wrap",
               touchAction: "none",
               paddingLeft: "5px",
+              userSelect: "none",
             }}
           >
             {shoppingLists.map((item) => (
