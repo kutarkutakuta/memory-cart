@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 
 import MyHeader from "@/components/MyHeader";
-import ShoppingListBox from "./components/ShoppingListBox";
+import ShoppingListBox from "@/components/ShoppingListBox";
 import { ShoppingListMenu } from "@/components/ShoppingListMenu/ShoppingListMenu";
 import useMasterStore from "@/stores/useMasterStore";
 

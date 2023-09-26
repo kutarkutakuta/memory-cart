@@ -4,7 +4,7 @@ import { Button, Col, ConfigProvider, Row, ThemeConfig } from "antd";
 
 import style from "./page.module.scss";
 import MyHeader from "@/components/MyHeader";
-import ShoppingBox from "./components/kaimono/ShoppingBox";
+import ShoppingBox from "@/components/kaimono/ShoppingBox";
 import useShoppingListStore, {
   ShoppingList,
 } from "@/stores/useShoppingListStore";
