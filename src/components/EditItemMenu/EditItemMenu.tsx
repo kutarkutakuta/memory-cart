@@ -121,7 +121,7 @@ export function EditItemMenu() {
             更新
           </Button>
 
-          <Button style={{ width: "100%" }}>キャンセル</Button>
+          <Button style={{ width: "100%" }} onClick={()=>closeShoppingItem()}>キャンセル</Button>
         </Space>
       </Drawer>
     </>

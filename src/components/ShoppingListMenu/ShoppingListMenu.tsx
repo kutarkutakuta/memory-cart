@@ -83,7 +83,7 @@ export function ShoppingListMenu() {
                   value={openList?.url_key || ""}
                   readOnly
                   bordered={false}
-                  style={{ backgroundColor: "lightgray" }}
+                  style={{ color: "#000", backgroundColor: "#323232" }}
                 />
                 <Button type="primary" ghost>
                   <CopyOutlined />
