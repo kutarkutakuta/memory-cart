@@ -3,6 +3,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import supabase from "@/lib/supabase";
 import localdb from "@/lib/localdb";
 import { nanoid } from "nanoid";
+import useShareStore from "./useShareStore";
 
 /**
  * 買い物リスト
@@ -25,7 +26,10 @@ interface ShoppingListState {
   fetchShoppingList: () => Promise<void>;
   addShoppingList: (copyItem?: ShoppingList) => Promise<void>;
   removeShoppingList: (id: number) => Promise<void>;
-  updateShoppingList: (id: number, changes: { [keyPath: string]: any }) => void;
+  updateShoppingList: (
+    id: number,
+    changes: { [keyPath: string]: any }
+  ) => Promise<void>;
   sortShoppingList: (odlIndex: number, newIndex: number) => void;
   getShoppingList: (url_key: string) => Promise<ShoppingList | undefined>;
 }
@@ -76,17 +80,14 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     // ローカルDBへ追加
     const new_list_id = await localdb.shopping_lists.add(addItem);
 
-    // ステート更新
-    set((state) => ({
-      shoppingLists: [...state.shoppingLists, addItem],
-    }));
-
     if (copyItem) {
-      // 買物品もコピー
-      const sourceItems = await localdb.shopping_items.where({
-        shopping_list_id: copyItem.id.toString(),
-      }).toArray();
-      sourceItems.forEach(itm=> {
+      // ローカルDB買物品もコピーして追加
+      const sourceItems = await localdb.shopping_items
+        .where({
+          shopping_list_id: copyItem.id.toString(),
+        })
+        .toArray();
+      sourceItems.forEach((itm) => {
         itm.id = undefined;
         itm.shopping_list_id = new_list_id.toString();
         itm.buying_amount = undefined;
@@ -95,37 +96,64 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         itm.finished_at = undefined;
         itm.finished_user = undefined;
         itm.created_at = new Date();
-      })
+      });
       await localdb.shopping_items.bulkAdd(sourceItems);
     }
+
+    // ステート更新
+    set((state) => ({
+      shoppingLists: [...state.shoppingLists, addItem],
+    }));
   },
-  removeShoppingList:async (id) => {
+  removeShoppingList: async (id) => {
+    const { shoppingLists } = useShoppingListStore.getState();
+    const deleteList = shoppingLists.find((n) => n.id == id)!;
+
+    // 先にDBを削除
+    const { unShareList } = useShareStore.getState();
+    await unShareList(deleteList.url_key);
+
+    // ローカルDB買物品を削除
+    const sourceItems = await localdb.shopping_items
+      .where({
+        shopping_list_id: id.toString(),
+      })
+      .toArray();
+    await localdb.shopping_items.bulkDelete(sourceItems.map((itm) => itm.id!));
 
     // ローカルDBから削除
     await localdb.shopping_lists.delete(id);
-
-    // 買物品も削除
-    const sourceItems = await localdb.shopping_items.where({
-      shopping_list_id: id.toString(),
-    }).toArray();
-    await localdb.shopping_items.bulkDelete(sourceItems.map(itm=>itm.id!));
 
     // ステート更新
     set((state) => {
       const m = state.shoppingLists.filter((n) => n.id !== id);
       return { shoppingLists: m };
     });
-
   },
-  updateShoppingList: (id, changes) => {
-    localdb.shopping_lists.update(id, changes).then((m) => {
-      set((state) => {
-        const m = state.shoppingLists.map((n) => {
-          return n.id === id ? { ...n, ...changes } : n;
-        });
-        return { shoppingLists: m };
-      });
+  updateShoppingList: async (id, changes) => {
+
+    // ローカルDBを更新
+    await localdb.shopping_lists.update(id, changes);
+
+    const { shoppingLists } = useShoppingListStore.getState();
+    const newShoppingLists = shoppingLists.map((list) => {
+      if (list.id === id) {
+        list = { ...list, ...changes };
+      }
+      return list;
     });
+    const newList = newShoppingLists.find((list) => list.id == id)!;
+    const { shareList, unShareList } = useShareStore.getState();
+    if (newList.isShare) {
+      // 共有実行
+      await shareList(newList);
+    } else {
+      // 共有解除
+      await unShareList(newList.url_key);
+    }
+
+    // ステート更新
+    set({ shoppingLists: newShoppingLists });
   },
   sortShoppingList: (oldIndex, newIndex) => {
     const state = useShoppingListStore.getState().shoppingLists;

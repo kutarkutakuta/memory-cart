@@ -9,8 +9,8 @@ import useMasterStore from "./useMasterStore";
  */
 export interface ShoppingItem {
   id?: number;
-  order_number: number;
   shopping_list_id: string;
+  order_number: number;
   name: string;
   category_name?: string;
   amount?: number;
@@ -31,7 +31,7 @@ interface ShoppingItemState {
   loading: boolean;
   error: Error | null;
   fetchShoppingItems: (list_id: string) => Promise<void>;
-  clearShoppingItems:() => void;
+  clearShoppingItems: () => void;
   addShoppingItem: (list_id: string, name: string) => void;
   removeShoppingItem: (id: number) => void;
   updateShoppingItem: (id: number, changes: { [keyPath: string]: any }) => void;
@@ -60,19 +60,17 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => ({
       set({ error, loading: false });
     }
   },
-  clearShoppingItems:() => set({shoppingItems: []}),
+  clearShoppingItems: () => set({ shoppingItems: [] }),
   addShoppingItem: (list_id, name) => {
+    // マスター用Hook
+    const { commonItems } = useMasterStore.getState();
 
-    
-  // マスター用Hook
-  const { commonItems } = useMasterStore.getState();
-  
-    const {shoppingItems} = useShoppingItemStore.getState();
+    const { shoppingItems } = useShoppingItemStore.getState();
     const addItem: ShoppingItem = {
       shopping_list_id: list_id,
       order_number: shoppingItems.length + 1,
       name: name,
-      category_name: commonItems.find(m=>m.name == name)?.category_name!,
+      category_name: commonItems.find((m) => m.name == name)?.category_name!,
       created_at: new Date(),
     };
 

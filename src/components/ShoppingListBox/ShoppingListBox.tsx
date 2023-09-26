@@ -12,13 +12,14 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { Button, Col, Input, Popover, Row } from "antd";
+import { Button, Col, Input, Popover, Row, Space } from "antd";
 import { PlusCircleOutlined, LinkOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
 import type { KeyboardEvent, MouseEventHandler, PointerEvent } from "react";
 import useShoppingListStore from "@/stores/useShoppingListStore";
 import ShoppingListCard from "../ShoppingListCard/ShoppingListCard";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import useShareStore from "@/stores/useShareStore";
 
 // #region dnd-kit用の制御
 // data-dndkit-disabled-dnd-flag="true" が指定されている要素はドラッグ無効にする
@@ -109,15 +110,9 @@ const ShoppingListBox = () => {
     addShoppingList();
   };
 
-  const [open, setOpen] = useState(false);
-
-  const hide = () => {
-    setOpen(false);
-  };
-
-  const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen);
-  };
+  const [openShareKey, setOpenShareKey] = useState(false);
+  const [shareKey, setShareKey] = useState("");
+  const {addFromShareKey} = useShareStore()
 
   return (
     <div style={{ maxWidth: "500px" }}>
@@ -133,18 +128,21 @@ const ShoppingListBox = () => {
                 リストを追加
               </Button>
               <Popover
-                open={open}
-                onOpenChange={handleOpenChange}
+                open={openShareKey}
+                onOpenChange={e=>setOpenShareKey(e)}
                 title="共有キーを入力してください"
                 content={
                   <>
-                    <Input></Input>
-                    <a onClick={hide}>Cancel</a>
+                  <Space.Compact>
+                    <Input value={shareKey} onChange={e=>setShareKey(e.target.value)}></Input>
+                    <Button onClick={()=>addFromShareKey(shareKey)}>OK</Button>
+                    </Space.Compact>
+                    <a onClick={()=>setOpenShareKey(false)}>Cancel</a>
                   </>
                 }
                 trigger="hover"
               >
-                <Button type="text" icon={<LinkOutlined />} onClick={addItem}>
+                <Button type="text" icon={<LinkOutlined />}>
                   共有キーから追加
                 </Button>
               </Popover>
