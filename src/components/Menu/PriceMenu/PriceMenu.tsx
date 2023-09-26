@@ -48,8 +48,8 @@ export function PriceMenu() {
         }
         placement={"left"}
         width={330}
-        open={openFlag["priceMenu"]}
-        onClose={() => closeMenu("priceMenu")}
+        open={openFlag["PriceMenu"]}
+        onClose={() => closeMenu("PriceMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Space.Compact block>
@@ -77,7 +77,7 @@ export function PriceMenu() {
           
           <Button
             style={{ width: "100%" }}
-            onClick={() => closeMenu("priceMenu")}
+            onClick={() => closeMenu("PriceMenu")}
           >
             キャンセル
           </Button>

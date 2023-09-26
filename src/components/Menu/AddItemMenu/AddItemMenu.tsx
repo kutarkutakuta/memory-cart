@@ -17,22 +17,22 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 
 export function AddItemMenu() {
   // メニュー制御用Hook
-  const { addItemListID, closeAddItem } = useMenuStore();
+  const { openFlag, selectedList, closeMenu } = useMenuStore();
 
   // マスター用Hook
   const { categories, commonItems } = useMasterStore();
 
   // 初期化
   useEffect(() => {
-    if (addItemListID != null) {
-      setItemListID(addItemListID);
+    if (selectedList) {
+      setListKey(selectedList.list_key);
       setAddItems([]);
       setCategoryName(null);
       setViewCount(25);
     }
-  }, [addItemListID]);
+  }, [openFlag["AddItemMenu"]]);
 
-  const [itemListID, setItemListID] = useState<string | null>(null);
+  const [list_key, setListKey] = useState<string | null>(null);
   const [addItems, setAddItems] = useState<string[]>([]);
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [viewCount, setViewCount] = useState<number>(25);
@@ -115,8 +115,8 @@ export function AddItemMenu() {
           </>
         }
         placement={"right"}
-        open={addItemListID != null}
-        onClose={closeAddItem}
+        open={openFlag["AddItemMenu"]}
+        onClose={()=>closeMenu("AddItemMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <div>☆よく買う物から探す☆</div>
@@ -136,7 +136,7 @@ export function AddItemMenu() {
               <Tag
                 key={m.id}
                 style={{ cursor: "pointer" }}
-                onClick={(e) => handleTagClick(m.name!)}
+                onClick={() => handleTagClick(m.name!)}
               >
                 {m.name}
               </Tag>
@@ -155,15 +155,15 @@ export function AddItemMenu() {
             style={{ width: "100%" }}
             onClick={(e) => {
               addItems.forEach((name) => {
-                addShoppingItem(itemListID!, name);
+                addShoppingItem(list_key!, name);
               });
-              closeAddItem();
+              closeMenu("AddItemMenu");
             }}
           >
             追加
           </Button>
 
-          <Button style={{ width: "100%" }} onClick={closeAddItem}>
+          <Button style={{ width: "100%" }} onClick={()=>closeMenu("AddItemMenu")}>
             キャンセル
           </Button>
         </Space>

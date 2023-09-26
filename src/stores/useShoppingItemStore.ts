@@ -3,13 +3,16 @@ import { arrayMove } from "@dnd-kit/sortable";
 import supabase from "@/lib/supabase";
 import localdb from "@/lib/localdb";
 import useMasterStore from "./useMasterStore";
+import {} from "swr";
+import { nanoid } from "nanoid";
 
 /**
  * 買い物品
  */
 export interface ShoppingItem {
   id?: number;
-  shopping_list_id: string;
+  list_key: string;
+  item_key: string;
   order_number: number;
   name: string;
   category_name?: string;
@@ -30,13 +33,14 @@ interface ShoppingItemState {
   shoppingItems: ShoppingItem[];
   loading: boolean;
   error: Error | null;
-  fetchShoppingItems: (list_id: string) => Promise<void>;
+  fetchShoppingItems: (list_key: string) => Promise<void>;
   clearShoppingItems: () => void;
-  addShoppingItem: (list_id: string, name: string) => void;
+  addShoppingItem: (list_key: string, name: string) => void;
   removeShoppingItem: (id: number) => void;
   updateShoppingItem: (id: number, changes: { [keyPath: string]: any }) => void;
   finishShoppingItem: (id: number) => void;
   sortShoppingItem: (odlIndex: number, newIndex: number) => void;
+  startPolling: (list_key: string) => void;
 }
 
 /**
@@ -46,13 +50,13 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => ({
   shoppingItems: [],
   loading: false,
   error: null,
-  fetchShoppingItems: async (list_id) => {
+  fetchShoppingItems: async (list_key) => {
     set({ loading: true, error: null });
     try {
       // ローカルDBから取得
       const data = await localdb.shopping_items
         .orderBy("order_number")
-        .filter((m) => m.shopping_list_id == list_id)
+        .filter((m) => m.list_key == list_key)
         .toArray();
       set({ shoppingItems: data });
       set({ loading: false });
@@ -61,13 +65,14 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => ({
     }
   },
   clearShoppingItems: () => set({ shoppingItems: [] }),
-  addShoppingItem: (list_id, name) => {
+  addShoppingItem: (list_key, name) => {
     // マスター用Hook
     const { commonItems } = useMasterStore.getState();
 
     const { shoppingItems } = useShoppingItemStore.getState();
     const addItem: ShoppingItem = {
-      shopping_list_id: list_id,
+      list_key: list_key,
+      item_key: nanoid(),
       order_number: shoppingItems.length + 1,
       name: name,
       category_name: commonItems.find((m) => m.name == name)?.category_name!,
@@ -130,6 +135,23 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => ({
       return { shoppingItems: newItems };
     });
   },
+  startPolling: (list_key) =>{
+    // DBからデータ取得
+    // ローカルDBへ反映
+    // ステートに反映
+    const poll = async () => {
+      
+      const { data } = await supabase
+      .from("shopping_items")
+      .select("list_key")
+      .eq("list_key", list_key);
+
+      // TODO
+
+      setTimeout(poll, 5000);
+    };
+    poll();
+  }
 }));
 
 export default useShoppingItemStore;

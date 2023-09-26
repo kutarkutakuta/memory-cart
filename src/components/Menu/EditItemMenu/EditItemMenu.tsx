@@ -12,10 +12,8 @@ import {
   Space,
   Tag,
 } from "antd";
-import {
-  ShoppingOutlined,
-} from "@ant-design/icons";
-const {TextArea} = Input;
+import { ShoppingOutlined } from "@ant-design/icons";
+const { TextArea } = Input;
 
 import styles from "./EditItemMenu.module.scss";
 import useMasterStore from "@/stores/useMasterStore";
@@ -25,7 +23,7 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 
 export function EditItemMenu() {
   // メニュー制御用Hook
-  const { openItem, closeShoppingItem } = useMenuStore();
+  const { openFlag, selectedItem, closeMenu } = useMenuStore();
 
   // マスター用Hook
   const { categories, units } = useMasterStore();
@@ -36,8 +34,8 @@ export function EditItemMenu() {
   // フォーム用Hook
   const { formData, initialFormData, handleChange } = useEditItemMenu();
   useEffect(() => {
-    initialFormData(openItem);
-  }, [openItem]);
+    initialFormData(selectedItem);
+  }, [openFlag["EditItemMenu"]]);
 
   const getCategoryOption = () => {
     return categories.map((m) => ({ label: m.name, value: m.name }));
@@ -55,8 +53,8 @@ export function EditItemMenu() {
         }
         placement={"left"}
         width={330}
-        open={openItem != null}
-        onClose={closeShoppingItem}
+        open={openFlag["EditItemMenu"]}
+        onClose={() => closeMenu("EditItemMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
@@ -117,7 +115,7 @@ export function EditItemMenu() {
             style={{ width: "100%" }}
             onClick={(e) => {
               updateShoppingItem(formData.id, formData);
-              closeShoppingItem();
+              closeMenu("EditItemMenu");
             }}
           >
             更新
@@ -129,13 +127,18 @@ export function EditItemMenu() {
             style={{ width: "100%" }}
             onClick={() => {
               removeShoppingItem(formData.id!);
-              closeShoppingItem();
+              closeMenu("EditItemMenu");
             }}
           >
             削除
           </Button>
 
-          <Button style={{ width: "100%" }} onClick={()=>closeShoppingItem()}>キャンセル</Button>
+          <Button
+            style={{ width: "100%" }}
+            onClick={() => closeMenu("EditItemMenu")}
+          >
+            キャンセル
+          </Button>
         </Space>
       </Drawer>
     </>

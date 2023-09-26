@@ -28,7 +28,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
   const router = useRouter();
 
   // メニュー制御用Hook
-  const { openShoppingList } = useMenuStore();
+  const { openMenu } = useMenuStore();
 
   // 買い物リスト制御用Hook
   const { addShoppingList } = useShoppingListStore();
@@ -79,13 +79,13 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<FormOutlined />}
-                onClick={() => openShoppingList(item)}
+                onClick={() => openMenu("ShoppingListMenu", item)}
               />
               <Button
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<ArrowRightOutlined />}
-                onClick={() => router.push(`/kaimono?key=${item.url_key}`)}
+                onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
               />
             </Col>
           </Row>

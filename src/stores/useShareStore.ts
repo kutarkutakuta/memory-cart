@@ -8,8 +8,8 @@ import localdb from "@/lib/localdb";
 interface ShareState {
   // TODO:エラー処理どうしよう・・・？　zustandである必要がないような？
   shareList: (list: ShoppingList) => Promise<PostgrestError | null>;
-  unShareList: (url_key: string) => Promise<PostgrestError | null>;
-  addFromShareKey: (url_key: string) => Promise<PostgrestError | null>;
+  unShareList: (list_key: string) => Promise<PostgrestError | null>;
+  addFromShareKey: (list_key: string) => Promise<PostgrestError | null>;
 }
 
 const useShareStore = create<ShareState>((set) => ({
@@ -17,18 +17,18 @@ const useShareStore = create<ShareState>((set) => ({
     // 共有時はDBも更新
     const { data } = await supabase
       .from("shopping_lists")
-      .select("url_key")
-      .eq("url_key", list.url_key);
+      .select("list_key")
+      .eq("list_key", list.list_key);
     if (data && data.length > 0) {
       // 共有済みなのでリストのデータを更新するだけ
       const { error } = await supabase
         .from("shopping_lists")
         .update({
-          url_key: list.url_key,
+          list_key: list.list_key,
           name: list.name,
           memo: list.memo,
         })
-        .eq("url_key", list.url_key);
+        .eq("list_key", list.list_key);
       if (error) {
         console.error(error);
         return error;
@@ -36,7 +36,7 @@ const useShareStore = create<ShareState>((set) => ({
     } else {
       // 新規に共有データを作成
       const { error: error1 } = await supabase.from("shopping_lists").insert({
-        url_key: list.url_key,
+        list_key: list.list_key,
         name: list.name,
         memo: list.memo,
         created_user: "GUEST",
@@ -48,11 +48,12 @@ const useShareStore = create<ShareState>((set) => ({
       // 買物品もDBへ追加する
       // ローカルDBから取得
       const data = await localdb.shopping_items
-        .where({ shopping_list_id: list.id.toString() })
+        .where({ list_key: list.list_key })
         .toArray();
       const { error: error2 } = await supabase.from("shopping_items").insert(
         data.map((d) => ({
-          url_key: list.url_key,
+          list_key: list.list_key,
+          item_key: d.item_key,
           order_number: d.order_number,
           name: d.name,
           category_name: d.category_name,
@@ -75,11 +76,11 @@ const useShareStore = create<ShareState>((set) => ({
     }
     return null;
   },
-  unShareList: async (url_key) => {
+  unShareList: async (list_key) => {
     const { error: error1 } = await supabase
       .from("shopping_items")
       .delete()
-      .eq("url_key", url_key);
+      .eq("list_key", list_key);
     if (error1) {
       console.error(error1);
       return error1;
@@ -87,29 +88,29 @@ const useShareStore = create<ShareState>((set) => ({
     const { error: error2 } = await supabase
       .from("shopping_lists")
       .delete()
-      .eq("url_key", url_key);
+      .eq("list_key", list_key);
     if (error2) {
       console.error(error2);
       return error2;
     }
     return null;
   },
-  addFromShareKey: async (url_key) => {
+  addFromShareKey: async (list_key) => {
     const { data: listData } = await supabase
       .from("shopping_lists")
       .select("*")
-      .eq("url_key", url_key)
+      .eq("list_key", list_key)
       .single();
     if (listData) {
       // ローカルDBに追加
       const { shoppingLists } = useShoppingListStore.getState();
-      const new_list_id = await localdb.shopping_lists.add({
+      await localdb.shopping_lists.add({
         id:
           shoppingLists.reduce((max, current) => {
             if (current.id > max) return current.id;
             else return max;
           }, 0) + 1,
-        url_key: url_key,
+        list_key: list_key,
         order_number: shoppingLists.length + 1,
         name: listData.name,
         memo: listData.memo,
@@ -121,12 +122,13 @@ const useShareStore = create<ShareState>((set) => ({
       const { data: itemData } = await supabase
         .from("shopping_items")
         .select("*")
-        .eq("url_key", url_key);
+        .eq("list_key", list_key);
 
       if (itemData && itemData.length > 0) {
         await localdb.shopping_items.bulkAdd(
           itemData.map((item: ShoppingItem) => ({
-            shopping_list_id: new_list_id.toString(),
+            list_key: list_key,
+            item_key: item.item_key,
             order_number: item.order_number,
             name: item.name,
             category_name: item.category_name ? item.category_name : undefined,

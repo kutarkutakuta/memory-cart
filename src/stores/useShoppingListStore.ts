@@ -10,7 +10,7 @@ import useShareStore from "./useShareStore";
  */
 export interface ShoppingList {
   id: number;
-  url_key: string;
+  list_key: string;
   order_number: number;
   name: string | null;
   memo: string | null;
@@ -31,7 +31,7 @@ interface ShoppingListState {
     changes: { [keyPath: string]: any }
   ) => Promise<void>;
   sortShoppingList: (odlIndex: number, newIndex: number) => void;
-  getShoppingList: (url_key: string) => Promise<ShoppingList | undefined>;
+  getShoppingList: (list_key: string) => Promise<ShoppingList | undefined>;
 }
 
 /**
@@ -63,7 +63,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
           if (current.id > max) return current.id;
           else return max;
         }, 0) + 1,
-      url_key: nanoid(),
+      list_key: nanoid(),
       order_number: shoppingLists.length + 1,
       name: `買い物リスト${shoppingLists.length + 1}`,
       memo: "",
@@ -78,18 +78,19 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     }
 
     // ローカルDBへ追加
-    const new_list_id = await localdb.shopping_lists.add(addItem);
+    await localdb.shopping_lists.add(addItem);
 
     if (copyItem) {
       // ローカルDB買物品もコピーして追加
       const sourceItems = await localdb.shopping_items
         .where({
-          shopping_list_id: copyItem.id.toString(),
+          list_key: copyItem.list_key,
         })
         .toArray();
       sourceItems.forEach((itm) => {
         itm.id = undefined;
-        itm.shopping_list_id = new_list_id.toString();
+        itm.list_key = addItem.list_key;
+        itm.item_key = nanoid(),
         itm.buying_amount = undefined;
         itm.buying_unit = undefined;
         itm.buying_price = undefined;
@@ -111,12 +112,12 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
 
     // 先にDBを削除
     const { unShareList } = useShareStore.getState();
-    await unShareList(deleteList.url_key);
+    await unShareList(deleteList.list_key);
 
     // ローカルDB買物品を削除
     const sourceItems = await localdb.shopping_items
       .where({
-        shopping_list_id: id.toString(),
+        list_key: deleteList.list_key,
       })
       .toArray();
     await localdb.shopping_items.bulkDelete(sourceItems.map((itm) => itm.id!));
@@ -149,7 +150,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       await shareList(newList);
     } else {
       // 共有解除
-      await unShareList(newList.url_key);
+      await unShareList(newList.list_key);
     }
 
     // ステート更新
@@ -168,11 +169,11 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       return { shoppingLists: newLists };
     });
   },
-  getShoppingList: async (url_key) => {
+  getShoppingList: async (list_key) => {
     set({ loading: true, error: null });
     try {
       // ローカルDBから取得
-      const data = await localdb.shopping_lists.where({ url_key }).first();
+      const data = await localdb.shopping_lists.where({ list_key }).first();
       set({ loading: false });
       return data;
     } catch (error: any) {

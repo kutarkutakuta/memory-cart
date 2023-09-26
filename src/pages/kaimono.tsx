@@ -17,7 +17,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 const HomePage = () => {
   const searchParams = useSearchParams();
-  const url_key = searchParams.get("key");
+  const list_key = searchParams.get("key");
 
   // マスター取得
   const { fetchData } = useMasterStore();
@@ -31,10 +31,10 @@ const HomePage = () => {
   );
 
   useEffect(() => {
-    if(url_key) getShoppingList(url_key).then((m) => {
+    if(list_key) getShoppingList(list_key).then((m) => {
       setShoppingList(m);
     });
-  }, [url_key]);
+  }, [list_key]);
 
   return (
     <>
@@ -42,7 +42,7 @@ const HomePage = () => {
         <MyHeader title={shoppingList?.name || ""}></MyHeader>
       </header>
       <main>
-        <ShoppingBox list_id={shoppingList?.id.toString() || ""} />
+        <ShoppingBox shoppingList={shoppingList} />
       </main>
       <AddItemMenu></AddItemMenu>
       <EditItemMenu></EditItemMenu>

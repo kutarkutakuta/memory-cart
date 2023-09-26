@@ -35,15 +35,13 @@ import {
   DatabaseOutlined,
   OrderedListOutlined,
   SortAscendingOutlined,
-  SettingOutlined,
-  UserOutlined,
-  SendOutlined,
 } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
 import type { KeyboardEvent, MouseEventHandler, PointerEvent } from "react";
 import ShoppingCard from "../ShoppingCard/ShoppingCard";
 import useMenuStore from "@/stores/useMenuStore";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { ShoppingList } from "@/stores/useShoppingListStore";
 
 const sortItems: MenuProps["items"] = [
   {
@@ -127,10 +125,10 @@ class KeyboardSensor extends LibKeyboardSensor {
 // #endregion
 
 interface ShoppingListProps {
-  list_id: string;
+  shoppingList?: ShoppingList;
 }
 
-const ShoppingBox = ({ list_id }: ShoppingListProps) => {
+const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
   // useSensor と useSensors を使って上書きした Sensor を DndContext に紐付ける
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -150,12 +148,12 @@ const ShoppingBox = ({ list_id }: ShoppingListProps) => {
   } = useShoppingItemStore();
 
   useEffect(() => {
-    if (list_id) fetchShoppingItems(list_id);
+    if (shoppingList) fetchShoppingItems(shoppingList.list_key);
     // ページを離れる際のクリーンアップ
     return () => {
       clearShoppingItems(); // データを初期化
     };
-  }, [list_id]);
+  }, [shoppingList]);
 
   const handleDragEnd = useCallback(
     (event: { active: any; over: any }) => {
@@ -181,7 +179,7 @@ const ShoppingBox = ({ list_id }: ShoppingListProps) => {
   );
 
   // メニュー制御用Hook
-  const { openAddItem } = useMenuStore();
+  const { openMenu } = useMenuStore();
 
   const menuItems: MenuProps["items"] = [
     {
@@ -247,7 +245,7 @@ const ShoppingBox = ({ list_id }: ShoppingListProps) => {
               <Button
                 type="text"
                 icon={<PlusCircleOutlined />}
-                onClick={() => openAddItem(list_id)}
+                onClick={() => openMenu("AddItemMenu", shoppingList)}
               >
                 品物を追加
               </Button>

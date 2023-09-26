@@ -26,7 +26,7 @@ import { useEffect } from "react";
 
 export function ShoppingListMenu() {
   // メニュー制御用Hook
-  const { openList, closeShoppingList } = useMenuStore();
+  const { openFlag, selectedList, closeMenu } = useMenuStore();
 
   // 買い物リスト制御用Hook
   const { removeShoppingList, updateShoppingList } = useShoppingListStore();
@@ -35,8 +35,8 @@ export function ShoppingListMenu() {
   const { formData, initialFormData, handleChange } = useShoppingListMenu();
 
   useEffect(() => {
-    initialFormData(openList);
-  }, [openList]);
+    initialFormData(selectedList);
+  }, [openFlag["ShoppingListMenu"]]);
 
   const showDeleteConfirm = () => {
     confirm({
@@ -48,7 +48,7 @@ export function ShoppingListMenu() {
       cancelText: 'キャンセル',
       onOk() {
         removeShoppingList(formData.id!);
-          closeShoppingList();
+        closeMenu("ShoppingListMenu");
       },
     });
   };
@@ -64,8 +64,8 @@ export function ShoppingListMenu() {
         }
         placement={"left"}
         width={330}
-        open={openList != null}
-        onClose={closeShoppingList}
+        open={openFlag["ShoppingListMenu"]}
+        onClose={()=>closeMenu("ShoppingListMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
@@ -96,13 +96,13 @@ export function ShoppingListMenu() {
             <>
               <Space.Compact style={{ width: "100%" }}>
                 <Input
-                  value={openList?.url_key || ""}
+                  value={selectedList?.list_key || ""}
                   readOnly
                   bordered={false}
                   style={{ color: "#000", backgroundColor: "#323232" }}
                 />
                 <Tooltip title="クリップボードにコピー">
-                <Button  onClick={()=>navigator.clipboard.writeText(openList?.url_key || "")}>
+                <Button  onClick={()=>navigator.clipboard.writeText(selectedList?.list_key || "")}>
                   <CopyOutlined />
                 </Button>
                 </Tooltip>
@@ -115,7 +115,7 @@ export function ShoppingListMenu() {
             style={{ width: "100%" }}
             onClick={() => {
               updateShoppingList(formData.id, formData);
-              closeShoppingList();
+              closeMenu("ShoppingListMenu");
             }}
           >
             更新
@@ -135,7 +135,7 @@ export function ShoppingListMenu() {
           <Button
             style={{ width: "100%" }}
             onClick={() => {
-              closeShoppingList();
+              closeMenu("ShoppingListMenu");
             }}
           >
             キャンセル

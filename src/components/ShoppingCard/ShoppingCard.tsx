@@ -39,7 +39,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     useShoppingItemStore();
 
   // メニュー制御用Hook
-  const { openShoppingItem, openMenu } = useMenuStore();
+  const { openMenu } = useMenuStore();
 
   // マスター用Hook
   const { categories } = useMasterStore();
@@ -114,13 +114,13 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<MoneyCollectOutlined />}
-                onClick={() => openMenu("priceMenu", undefined, item)}
+                onClick={() => openMenu("PriceMenu", undefined, item)}
               ></Button>
               <Button
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<FormOutlined />}
-                onClick={() => openShoppingItem(item)}
+                onClick={() => openMenu("EditItemMenu", undefined, item)}
               />
               {/* <Button
                 data-dndkit-disabled-dnd-flag="true"

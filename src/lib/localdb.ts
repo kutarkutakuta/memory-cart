@@ -13,8 +13,8 @@ class OkaimonoDatabase extends Dexie {
     super("OkaimonoDatabase");
     this.version(1).stores({
       app_settings: "id",
-      shopping_lists: "id, url_key, order_number, name",
-      shopping_items: "++id, shopping_list_id, order_number, name",
+      shopping_lists: "id, list_key, order_number, name",
+      shopping_items: "++id, list_key, item_key, order_number, name",
     });
     this.app_settings = this.table("app_settings");
     this.shopping_lists = this.table("shopping_lists");
