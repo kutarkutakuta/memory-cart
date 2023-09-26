@@ -1,6 +1,19 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import "@/styles/globals.scss";
+import type { AppProps } from "next/app";
+
+import { ConfigProvider, type ThemeConfig, theme } from "antd";
+
+const mytheme: ThemeConfig = {
+  algorithm: theme.darkAlgorithm,
+  token: {
+    fontSize: 16,
+  },
+};
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <ConfigProvider theme={mytheme}>
+      <Component {...pageProps} />
+    </ConfigProvider>
+  );
 }

@@ -95,6 +95,31 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+header{
+  background-color: #27374D;
+  color: #fafafa;
+  padding: 5px;
+  position: fixed; /* ヘッダーを固定位置に配置 */
+  top: 0; /* ヘッダーをページ上端に配置 */
+  left: 0; /* ヘッダーをページ左端に配置 */
+  width: 100%; /* ヘッダーの幅をページ幅に合わせる */
+  z-index: 100; /* ヘッダーを他の要素の上に表示する */
+}
+
+main {
+  .sub-header {
+    background-color: #526D82;
+    color: #fff;
+    position: fixed;
+    top: 40px; /* メインヘッダーの高さに合わせて配置 */
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
+  margin-top: 70px; /* ヘッダーの高さに合わせてメインコンテンツを下にスペースを確保 */
+  padding: 10px; /* メインコンテンツの内側の余白を設定 */
+}
+
 a {
   color: inherit;
   text-decoration: none;
