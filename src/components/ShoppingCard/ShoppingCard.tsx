@@ -73,7 +73,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...listeners}
     >
       <Row className={styles.header} wrap={false}>
-        <Col flex="none">
+        <Col flex="auto">
           {/* 
         <Paragraph ellipsis={true} style={{ margin: 0 }}> */}
 
@@ -87,15 +87,22 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             <Button
               data-dndkit-disabled-dnd-flag="true"
               type="text"
+              style={{
+                whiteSpace: "normal",
+                height: "auto",
+                maxWidth: "220px",
+                textAlign: "left",
+                marginLeft: "-5px",
+              }}
               onClick={() => openMenu("EditItemMenu", undefined, item)}
             >
-              {" "}
               <span
                 style={{
                   textDecoration: item.finished_at ? "line-through" : "",
                 }}
               >
                 {item.name}
+                aaa
               </span>
             </Button>
 
@@ -129,7 +136,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
 
           {/* </Paragraph> */}
         </Col>
-        <Col flex="auto">
+        <Col flex="none">
           <Row justify="end">
             <Col>
               <Tag

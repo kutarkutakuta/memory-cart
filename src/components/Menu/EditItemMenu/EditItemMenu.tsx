@@ -59,7 +59,7 @@ export function EditItemMenu() {
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
             placeholder="品物の名前"
-            maxLength={50}
+            maxLength={15}
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
           />
@@ -76,7 +76,7 @@ export function EditItemMenu() {
           <Space.Compact block>
             <InputNumber
               placeholder="数量"
-              maxLength={10}
+              maxLength={5}
               inputMode="decimal"
               style={{ width: "200px" }}
               value={formData.amount}
