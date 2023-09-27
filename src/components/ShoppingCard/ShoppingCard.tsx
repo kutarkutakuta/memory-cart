@@ -102,7 +102,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               </span>
             </Button>
 
-            {item.priority ? (
+            {item.amount ? (
               <span
                 style={{
                   fontSize: "smaller",
