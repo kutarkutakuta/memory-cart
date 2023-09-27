@@ -6,6 +6,7 @@ import useMasterStore from "./useMasterStore";
 import {} from "swr";
 import { nanoid } from "nanoid";
 import useShoppingListStore from "./useShoppingListStore";
+import useShareStore from "./useShareStore";
 
 /**
  * 買い物品
@@ -196,7 +197,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         .eq("list_key", list_key);
 
       // ローカルDBへ反映
-      if (data) {
+      if (data && data.length > 0) {
         // DBがあれば同期　存在しない場合は同期しない
         for (const serverData of data) {
           // ローカルDBから取得
@@ -262,7 +263,9 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
 
         const deleteItems = await localdb.shopping_items
           .filter(
-            (itm) => itm.list_key == list_key && data.findIndex((d) => d.item_key == itm.item_key) == -1
+            (itm) =>
+              itm.list_key == list_key &&
+              data.findIndex((d) => d.item_key == itm.item_key) == -1
           )
           .toArray();
         if (deleteItems.length > 0) {
@@ -270,11 +273,29 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             deleteItems.map((itm) => itm.id!)
           );
         }
-      }
 
-      // フェッチしなおし
-      const { fetchShoppingItems } = useShoppingItemStore.getState();
-      fetchShoppingItems(list_key);
+        // フェッチしなおし
+        const { fetchShoppingItems } = useShoppingItemStore.getState();
+        fetchShoppingItems(list_key);
+      } else {
+        // データがないということは共有が切れた可能性があるのでチェックする。
+        const { data } = await supabase
+          .from("shopping_lists")
+          .select("*")
+          .eq("list_key", list_key);
+        if (!data || data.length == 0) {
+          // 共有を解除
+          const shopping_list = await localdb.shopping_lists
+            .filter((m) => m.list_key == list_key)
+            .first();
+          if (shopping_list) {
+            const { updateShoppingList } = useShoppingListStore.getState();
+            await updateShoppingList(shopping_list.id, { isShare: false });
+          }
+
+          //TODO:メッセージ返したい
+        }
+      }
     },
     startPolling: (list_key) => {
       const { syncShoppingItem } = useShoppingItemStore.getState();
