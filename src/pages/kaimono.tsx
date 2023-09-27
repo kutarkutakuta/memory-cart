@@ -39,7 +39,7 @@ const HomePage = () => {
   return (
     <>
       <header>
-        <MyHeader title={shoppingList?.name || ""}></MyHeader>
+        <MyHeader title={shoppingList?.name || ""} isShare={shoppingList?.isShare!}></MyHeader>
       </header>
       <main>
         <ShoppingBox shoppingList={shoppingList} />

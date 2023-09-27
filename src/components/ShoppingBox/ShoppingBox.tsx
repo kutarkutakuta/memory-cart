@@ -111,19 +111,20 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
     clearShoppingItems,
     updateShoppingItem,
     removeShoppingItem,
-    startPolling,
+    syncShoppingItem,
   } = useShoppingItemStore();
 
   const [boughtOrder, SetboughtOrder] = useState(true);
 
   useEffect(() => {
     if (shoppingList) {
-      fetchShoppingItems(shoppingList.list_key);
-
-      // // 共有の場合だけポーリングでDBと同期
-      // if(shoppingList.isShare){
-      //   startPolling(shoppingList.list_key);
-      // }
+      // 共有の場合DBと同期
+      if(shoppingList.isShare){
+        syncShoppingItem(shoppingList.list_key);
+      }
+      else{
+        fetchShoppingItems(shoppingList.list_key);
+      }
     }
     // ページを離れる際のクリーンアップ
     return () => {

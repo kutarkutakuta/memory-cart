@@ -103,15 +103,22 @@ const useShareStore = create<ShareState>((set) => ({
       .single();
     if (listData) {
       // ローカルDBに追加
-      const { shoppingLists } = useShoppingListStore.getState();
+      // ローカルDBから取得
+      const shopping_lists = await localdb.shopping_lists
+        .orderBy("order_number")
+        .toArray();
+      if(shopping_lists.findIndex(m=>m.list_key == list_key) > -1){
+        throw "共有済みのリストが存在しています。";
+      }
+      
       await localdb.shopping_lists.add({
         id:
-          shoppingLists.reduce((max, current) => {
+        shopping_lists.reduce((max, current) => {
             if (current.id > max) return current.id;
             else return max;
           }, 0) + 1,
         list_key: list_key,
-        order_number: shoppingLists.length + 1,
+        order_number: shopping_lists.length + 1,
         name: listData.name,
         memo: listData.memo,
         isShare: true,

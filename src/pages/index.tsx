@@ -17,7 +17,7 @@ const HomePage = () => {
   return (
   <>
     <header>
-      <MyHeader title="お買い物リスト"></MyHeader>
+      <MyHeader title="お買い物リスト" isShare={false}></MyHeader>
     </header>
     <main>
       <ShoppingListBox></ShoppingListBox>
