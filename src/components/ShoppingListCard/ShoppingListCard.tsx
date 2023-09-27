@@ -111,8 +111,16 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                   共有中
                 </Tag>
               ) : null}
-              <Dropdown menu={{ items }} placement="bottomRight">
-                <Button type="text" icon={<MoreOutlined />} />
+              <Dropdown
+                menu={{ items }}
+                placement="bottomRight"
+                data-dndkit-disabled-dnd-flag="true"
+              >
+                <Button
+                  type="text"
+                  icon={<MoreOutlined />}
+                  data-dndkit-disabled-dnd-flag="true"
+                />
               </Dropdown>
               {/* <Button
                 data-dndkit-disabled-dnd-flag="true"
