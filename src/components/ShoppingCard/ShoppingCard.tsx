@@ -102,7 +102,6 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 }}
               >
                 {item.name}
-                aaa
               </span>
             </Button>
 
