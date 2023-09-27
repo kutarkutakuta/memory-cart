@@ -70,7 +70,7 @@ export function ShoppingListMenu() {
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
             placeholder="リストの名前"
-            maxLength={50}
+            maxLength={20}
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
           />

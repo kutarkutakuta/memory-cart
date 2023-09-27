@@ -145,10 +145,19 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
     clearShoppingItems,
     updateShoppingItem,
     removeShoppingItem,
+    startPolling,
   } = useShoppingItemStore();
 
   useEffect(() => {
-    if (shoppingList) fetchShoppingItems(shoppingList.list_key);
+    if (shoppingList) {
+      fetchShoppingItems(shoppingList.list_key);
+
+      // // 共有の場合だけポーリングでDBと同期
+      // if(shoppingList.isShare){
+      //   startPolling(shoppingList.list_key);
+      // }
+      
+    }
     // ページを離れる際のクリーンアップ
     return () => {
       clearShoppingItems(); // データを初期化
@@ -238,8 +247,8 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
 
   return (
     <div style={{ maxWidth: "500px" }}>
-      <Row justify="space-between" className="sub-header">
-        <Col flex="none">
+      <Row justify="space-between" wrap={false} className="sub-header">
+        <Col flex="auto">
           <Row justify="start">
             <Col>
               <Button
@@ -252,7 +261,7 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
             </Col>
           </Row>
         </Col>
-        <Col flex="auto">
+        <Col flex="noen">
           <Row justify="end">
             <Col>
               <Space>

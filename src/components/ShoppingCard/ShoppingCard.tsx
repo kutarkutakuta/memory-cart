@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import useShoppingItemStore, {
   ShoppingItem,
 } from "@/stores/useShoppingItemStore";
@@ -87,13 +87,16 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             ) : null}
 
             {item.priority ? (
-              <Tooltip title={item.priority}>
+              <Tooltip
+                title={item.priority}
+                data-dndkit-disabled-dnd-flag="true"
+              >
                 <ExclamationCircleTwoTone />
               </Tooltip>
             ) : null}
 
             {item.memo ? (
-              <Tooltip title={item.memo}>
+              <Tooltip title={item.memo} data-dndkit-disabled-dnd-flag="true">
                 <MessageTwoTone />
               </Tooltip>
             ) : null}

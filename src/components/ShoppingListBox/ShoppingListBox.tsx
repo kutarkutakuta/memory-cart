@@ -116,7 +116,7 @@ const ShoppingListBox = () => {
 
   return (
     <div style={{ maxWidth: "500px" }}>
-      <Row justify="space-between" className = "sub-header">
+      <Row justify="space-between" wrap={false} className = "sub-header">
         <Col flex="none">
           <Row justify="start">
             <Col>

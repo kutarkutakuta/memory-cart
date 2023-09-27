@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, Checkbox, Col, Row, Tag, Tooltip } from "antd";
+import { Button, Checkbox, Col, Row, Tag, Tooltip, Typography } from "antd";
 
 import {
   ArrowRightOutlined,
@@ -16,6 +16,8 @@ import useShoppingListStore, {
 } from "@/stores/useShoppingListStore";
 import { useRouter } from "next/navigation";
 import useMenuStore from "@/stores/useMenuStore";
+
+const { Paragraph } = Typography;
 
 interface ShoppingCardProps {
   item: ShoppingList;
@@ -43,8 +45,6 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     cursor: "grab",
   };
 
-
-
   return (
     <div
       ref={setNodeRef}
@@ -53,9 +53,10 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
-      <Row>
-        <Col flex="none">
-              <Tooltip title="コピーしたリストを追加">
+      <Row wrap={false}>
+        <Col flex="auto">
+          <Paragraph ellipsis={true} style={{margin:0}}>
+            <Tooltip title="コピーしたリストを追加">
               <Button
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
@@ -64,10 +65,11 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                   addShoppingList(item);
                 }}
               ></Button>
-              </Tooltip>
-          {item.name}
+            </Tooltip>
+            {item.name}
+          </Paragraph>
         </Col>
-        <Col flex="auto">
+        <Col flex="none">
           <Row justify="end">
             <Col>
               {item.isShare ? (

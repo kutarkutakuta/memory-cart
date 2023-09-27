@@ -2,7 +2,7 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { Button, Col, Dropdown, MenuProps, Row, Space } from "antd";
+import { Button, Col, Dropdown, MenuProps, Row, Space, Typography } from "antd";
 import {
   UserAddOutlined,
   SettingOutlined,
@@ -11,15 +11,18 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 
+const { Paragraph } = Typography;
+
 const MyHeader = ({ title }: { title: string }) => {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
-    <Row justify="space-between" align="middle">
-      <Col flex="none">
+    <Row justify="space-between" wrap={false}>
+      <Col flex="auto">
         <Row justify="start">
           <Col>
+          <Paragraph ellipsis={true}>
             {pathname == "/" ? (
               <span style={{padding:10}}>{title}</span>
             ) : (
@@ -31,10 +34,11 @@ const MyHeader = ({ title }: { title: string }) => {
                 
               </>
             )}
+            </Paragraph>
           </Col>
         </Row>
       </Col>
-      <Col flex="auto">
+      <Col flex="none">
         <Row justify="end">
           <Col>
             <Space>

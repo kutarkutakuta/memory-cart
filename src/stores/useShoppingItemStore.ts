@@ -46,7 +46,10 @@ interface ShoppingItemState {
 /**
  * 買い物品操作用Hook
  */
-const useShoppingItemStore = create<ShoppingItemState>((set) => ({
+const useShoppingItemStore = create<ShoppingItemState>((set) => {
+  let pollTimer: NodeJS.Timeout;
+
+  return {
   shoppingItems: [],
   loading: false,
   error: null,
@@ -64,7 +67,13 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => ({
       set({ error, loading: false });
     }
   },
-  clearShoppingItems: () => set({ shoppingItems: [] }),
+  clearShoppingItems: () => {
+    set({ shoppingItems: [] })
+  
+    // ポーリングも停止！
+    clearTimeout(pollTimer);
+  }
+    ,
   addShoppingItem: (list_key, name) => {
     // マスター用Hook
     const { commonItems } = useMasterStore.getState();
@@ -135,23 +144,97 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => ({
       return { shoppingItems: newItems };
     });
   },
-  startPolling: (list_key) =>{
-    // DBからデータ取得
-    // ローカルDBへ反映
-    // ステートに反映
+  startPolling: (list_key) => {
+   
     const poll = async () => {
-      
+      // DBからデータ取得
       const { data } = await supabase
-      .from("shopping_items")
-      .select("list_key")
-      .eq("list_key", list_key);
+        .from("shopping_items")
+        .select("*")
+        .eq("list_key", list_key);
 
-      // TODO
+      const { shoppingItems, fetchShoppingItems } = useShoppingItemStore.getState();
 
-      setTimeout(poll, 5000);
+       // ローカルDBへ反映
+      if (data) {
+        // DBがあれば同期　存在しない場合は同期しない
+        for(const serverData of data){
+          const localData = shoppingItems.find(
+            (itm) =>
+              itm.list_key == serverData.list_key &&
+              itm.item_key == serverData.item_key
+          );
+          if (localData) {
+            // 差分があれば更新
+            const changes: any = {};
+            if (serverData["order_number"] !== localData.order_number)
+              changes["order_number"] = serverData["order_number"];
+            if (serverData["name"] !== localData.name)
+              changes["name"] = serverData["name"];
+            if (serverData["category_name"] !== localData.category_name)
+              changes["category_name"] = serverData["category_name"];
+            if (serverData["amount"] !== localData.amount)
+              changes["amount"] = serverData["amount"];
+            if (serverData["unit"] !== localData.unit)
+              changes["unit"] = serverData["unit"];
+            if (serverData["priority"] !== localData.priority)
+              changes["priority"] = serverData["priority"];
+            if (serverData["memo"] !== localData.memo)
+              changes["memo"] = serverData["memo"];
+            if (serverData["buying_amount"] !== localData.buying_amount)
+              changes["buying_amount"] = serverData["buying_amount"];
+            if (serverData["buying_unit"] !== localData.buying_unit)
+              changes["buying_unit"] = serverData["buying_unit"];
+            if (serverData["buying_price"] !== localData.buying_price)
+              changes["buying_price"] = serverData["buying_price"];
+            if (serverData["finished_user"] !== localData.finished_user)
+              changes["finished_user"] = serverData["finished_user"];
+            if (serverData["finished_at"] !== localData.finished_at)
+              changes["finished_at"] = serverData["finished_at"];
+
+              if(Object.keys(changes).length > 0){
+                await localdb.shopping_items.update(localData.id!, changes);
+              }
+          } else {
+            // 追加
+            const addItem: ShoppingItem = {
+              list_key: list_key,
+              item_key: serverData["item_key"],
+              order_number: serverData["order_number"],
+              name: serverData["name"],
+              category_name: serverData["category_name"],
+              amount: serverData["amount"],
+              unit: serverData["unit"],
+              priority: serverData["priority"],
+              memo: serverData["memo"],
+              buying_amount: serverData["buying_amount"],
+              buying_unit: serverData["buying_unit"],
+              buying_price: serverData["buying_price"],
+              created_user: serverData["created_user"],
+              created_at: serverData["created_at"],
+              finished_user: serverData["finished_user"],
+              finished_at: serverData["finished_at"],
+            };
+            await localdb.shopping_items.add(addItem);
+          }
+        }
+
+        const deleteItems = shoppingItems.filter(
+          (itm) => data.findIndex((d) => d.item_key == itm.item_key) == -1
+        );
+        if(deleteItems.length > 0){
+          await localdb.shopping_items.bulkDelete(deleteItems.map(itm=>itm.id!));
+        }
+       
+      }
+
+      // フェッチしなおし
+      fetchShoppingItems(list_key);
+
+      pollTimer = setTimeout(poll, 5000);
     };
     poll();
-  }
-}));
+  },
+}});
 
 export default useShoppingItemStore;
