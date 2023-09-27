@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import {
   DndContext,
@@ -154,7 +154,6 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
       // if(shoppingList.isShare){
       //   startPolling(shoppingList.list_key);
       // }
-      
     }
     // ページを離れる際のクリーンアップ
     return () => {
@@ -197,9 +196,11 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
           全て買い物前に戻す
         </>
       ),
-      onClick : ()=>{
-        shoppingItems.forEach(item=>updateShoppingItem(item.id!,  {finished_at: null}));
-      }
+      onClick: () => {
+        shoppingItems.forEach((item) =>
+          updateShoppingItem(item.id!, { finished_at: null })
+        );
+      },
     },
     {
       key: "1",
@@ -209,9 +210,11 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
           全て買い物済にする
         </>
       ),
-      onClick : ()=>{
-        shoppingItems.forEach(item=>updateShoppingItem(item.id!,  {finished_at: new Date()}));
-      }
+      onClick: () => {
+        shoppingItems.forEach((item) =>
+          updateShoppingItem(item.id!, { finished_at: new Date() })
+        );
+      },
     },
     {
       type: "divider",
@@ -224,9 +227,11 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
           買い物済を全て削除
         </>
       ),
-      onClick : ()=>{
-        shoppingItems.filter(item=>item.finished_at != null).forEach(item=>removeShoppingItem(item.id!));
-      }
+      onClick: () => {
+        shoppingItems
+          .filter((item) => item.finished_at != null)
+          .forEach((item) => removeShoppingItem(item.id!));
+      },
     },
     {
       key: "3",
@@ -236,12 +241,11 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
           全て削除
         </>
       ),
-      onClick : ()=>{
-        shoppingItems.forEach(item=>removeShoppingItem(item.id!));
-      }
+      onClick: () => {
+        shoppingItems.forEach((item) => removeShoppingItem(item.id!));
+      },
     },
   ];
-
 
   return (
     <div style={{ maxWidth: "500px" }}>
@@ -288,8 +292,8 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                touchAction: "none",
                 paddingLeft: "5px",
+                userSelect: "none",
               }}
             >
               {shoppingItems.map((item) => (

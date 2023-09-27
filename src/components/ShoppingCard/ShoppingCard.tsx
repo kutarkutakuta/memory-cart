@@ -71,13 +71,13 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
-      <Row  wrap={false} align={"middle"}>
+      <Row wrap={false} align={"middle"}>
         <Col
           flex="none"
-          style={{ paddingRight: "10px", cursor: "grab" }}
+          style={{ paddingRight: "10px", cursor: "grab", touchAction: "none" }}
           data-enable-dnd="true"
         >
-          <HolderOutlined  />
+          <HolderOutlined />
         </Col>
         <Col flex="auto">
           <Space>
@@ -92,7 +92,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 height: "auto",
                 maxWidth: "220px",
                 textAlign: "left",
-                padding:0
+                padding: 0,
               }}
               onClick={() => openMenu("EditItemMenu", undefined, item)}
             >
@@ -118,9 +118,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             ) : null}
 
             {item.priority ? (
-              <Tooltip  trigger="click"
-                title={item.priority}
-              >
+              <Tooltip trigger="click" title={item.priority}>
                 <ExclamationCircleTwoTone />
               </Tooltip>
             ) : null}
@@ -137,8 +135,12 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             <Col>
               <Tag
                 color={
-                  categories.find((n) => n.name == item.category_name)?.color!
+                  categories.find((n) => n.name == item.category_name)?.bgcolor!
                 }
+                style={{
+                  color: categories.find((n) => n.name == item.category_name)
+                    ?.color!,
+                }}
                 bordered={false}
               >
                 {item.category_name}

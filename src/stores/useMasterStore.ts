@@ -20,6 +20,7 @@ export interface Category {
   id: number;
   order_number: number;
   name: string | null;
+  bgcolor: string | null;
   color: string | null;
 }
 

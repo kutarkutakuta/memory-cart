@@ -79,7 +79,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       <Row wrap={false} align="middle">
         <Col
           flex="none"
-          style={{ paddingRight: "10px", cursor: "grab" }}
+          style={{ paddingRight: "10px", cursor: "grab", touchAction: "none" }}
           data-enable-dnd="true"
         >
           <HolderOutlined  />

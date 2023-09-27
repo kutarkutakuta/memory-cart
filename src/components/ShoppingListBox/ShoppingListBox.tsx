@@ -163,7 +163,6 @@ const ShoppingListBox = () => {
             style={{
               display: "flex",
               flexWrap: "wrap",
-              touchAction: "none",
               paddingLeft: "5px",
               userSelect: "none",
             }}
