@@ -4,9 +4,18 @@ import useShoppingItemStore, {
 } from "@/stores/useShoppingItemStore";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, Checkbox, Col, Divider, Row, Space, Tag, Tooltip } from "antd";
 import {
-  DeleteOutlined,
+  Button,
+  Checkbox,
+  Col,
+  Typography,
+  Row,
+  Space,
+  Tag,
+  Tooltip,
+} from "antd";
+import {
+  HolderOutlined,
   FormOutlined,
   MoneyCollectOutlined,
   ExclamationCircleTwoTone,
@@ -16,6 +25,8 @@ import {
 import styles from "./ShoppingCard.module.scss";
 import useMenuStore from "@/stores/useMenuStore";
 import useMasterStore from "@/stores/useMasterStore";
+
+const { Paragraph } = Typography;
 
 interface ShoppingCardProps {
   item: ShoppingItem;
@@ -61,19 +72,33 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
-      <Row className={styles.header}>
-        <Col flex="none" style={{ padding: 5 }}>
-          <Checkbox
-            data-dndkit-disabled-dnd-flag="true"
-            checked={item.finished_at != null}
-            onChange={onChangeShopped}
-          ></Checkbox>
+      <Row className={styles.header} wrap={false}>
+        <Col flex="none">
+          {/* 
+        <Paragraph ellipsis={true} style={{ margin: 0 }}> */}
+
           <Space>
-            <span
-              style={{ textDecoration: item.finished_at ? "line-through" : "" }}
+            <HolderOutlined />
+            <Checkbox
+              data-dndkit-disabled-dnd-flag="true"
+              checked={item.finished_at != null}
+              onChange={onChangeShopped}
+            ></Checkbox>
+            <Button
+              data-dndkit-disabled-dnd-flag="true"
+              type="text"
+              onClick={() => openMenu("EditItemMenu", undefined, item)}
             >
-              {item.name}
-            </span>
+              {" "}
+              <span
+                style={{
+                  textDecoration: item.finished_at ? "line-through" : "",
+                }}
+              >
+                {item.name}
+              </span>
+            </Button>
+
             {item.priority ? (
               <span
                 style={{
@@ -101,6 +126,8 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               </Tooltip>
             ) : null}
           </Space>
+
+          {/* </Paragraph> */}
         </Col>
         <Col flex="auto">
           <Row justify="end">
@@ -119,12 +146,12 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 icon={<MoneyCollectOutlined />}
                 onClick={() => openMenu("PriceMenu", undefined, item)}
               ></Button>
-              <Button
+              {/* <Button
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<FormOutlined />}
                 onClick={() => openMenu("EditItemMenu", undefined, item)}
-              />
+              /> */}
               {/* <Button
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"

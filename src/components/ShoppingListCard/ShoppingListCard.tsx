@@ -1,13 +1,24 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, Checkbox, Col, Row, Tag, Tooltip, Typography } from "antd";
+import {
+  Button,
+  Checkbox,
+  Col,
+  Dropdown,
+  MenuProps,
+  Row,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
 
 import {
   ArrowRightOutlined,
   FormOutlined,
   LinkOutlined,
   FolderAddOutlined,
-  ExclamationCircleFilled,
+  HolderOutlined,
+  MoreOutlined,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingListCard.module.scss";
@@ -45,6 +56,32 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     cursor: "grab",
   };
 
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <div data-dndkit-disabled-dnd-flag="true">
+          <FormOutlined />
+          リストの編集
+        </div>
+      ),
+      onClick: () => openMenu("ShoppingListMenu", item),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "2",
+      label: (
+        <div data-dndkit-disabled-dnd-flag="true">
+          <FolderAddOutlined />
+          コピーしてリストを追加
+        </div>
+      ),
+      onClick: () => addShoppingList(item),
+    },
+  ];
+
   return (
     <div
       ref={setNodeRef}
@@ -55,18 +92,15 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     >
       <Row wrap={false}>
         <Col flex="auto">
-          <Paragraph ellipsis={true} style={{margin:0}}>
-            <Tooltip title="コピーしたリストを追加">
-              <Button
-                data-dndkit-disabled-dnd-flag="true"
-                type="text"
-                icon={<FolderAddOutlined />}
-                onClick={() => {
-                  addShoppingList(item);
-                }}
-              ></Button>
-            </Tooltip>
-            {item.name}
+          <Paragraph ellipsis={true} style={{ margin: 0 }}>
+            <HolderOutlined />
+            <Button
+              data-dndkit-disabled-dnd-flag="true"
+              type="text"
+              onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
+            >
+              {item.name}
+            </Button>
           </Paragraph>
         </Col>
         <Col flex="none">
@@ -77,18 +111,15 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                   共有中
                 </Tag>
               ) : null}
-              <Button
-                data-dndkit-disabled-dnd-flag="true"
-                type="text"
-                icon={<FormOutlined />}
-                onClick={() => openMenu("ShoppingListMenu", item)}
-              />
-              <Button
+              <Dropdown menu={{ items }} placement="bottomRight">
+                <Button type="text" icon={<MoreOutlined />} />
+              </Dropdown>
+              {/* <Button
                 data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<ArrowRightOutlined />}
                 onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
-              />
+              /> */}
             </Col>
           </Row>
         </Col>
