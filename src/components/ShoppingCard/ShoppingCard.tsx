@@ -119,7 +119,9 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
 
             {item.priority ? (
               <Tooltip trigger="click" title={item.priority}>
-                <ExclamationCircleTwoTone />
+                <ExclamationCircleTwoTone  twoToneColor={
+                  item.priority == "高くても買う" ? "#eb2f96" : (item.priority == "価格を見て決める" ? "#52c41a" : "") 
+                } />
               </Tooltip>
             ) : null}
 

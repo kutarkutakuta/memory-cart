@@ -84,6 +84,7 @@ export function EditItemMenu() {
             />
 
             <Select
+              allowClear
               style={{ width: 100 }}
               options={units.map((m) => ({ label: m.name, value: m.name }))}
               value={formData.unit}
@@ -92,6 +93,7 @@ export function EditItemMenu() {
           </Space.Compact>
 
           <Select
+            allowClear
             placeholder="優先度"
             style={{ width: "100%" }}
             value={formData.priority}

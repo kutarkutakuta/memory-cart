@@ -48,9 +48,6 @@ export function AddItemMenu() {
     setViewItems(newItems.filter((m, i) => i < viewCount));
   }, [commonItems, categoryName, viewCount]);
 
-  const getItemOption = () => {
-    return commonItems.map((m) => ({ label: m.name, value: m.name }));
-  };
 
   const getCategoryOption = () => {
     return categories.map((m) => ({ label: m.name, value: m.name }));
@@ -129,6 +126,7 @@ export function AddItemMenu() {
             placeholder="カテゴリで絞り込み"
             onChange={handleCategoryChange}
             options={getCategoryOption()}
+            value={categoryName}
           />
           <Space size={[0, 8]} wrap>
             {contextHolder}
