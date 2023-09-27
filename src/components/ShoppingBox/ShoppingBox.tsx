@@ -9,6 +9,7 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
+  arrayMove,
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
@@ -42,48 +43,7 @@ import ShoppingCard from "../ShoppingCard/ShoppingCard";
 import useMenuStore from "@/stores/useMenuStore";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { ShoppingList } from "@/stores/useShoppingListStore";
-
-const sortItems: MenuProps["items"] = [
-  {
-    key: "2",
-    label: (
-      <>
-        <OrderedListOutlined />
-        登録順
-      </>
-    ),
-  },
-  {
-    key: "3",
-    label: (
-      <>
-        <SortAscendingOutlined />
-        アイウエオ順
-      </>
-    ),
-  },
-  {
-    key: "1",
-    label: (
-      <>
-        <DatabaseOutlined />
-        カテゴリー順
-      </>
-    ),
-  },
-  {
-    type: "divider",
-  },
-  {
-    key: "0",
-    label: (
-      <>
-        <Checkbox />
-        買い物済と分けない
-      </>
-    ),
-  },
-];
+import useMasterStore from "@/stores/useMasterStore";
 
 // #region dnd-kit用の制御
 // data-enable-dnd="true" が指定されている要素のみドラッグ可能にする
@@ -127,6 +87,7 @@ interface ShoppingListProps {
 }
 
 const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
+
   // useSensor と useSensors を使って上書きした Sensor を DndContext に紐付ける
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -134,7 +95,14 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  
+  // メニュー制御用Hook
+  const { openMenu } = useMenuStore();
 
+  // マスター用Hook
+  const { categories } = useMasterStore();
+
+  // 買物品操作用Hook
   const {
     shoppingItems,
     loading,
@@ -145,6 +113,8 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
     removeShoppingItem,
     startPolling,
   } = useShoppingItemStore();
+
+  const [boughtOrder, SetboughtOrder] = useState(true);
 
   useEffect(() => {
     if (shoppingList) {
@@ -161,6 +131,7 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
     };
   }, [shoppingList]);
 
+  // ドラッグ後の並び替え処理
   const handleDragEnd = useCallback(
     (event: { active: any; over: any }) => {
       const { active, over } = event;
@@ -178,15 +149,134 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
             return item.id;
           })
           .indexOf(over.id);
-        sortShoppingItem(oldIndex, newIndex);
+        const newItems = arrayMove(shoppingItems, oldIndex, newIndex);
+        sortShoppingItem(newItems);
       }
     },
     [shoppingItems, sortShoppingItem]
   );
 
-  // メニュー制御用Hook
-  const { openMenu } = useMenuStore();
+  // 並び替え項目
+  const sortItems: MenuProps["items"] = [
+    {
+      key: "2",
+      label: (
+        <>
+          <OrderedListOutlined />
+          登録順
+        </>
+      ),
+      onClick: () => {
+        const newItems = shoppingItems.sort((a, b) => {
+          // 購入済みでソートする場合
+          if(boughtOrder){
+            if (a.finished_at && !b.finished_at) {
+              return 1;
+            }
+            else if (!a.finished_at && b.finished_at) {
+              return -1;
+            }
+          }
+          // 登録日でソート
+          if (a.created_at && b.created_at) {
+            const comp = a.created_at.getTime() - b.created_at.getTime();
+            if (comp != 0) return comp;
+          }
+          if (b.created_at) {
+            return -1;
+          }
+          if (a.created_at) {
+            return 1;
+          }
+          // 登録日が同じなら名前でソート
+          return a.name.localeCompare(b.name);
+        });
+        sortShoppingItem(newItems);
+      },
+    },
+    {
+      key: "3",
+      label: (
+        <>
+          <SortAscendingOutlined />
+          アイウエオ順
+        </>
+      ),
+      onClick: () => {
+        const newItems = shoppingItems.sort((a, b) => {
+          // 購入済みでソートする場合
+          if(boughtOrder){
+            if (a.finished_at && !b.finished_at) {
+              return 1;
+            }
+            else if (!a.finished_at && b.finished_at) {
+              return -1;
+            }
+          }
+          // 名前でソート
+          return a.name.localeCompare(b.name);
+        });
+        sortShoppingItem(newItems);
+      },
+    },
+    {
+      key: "1",
+      label: (
+        <>
+          <DatabaseOutlined />
+          カテゴリー順
+        </>
+      ),
+      onClick: () => {
+        const newItems = shoppingItems.sort((a, b) => {
+          // 購入済みでソートする場合
+          if(boughtOrder){
+            if (a.finished_at && !b.finished_at) {
+              return 1;
+            }
+            else if (!a.finished_at && b.finished_at) {
+              return -1;
+            }
+          }
+          // カテゴリでソート
+          const cat_a = categories.find((m) => m.name == a.category_name)?.id;
+          const cat_b = categories.find((m) => m.name == b.category_name)?.id;
+          if (cat_a && cat_b) {
+            const comp = cat_a - cat_b;
+            if (comp != 0) return comp;
+          }
+          if (cat_b) {
+            return -1;
+          }
+          if (cat_a) {
+            return 1;
+          }
+          // カテゴリが同じなら名前でソート
+          return a.name.localeCompare(b.name);
+        });
+        sortShoppingItem(newItems);
+      },
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "0",
+      label: (
+        <div onClick={(e) => e.stopPropagation()}>
+          <Checkbox checked={boughtOrder} onChange={(e)=>{
+            e.stopPropagation();
+            SetboughtOrder(!boughtOrder);
+          }} 
+          
+          >
+          買い物済と分ける</Checkbox>
+        </div>
+      ),
+    },
+  ];
 
+  // メニュー項目
   const menuItems: MenuProps["items"] = [
     {
       key: "0",
@@ -267,7 +357,7 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
           <Row justify="end">
             <Col>
               <Space>
-                <Dropdown menu={{ items: sortItems }} placement="bottomRight">
+                <Dropdown menu={{ items: sortItems }} placement="bottomRight" trigger={["click"]}>
                   <Button type="text" icon={<FilterOutlined />}></Button>
                 </Dropdown>
                 <Dropdown menu={{ items: menuItems }} placement="bottomRight">

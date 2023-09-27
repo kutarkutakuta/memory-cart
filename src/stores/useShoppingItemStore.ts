@@ -39,7 +39,7 @@ interface ShoppingItemState {
   removeShoppingItem: (id: number) => void;
   updateShoppingItem: (id: number, changes: { [keyPath: string]: any }) => void;
   finishShoppingItem: (id: number) => void;
-  sortShoppingItem: (odlIndex: number, newIndex: number) => void;
+  sortShoppingItem: (shoppingItems: ShoppingItem[]) => void;
   startPolling: (list_key: string) => void;
 }
 
@@ -131,18 +131,14 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       });
     });
   },
-  sortShoppingItem: (oldIndex, newIndex) => {
-    const state = useShoppingItemStore.getState().shoppingItems;
-    const newItems = arrayMove(state, oldIndex, newIndex);
+  sortShoppingItem: (shoppingItems) => {
 
-    newItems.forEach((item, i) => {
+    shoppingItems.forEach((item, i) => {
       item.order_number = i + 1;
       localdb.shopping_items.update(item.id!, item);
     });
 
-    set(() => {
-      return { shoppingItems: newItems };
-    });
+    set({ shoppingItems });
   },
   startPolling: (list_key) => {
    
@@ -167,8 +163,6 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           if (localData) {
             // 差分があれば更新
             const changes: any = {};
-            if (serverData["order_number"] !== localData.order_number)
-              changes["order_number"] = serverData["order_number"];
             if (serverData["name"] !== localData.name)
               changes["name"] = serverData["name"];
             if (serverData["category_name"] !== localData.category_name)
