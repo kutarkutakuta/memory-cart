@@ -2,18 +2,14 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
   Button,
-  Checkbox,
   Col,
   Dropdown,
   MenuProps,
   Row,
   Tag,
-  Tooltip,
-  Typography,
 } from "antd";
 
 import {
-  ArrowRightOutlined,
   FormOutlined,
   LinkOutlined,
   FolderAddOutlined,
@@ -27,8 +23,6 @@ import useShoppingListStore, {
 } from "@/stores/useShoppingListStore";
 import { useRouter } from "next/navigation";
 import useMenuStore from "@/stores/useMenuStore";
-
-const { Paragraph } = Typography;
 
 interface ShoppingCardProps {
   item: ShoppingList;
@@ -90,18 +84,23 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
-      <Row wrap={false}>
+      <Row wrap={false} align="middle">
+        <Col flex="none">
+          <HolderOutlined />
+        </Col>
         <Col flex="auto">
-          <Paragraph ellipsis={true} style={{ margin: 0 }}>
-            <HolderOutlined />
-            <Button
-              data-dndkit-disabled-dnd-flag="true"
-              type="text"
-              onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
-            >
-              {item.name}
-            </Button>
-          </Paragraph>
+          <Button
+            data-dndkit-disabled-dnd-flag="true"
+            type="text"
+            style={{
+              whiteSpace: "normal",
+              height: "auto",
+              textAlign: "left",
+            }}
+            onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
+          >
+            {item.name}
+          </Button>
         </Col>
         <Col flex="none">
           <Row justify="end">

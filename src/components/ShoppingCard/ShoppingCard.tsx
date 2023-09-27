@@ -119,17 +119,17 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             ) : null}
 
             {item.priority ? (
-              <Tooltip
+              <Tooltip  trigger="click"
                 title={item.priority}
                 data-dndkit-disabled-dnd-flag="true"
               >
-                <ExclamationCircleTwoTone />
+                <ExclamationCircleTwoTone data-dndkit-disabled-dnd-flag="true" />
               </Tooltip>
             ) : null}
 
             {item.memo ? (
-              <Tooltip title={item.memo} data-dndkit-disabled-dnd-flag="true">
-                <MessageTwoTone />
+              <Tooltip title={item.memo} trigger="click" data-dndkit-disabled-dnd-flag="true">
+                <MessageTwoTone data-dndkit-disabled-dnd-flag="true" />
               </Tooltip>
             ) : null}
           </Space>
