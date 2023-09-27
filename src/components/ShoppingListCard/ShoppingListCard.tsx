@@ -85,7 +85,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       {...listeners}
     >
       <Row wrap={false} align="middle">
-        <Col flex="none">
+        <Col flex="none" style={{paddingRight:"10px"}}>
           <HolderOutlined />
         </Col>
         <Col flex="auto">
@@ -96,6 +96,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
               whiteSpace: "normal",
               height: "auto",
               textAlign: "left",
+              padding:0
             }}
             onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
           >

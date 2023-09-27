@@ -74,9 +74,6 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     >
       <Row className={styles.header} wrap={false}>
         <Col flex="auto">
-          {/* 
-        <Paragraph ellipsis={true} style={{ margin: 0 }}> */}
-
           <Space>
             <HolderOutlined />
             <Checkbox
@@ -92,7 +89,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 height: "auto",
                 maxWidth: "220px",
                 textAlign: "left",
-                marginLeft: "-5px",
+                padding:0
               }}
               onClick={() => openMenu("EditItemMenu", undefined, item)}
             >
@@ -132,8 +129,6 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               </Tooltip>
             ) : null}
           </Space>
-
-          {/* </Paragraph> */}
         </Col>
         <Col flex="none">
           <Row justify="end">
