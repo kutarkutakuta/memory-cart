@@ -86,18 +86,16 @@ const sortItems: MenuProps["items"] = [
 ];
 
 // #region dnd-kit用の制御
-// data-dndkit-disabled-dnd-flag="true" が指定されている要素はドラッグ無効にする
+// data-enable-dnd="true" が指定されている要素のみドラッグ可能にする
 function shouldHandleEvent(element: HTMLElement | null) {
   let cur = element;
-
   while (cur) {
-    if (cur.dataset && cur.dataset.dndkitDisabledDndFlag) {
-      return false;
+    if (cur.dataset && cur.dataset.enableDnd) {
+      return true;
     }
     cur = cur.parentElement;
   }
-
-  return true;
+  return false;
 }
 
 class PointerSensor extends LibPointerSensor {

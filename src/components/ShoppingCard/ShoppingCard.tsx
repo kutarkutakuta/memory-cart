@@ -43,7 +43,6 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     margin: 4,
     padding: 2,
     borderRadius: 5,
-    cursor: "grab",
   };
 
   const { removeShoppingItem, finishShoppingItem, updateShoppingItem } =
@@ -72,17 +71,21 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
-      <Row className={styles.header} wrap={false}>
+      <Row  wrap={false} align={"middle"}>
+        <Col
+          flex="none"
+          style={{ paddingRight: "10px", cursor: "grab" }}
+          data-enable-dnd="true"
+        >
+          <HolderOutlined  />
+        </Col>
         <Col flex="auto">
           <Space>
-            <HolderOutlined />
             <Checkbox
-              data-dndkit-disabled-dnd-flag="true"
               checked={item.finished_at != null}
               onChange={onChangeShopped}
             ></Checkbox>
             <Button
-              data-dndkit-disabled-dnd-flag="true"
               type="text"
               style={{
                 whiteSpace: "normal",
@@ -117,15 +120,14 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             {item.priority ? (
               <Tooltip  trigger="click"
                 title={item.priority}
-                data-dndkit-disabled-dnd-flag="true"
               >
-                <ExclamationCircleTwoTone data-dndkit-disabled-dnd-flag="true" />
+                <ExclamationCircleTwoTone />
               </Tooltip>
             ) : null}
 
             {item.memo ? (
-              <Tooltip title={item.memo} trigger="click" data-dndkit-disabled-dnd-flag="true">
-                <MessageTwoTone data-dndkit-disabled-dnd-flag="true" />
+              <Tooltip title={item.memo} trigger="click">
+                <MessageTwoTone />
               </Tooltip>
             ) : null}
           </Space>
@@ -142,23 +144,10 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 {item.category_name}
               </Tag>
               <Button
-                data-dndkit-disabled-dnd-flag="true"
                 type="text"
                 icon={<MoneyCollectOutlined />}
                 onClick={() => openMenu("PriceMenu", undefined, item)}
               ></Button>
-              {/* <Button
-                data-dndkit-disabled-dnd-flag="true"
-                type="text"
-                icon={<FormOutlined />}
-                onClick={() => openMenu("EditItemMenu", undefined, item)}
-              /> */}
-              {/* <Button
-                data-dndkit-disabled-dnd-flag="true"
-                type="text"
-                icon={<DeleteOutlined />}
-                onClick={() => removeShoppingItem(item.id!)}
-              /> */}
             </Col>
           </Row>
         </Col>

@@ -1,13 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  Button,
-  Col,
-  Dropdown,
-  MenuProps,
-  Row,
-  Tag,
-} from "antd";
+import { Button, Col, Dropdown, MenuProps, Row, Tag } from "antd";
 
 import {
   FormOutlined,
@@ -47,14 +40,13 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     margin: 4,
     padding: 2,
     borderRadius: 5,
-    cursor: "grab",
   };
 
   const items: MenuProps["items"] = [
     {
       key: "1",
       label: (
-        <div data-dndkit-disabled-dnd-flag="true">
+        <div>
           <FormOutlined />
           リストの編集
         </div>
@@ -67,7 +59,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     {
       key: "2",
       label: (
-        <div data-dndkit-disabled-dnd-flag="true">
+        <div>
           <FolderAddOutlined />
           コピーしてリストを追加
         </div>
@@ -85,18 +77,21 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       {...listeners}
     >
       <Row wrap={false} align="middle">
-        <Col flex="none" style={{paddingRight:"10px"}}>
-          <HolderOutlined />
+        <Col
+          flex="none"
+          style={{ paddingRight: "10px", cursor: "grab" }}
+          data-enable-dnd="true"
+        >
+          <HolderOutlined  />
         </Col>
         <Col flex="auto">
           <Button
-            data-dndkit-disabled-dnd-flag="true"
             type="text"
             style={{
               whiteSpace: "normal",
               height: "auto",
               textAlign: "left",
-              padding:0
+              padding: 0,
             }}
             onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
           >
@@ -114,20 +109,12 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
               <Dropdown
                 menu={{ items }}
                 placement="bottomRight"
-                data-dndkit-disabled-dnd-flag="true"
               >
                 <Button
                   type="text"
                   icon={<MoreOutlined />}
-                  data-dndkit-disabled-dnd-flag="true"
                 />
               </Dropdown>
-              {/* <Button
-                data-dndkit-disabled-dnd-flag="true"
-                type="text"
-                icon={<ArrowRightOutlined />}
-                onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
-              /> */}
             </Col>
           </Row>
         </Col>

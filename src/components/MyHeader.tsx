@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, } from "next/navigation";
+import { useRouter } from 'next/router'
 
 import { Button, Col, Dropdown, MenuProps, Row, Space, Typography } from "antd";
 import {
-  UserAddOutlined,
-  SettingOutlined,
   QuestionCircleOutlined,
   ArrowLeftOutlined,
   UserOutlined,
@@ -16,7 +15,15 @@ const { Paragraph } = Typography;
 const MyHeader = ({ title }: { title: string }) => {
   const pathname = usePathname();
   const router = useRouter();
-
+  const handleGoBack = () => {
+    // 履歴が存在する場合のみ戻る操作を実行
+    if (router && router.back) {
+      router.back();
+    } else {
+      // 履歴が存在しない場合ホームページにリダイレクト
+      router.push('/');
+    }
+  };
   return (
     <Row justify="space-between" wrap={false}>
       <Col flex="auto">
@@ -29,7 +36,7 @@ const MyHeader = ({ title }: { title: string }) => {
               <>
                 <Button type="text"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => router.back()}
+                  onClick={() => handleGoBack()}
                 ></Button> <span>{title}</span>
                 
               </>
