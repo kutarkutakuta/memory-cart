@@ -87,7 +87,6 @@ interface ShoppingListProps {
 }
 
 const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
-
   // useSensor と useSensors を使って上書きした Sensor を DndContext に紐付ける
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -95,7 +94,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-  
+
   // メニュー制御用Hook
   const { openMenu } = useMenuStore();
 
@@ -151,11 +150,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       onClick: () => {
         const newItems = shoppingItems.sort((a, b) => {
           // 購入済みでソートする場合
-          if(boughtOrder){
+          if (boughtOrder) {
             if (a.finished_at && !b.finished_at) {
               return 1;
-            }
-            else if (!a.finished_at && b.finished_at) {
+            } else if (!a.finished_at && b.finished_at) {
               return -1;
             }
           }
@@ -187,11 +185,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       onClick: () => {
         const newItems = shoppingItems.sort((a, b) => {
           // 購入済みでソートする場合
-          if(boughtOrder){
+          if (boughtOrder) {
             if (a.finished_at && !b.finished_at) {
               return 1;
-            }
-            else if (!a.finished_at && b.finished_at) {
+            } else if (!a.finished_at && b.finished_at) {
               return -1;
             }
           }
@@ -212,11 +209,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       onClick: () => {
         const newItems = shoppingItems.sort((a, b) => {
           // 購入済みでソートする場合
-          if(boughtOrder){
+          if (boughtOrder) {
             if (a.finished_at && !b.finished_at) {
               return 1;
-            }
-            else if (!a.finished_at && b.finished_at) {
+            } else if (!a.finished_at && b.finished_at) {
               return -1;
             }
           }
@@ -246,13 +242,15 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       key: "0",
       label: (
         <div onClick={(e) => e.stopPropagation()}>
-          <Checkbox checked={boughtOrder} onChange={(e)=>{
-            e.stopPropagation();
-            SetboughtOrder(!boughtOrder);
-          }} 
-          
+          <Checkbox
+            checked={boughtOrder}
+            onChange={(e) => {
+              e.stopPropagation();
+              SetboughtOrder(!boughtOrder);
+            }}
           >
-          買い物済と分ける</Checkbox>
+            買い物済と分ける
+          </Checkbox>
         </div>
       ),
     },
@@ -269,7 +267,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
         </>
       ),
       onClick: () => {
-        updateShoppingItems(shoppingItems.map(itm=>itm.id!), { finished_at: null });
+        updateShoppingItems(
+          shoppingItems.map((itm) => itm.id!),
+          { finished_at: null }
+        );
       },
     },
     {
@@ -281,7 +282,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
         </>
       ),
       onClick: () => {
-        updateShoppingItems(shoppingItems.map(itm=>itm.id!), { finished_at: new Date() });
+        updateShoppingItems(
+          shoppingItems.map((itm) => itm.id!),
+          { finished_at: new Date() }
+        );
       },
     },
     {
@@ -328,6 +332,8 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
               >
                 品物を追加
               </Button>
+                {/* ローディングをここに置く */}
+                <span><Spin spinning={loading} ></Spin></span>
             </Col>
           </Row>
         </Col>
@@ -335,7 +341,11 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           <Row justify="end">
             <Col>
               <Space>
-                <Dropdown menu={{ items: sortItems }} placement="bottomRight" trigger={["click"]}>
+                <Dropdown
+                  menu={{ items: sortItems }}
+                  placement="bottomRight"
+                  trigger={["click"]}
+                >
                   <Button type="text" icon={<FilterOutlined />}></Button>
                 </Dropdown>
                 <Dropdown menu={{ items: menuItems }} placement="bottomRight">
@@ -346,31 +356,29 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           </Row>
         </Col>
       </Row>
-      <Spin spinning={loading}>
-        <DndContext
-          onDragEnd={handleDragEnd}
-          sensors={sensors}
-          modifiers={[restrictToVerticalAxis]}
+      <DndContext
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+        modifiers={[restrictToVerticalAxis]}
+      >
+        <SortableContext
+          items={shoppingItems.map((m) => m.id!)}
+          strategy={rectSortingStrategy}
         >
-          <SortableContext
-            items={shoppingItems.map((m) => m.id!)}
-            strategy={rectSortingStrategy}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              paddingLeft: "5px",
+              userSelect: "none",
+            }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                paddingLeft: "5px",
-                userSelect: "none",
-              }}
-            >
-              {shoppingItems.map((item) => (
-                <ShoppingCard key={item.id} item={item} />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
-      </Spin>
+            {shoppingItems.map((item) => (
+              <ShoppingCard key={item.id} item={item} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };

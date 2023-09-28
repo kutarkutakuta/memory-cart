@@ -3,14 +3,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 
-import {
-  Button,
-  Col,
-  Row,
-  Space,
-  Tag,
-  Typography,
-} from "antd";
+import { Button, Col, Row, Space, Tag, Typography } from "antd";
 import {
   QuestionCircleOutlined,
   ArrowLeftOutlined,
@@ -25,8 +18,8 @@ const MyHeader = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-    // 買物リスト操作用Hook
-    const { shoppingList } = useShoppingItemStore();
+  // 買物リスト操作用Hook
+  const { shoppingList } = useShoppingItemStore();
 
   const handleGoBack = () => {
     // 履歴が存在する場合のみ戻る操作を実行
@@ -47,11 +40,11 @@ const MyHeader = () => {
     }
   };
   return (
-    <Row justify="space-between" wrap={false}>
+    <Row wrap={false} align={"middle"}>
       <Col flex="auto">
         <Row justify="start">
           <Col>
-            <Paragraph ellipsis={true}>
+            <Paragraph ellipsis={true} style={{margin:0,}}>
               {pathname == "/" ? (
                 <span style={{ padding: 10 }}>お買い物リスト</span>
               ) : (
@@ -60,17 +53,14 @@ const MyHeader = () => {
                     type="text"
                     icon={<ArrowLeftOutlined />}
                     onClick={() => handleGoBack()}
-                  ></Button>{" "}
+                  ></Button>
                   <Space>
                     <span>{shoppingList?.name}</span>
                     {shoppingList?.isShare ? (
-                <Tag
-                  icon={<LinkOutlined />}
-                  color="#2E8B57"
-                >
-                  共有中
-                </Tag>
-              ) : null}
+                      <Tag icon={<LinkOutlined />} color="#2E8B57">
+                        共有中
+                      </Tag>
+                    ) : null}
                   </Space>
                 </>
               )}

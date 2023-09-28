@@ -7,6 +7,7 @@ import { EditItemMenu } from "@/components/Menu/EditItemMenu/EditItemMenu";
 import { PriceMenu } from "@/components/Menu/PriceMenu/PriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
+import { Spin } from "antd";
 
 const HomePage = () => {
   const searchParams = useSearchParams();
@@ -32,9 +33,9 @@ const HomePage = () => {
   return (
     <>
       <header>
-        <MyHeader
-        ></MyHeader>
+        <MyHeader></MyHeader>
       </header>
+      
       <main>
         <ShoppingCardBox shoppingList={shoppingList!} />
       </main>
