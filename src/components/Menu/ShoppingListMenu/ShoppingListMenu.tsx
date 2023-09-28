@@ -87,9 +87,8 @@ export function ShoppingListMenu() {
           />
           {selectedList?.isShare ? (
             <>
-              
               <Tooltip title="共有したい相手に共有キーを渡します。">
-              ☆共有キー☆
+                ☆共有キー☆
               </Tooltip>
               <Space.Compact style={{ width: "100%" }}>
                 <Input
@@ -99,19 +98,13 @@ export function ShoppingListMenu() {
                   style={{ color: "#000", backgroundColor: "#323232" }}
                 />
                 <Button
-                    onClick={() =>{
-                      navigator.clipboard.writeText(
-                        selectedList?.list_key || ""
-                      );
-                      messageApi.open({
-                        type: "info",
-                        content: "クリップボードに共有キーをコピーしました。",
-                      });
-                    }
-                    }
-                  >
-                    <CopyOutlined />
-                  </Button>
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedList?.list_key || "");
+                    messageApi.info("クリップボードに共有キーをコピーしました。");
+                  }}
+                >
+                  <CopyOutlined />
+                </Button>
               </Space.Compact>
             </>
           ) : null}
@@ -122,8 +115,10 @@ export function ShoppingListMenu() {
             loading={loading}
             onClick={() => {
               updateShoppingList(formData.id, formData)
-                .finally(() => closeMenu("ShoppingListMenu"))
-                .catch((e) => console.error(e));
+                .then(() => {
+                  messageApi.success("リストを更新しました。");
+                  closeMenu("ShoppingListMenu");
+                })
             }}
           >
             更新

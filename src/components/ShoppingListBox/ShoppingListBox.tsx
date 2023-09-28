@@ -12,14 +12,13 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { Button, Col, Input, Popover, Row, Space } from "antd";
+import { Button, Col, Input, Popover, Row, Space, message } from "antd";
 import { PlusCircleOutlined, LinkOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
-import type { KeyboardEvent, MouseEventHandler, PointerEvent } from "react";
+import type { KeyboardEvent,  PointerEvent } from "react";
 import useShoppingListStore from "@/stores/useShoppingListStore";
 import ShoppingListCard from "../ShoppingListCard/ShoppingListCard";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import useShareStore from "@/stores/useShareStore";
 
 // #region dnd-kit用の制御
 // data-enable-dnd="true" が指定されている要素のみドラッグ可能にする
@@ -58,10 +57,6 @@ class KeyboardSensor extends LibKeyboardSensor {
 }
 // #endregion
 
-interface ShoppingListProps {
-  list_id: string;
-}
-
 const ShoppingListBox = () => {
   // useSensor と useSensors を使って上書きした Sensor を DndContext に紐付ける
   const sensors = useSensors(
@@ -71,15 +66,30 @@ const ShoppingListBox = () => {
     })
   );
 
+
+  // 買い物リスト制御用Hook
   const {
+    loading,
+    error,
     shoppingLists,
     sortShoppingList,
     addShoppingList,
     fetchShoppingList,
+    addFromShareKey,
   } = useShoppingListStore();
   useEffect(() => {
     fetchShoppingList();
   }, []);
+
+    // メッセージ用Hook
+    const [messageApi, contextHolder] = message.useMessage();
+    useEffect(() => {
+      if (error)
+        messageApi.open({
+          type: "error",
+          content: error?.message,
+        });
+    }, [error]);
 
   const handleDragEnd = useCallback(
     (event: { active: any; over: any }) => {
@@ -104,16 +114,12 @@ const ShoppingListBox = () => {
     [shoppingLists, sortShoppingList]
   );
 
-  const addItem = () => {
-    addShoppingList();
-  };
-
   const [openShareKey, setOpenShareKey] = useState(false);
   const [shareKey, setShareKey] = useState("");
-  const {addFromShareKey} = useShareStore()
 
   return (
     <div style={{ maxWidth: "500px" }}>
+    {contextHolder}
       <Row justify="space-between" wrap={false} className = "sub-header">
         <Col flex="none">
           <Row justify="start">
@@ -121,7 +127,10 @@ const ShoppingListBox = () => {
               <Button
                 type="text"
                 icon={<PlusCircleOutlined />}
-                onClick={addItem}
+                onClick={() => {
+                  addShoppingList()
+                  .then(()=>messageApi.success("リストを追加しました。"));
+                }}
               >
                 リストを追加
               </Button>
@@ -133,7 +142,10 @@ const ShoppingListBox = () => {
                   <>
                   <Space.Compact>
                     <Input value={shareKey} onChange={e=>setShareKey(e.target.value)}></Input>
-                    <Button onClick={()=>addFromShareKey(shareKey)}>OK</Button>
+                    <Button onClick={()=>{
+                      addFromShareKey(shareKey)
+                      .then(()=>messageApi.success("リストを追加しました。"));
+                    }}>OK</Button>
                     </Space.Compact>
                     <a onClick={()=>setOpenShareKey(false)}>Cancel</a>
                   </>

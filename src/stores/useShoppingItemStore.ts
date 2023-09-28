@@ -1,12 +1,10 @@
 import { create } from "zustand";
-import { arrayMove } from "@dnd-kit/sortable";
 import supabase from "@/lib/supabase";
 import localdb from "@/lib/localdb";
 import useMasterStore from "./useMasterStore";
 import {} from "swr";
 import { nanoid } from "nanoid";
-import useShoppingListStore, { ShoppingList } from "./useShoppingListStore";
-import useShareStore from "./useShareStore";
+import { ShoppingList } from "./useShoppingListStore";
 
 /**
  * 買い物品
@@ -129,58 +127,62 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       }
     },
     removeShoppingItem: async (id) => {
-      // ローカルDBから削除
-      await localdb.shopping_items.delete(id);
+      set({ loading: true, error: null });
+      try {
+        // ローカルDBから削除
+        await localdb.shopping_items.delete(id);
 
-      // 共有の場合DBも更新
-      const { shoppingItems } = useShoppingItemStore.getState();
-      const deleteItem = shoppingItems.find((n) => n.id == id)!;
-      const { getShoppingList } = useShoppingListStore.getState();
-      const { isShare } = (await getShoppingList(deleteItem.list_key))!;
-      if (isShare) {
-        // 共有済みなのでリストのデータを更新するだけ
-        const { error } = await supabase
-          .from("shopping_items")
-          .delete()
-          .eq("list_key", deleteItem.list_key)
-          .eq("item_key", deleteItem.item_key);
-        if (error) {
-          console.error(error);
+        // 共有の場合DBも更新
+        const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
+        const deleteItem = shoppingItems.find((n) => n.id == id)!;
+        if (shoppingList!.isShare) {
+          // 共有済みなのでリストのデータを更新するだけ
+          const { error } = await supabase
+            .from("shopping_items")
+            .delete()
+            .eq("list_key", deleteItem.list_key)
+            .eq("item_key", deleteItem.item_key);
+          if (error) throw error;
         }
-      }
 
-      // ステート更新
-      set((state) => {
-        const m = state.shoppingItems.filter((n) => n.id !== id);
-        return { shoppingItems: m };
-      });
+        // ステート更新
+        set((state) => {
+          const m = state.shoppingItems.filter((n) => n.id !== id);
+          return { shoppingItems: m };
+        });
+        set({ loading: false });
+      } catch (error: any) {
+        set({ error, loading: false });
+      }
     },
     updateShoppingItem: async (id, changes) => {
-      // ローカルDBを更新
-      await localdb.shopping_items.update(id, changes);
+      set({ loading: true, error: null });
+      try {
+        // ローカルDBを更新
+        await localdb.shopping_items.update(id, changes);
 
-      // 共有の場合DBも更新
-      const { shoppingItems } = useShoppingItemStore.getState();
-      const newItems = shoppingItems.map((n) => {
-        return n.id === id ? { ...n, ...changes } : n;
-      });
-      const newItem = newItems.find((n) => n.id == id)!;
-      const { getShoppingList } = useShoppingListStore.getState();
-      const { isShare } = (await getShoppingList(newItem.list_key))!;
-      if (isShare) {
-        // 共有済みなのでリストのデータを更新するだけ
-        const { error } = await supabase
-          .from("shopping_items")
-          .update(changes)
-          .eq("list_key", newItem.list_key)
-          .eq("item_key", newItem.item_key);
-        if (error) {
-          console.error(error);
+        // 共有の場合DBも更新
+        const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
+        const newItems = shoppingItems.map((n) => {
+          return n.id === id ? { ...n, ...changes } : n;
+        });
+        const newItem = newItems.find((n) => n.id == id)!;
+        if (shoppingList!.isShare) {
+          // 共有済みなのでリストのデータを更新するだけ
+          const { error } = await supabase
+            .from("shopping_items")
+            .update(changes)
+            .eq("list_key", newItem.list_key)
+            .eq("item_key", newItem.item_key);
+          if (error) throw error;
         }
-      }
 
-      // ステート更新
-      set({ shoppingItems: newItems });
+        // ステート更新
+        set({ shoppingItems: newItems });
+        set({ loading: false });
+      } catch (error: any) {
+        set({ error, loading: false });
+      }
     },
     finishShoppingItem: async (id) => {
       const changes = { finished_at: new Date() };
@@ -205,7 +207,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           .select("*")
           .eq("list_key", list_key);
         // オフラインの可能性があるのでThrowしない
-        if(erro1) console.error(erro1);
+        if (erro1) console.error(erro1);
 
         // ローカルDBへ反映
         if (data && data.length > 0) {
@@ -218,7 +220,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
                   m.list_key == list_key && m.item_key == serverData["item_key"]
               )
               .first();
-  
+
             if (localData) {
               // 差分があれば更新
               const changes: any = {};
@@ -244,7 +246,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
                 changes["finished_user"] = serverData["finished_user"];
               if (serverData["finished_at"] != localData.finished_at)
                 changes["finished_at"] = serverData["finished_at"];
-  
+
               if (Object.keys(changes).length > 0) {
                 await localdb.shopping_items.update(localData.id!, changes);
               }
@@ -271,7 +273,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               await localdb.shopping_items.add(addItem);
             }
           }
-  
+
           const deleteItems = await localdb.shopping_items
             .filter(
               (itm) =>
@@ -284,7 +286,6 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               deleteItems.map((itm) => itm.id!)
             );
           }
-  
         } else {
           // データがないということは共有が切れた可能性があるのでチェックする。
           const { data } = await supabase
@@ -300,17 +301,18 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               const changes = { isShare: false };
               await localdb.shopping_lists.update(shopping_list.id, changes);
               shopping_list.isShare = false;
-              set({ shoppingList: shopping_list});
+              set({ shoppingList: shopping_list });
             }
             // メッセージを返すためにthrow
-            throw new Error("サーバーにデータが存在しないため共有が解除されました。");
+            throw new Error(
+              "サーバーにデータが存在しないため共有が解除されました。"
+            );
           }
         }
         set({ loading: false });
       } catch (error: any) {
         set({ error, loading: false });
-      }
-      finally{
+      } finally {
         // フェッチしなおし
         const { fetchShoppingItems } = useShoppingItemStore.getState();
         await fetchShoppingItems(list_key);
