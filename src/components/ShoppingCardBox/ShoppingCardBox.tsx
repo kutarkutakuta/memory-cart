@@ -86,7 +86,7 @@ interface ShoppingListProps {
   shoppingList?: ShoppingList;
 }
 
-const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
+const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
 
   // useSensor と useSensors を使って上書きした Sensor を DndContext に紐付ける
   const sensors = useSensors(
@@ -374,4 +374,4 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
     </div>
   );
 };
-export default ShoppingBox;
+export default ShoppingCardBox;

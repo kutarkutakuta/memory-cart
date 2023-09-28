@@ -123,7 +123,7 @@ export function EditItemMenu() {
             更新
           </Button>
 
-          <Button
+          {/* <Button
             type="primary"
             danger
             style={{ width: "100%" }}
@@ -133,7 +133,7 @@ export function EditItemMenu() {
             }}
           >
             削除
-          </Button>
+          </Button> */}
 
           <Button
             style={{ width: "100%" }}

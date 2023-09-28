@@ -13,13 +13,16 @@ import {
   Space,
   Tag,
   Tooltip,
+  Dropdown,
+  MenuProps,
 } from "antd";
 import {
   HolderOutlined,
-  FormOutlined,
-  MoneyCollectOutlined,
+  EditOutlined,
+  MoreOutlined,
   ExclamationCircleTwoTone,
   MessageTwoTone,
+  DeleteOutlined,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingCard.module.scss";
@@ -45,14 +48,48 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     borderRadius: 5,
   };
 
-  const { removeShoppingItem, updateShoppingItems } =
-    useShoppingItemStore();
+  const { removeShoppingItem, updateShoppingItems } = useShoppingItemStore();
 
   // メニュー制御用Hook
   const { openMenu } = useMenuStore();
 
   // マスター用Hook
   const { categories } = useMasterStore();
+
+  // メニュー項目
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <div>
+          <EditOutlined />
+          品物の編集
+        </div>
+      ),
+      onClick: () => openMenu("EditItemMenu", undefined, item),
+    },
+    {
+      key: "2",
+      label: (
+        <div>
+          <DeleteOutlined />
+          品物の削除
+        </div>
+      ),
+      onClick: () => removeShoppingItem(item.id!),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "3",
+      label: <div>￥ 金額を入力</div>,
+      onClick: () => openMenu("PriceMenu", undefined, item),
+    },
+    {
+      type: "divider",
+    },
+  ];
 
   /**
    * 買物済みチェック変更時
@@ -119,9 +156,15 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
 
             {item.priority ? (
               <Tooltip trigger="click" title={item.priority}>
-                <ExclamationCircleTwoTone  twoToneColor={
-                  item.priority == "高くても買う" ? "#eb2f96" : (item.priority == "価格を見て決める" ? "#52c41a" : "") 
-                } />
+                <ExclamationCircleTwoTone
+                  twoToneColor={
+                    item.priority == "高くても買う"
+                      ? "#eb2f96"
+                      : item.priority == "価格を見て決める"
+                      ? "#52c41a"
+                      : ""
+                  }
+                />
               </Tooltip>
             ) : null}
 
@@ -147,11 +190,14 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               >
                 {item.category_name}
               </Tag>
-              <Button
+              {/* <Button
               size="small"
                 type="text"
                 onClick={() => openMenu("PriceMenu", undefined, item)}
-              >￥</Button>
+              >￥</Button> */}
+              <Dropdown menu={{ items }} placement="bottomRight">
+                <Button type="text" icon={<MoreOutlined />} />
+              </Dropdown>
             </Col>
           </Row>
         </Col>

@@ -80,7 +80,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       key: "1",
       label: (
         <div>
-          品物の編集へ
+          品物の入力へ　
           <ArrowRightOutlined />
         </div>
       ),

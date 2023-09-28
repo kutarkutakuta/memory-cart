@@ -1,13 +1,11 @@
-"use client";
 import React, { useEffect } from "react";
-
+import { useSearchParams } from "next/navigation";
 import MyHeader from "@/components/MyHeader";
-import ShoppingBox from "@/components/ShoppingBox/ShoppingBox";
+import ShoppingCardBox from "@/components/ShoppingCardBox/ShoppingCardBox";
 import { AddItemMenu } from "@/components/Menu/AddItemMenu/AddItemMenu";
 import { EditItemMenu } from "@/components/Menu/EditItemMenu/EditItemMenu";
 import { PriceMenu } from "@/components/Menu/PriceMenu/PriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
-import { useSearchParams } from "next/navigation";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 
 const HomePage = () => {
@@ -35,12 +33,10 @@ const HomePage = () => {
     <>
       <header>
         <MyHeader
-          title={shoppingList?.name || ""}
-          isShare={shoppingList?.isShare!}
         ></MyHeader>
       </header>
       <main>
-        <ShoppingBox shoppingList={shoppingList!} />
+        <ShoppingCardBox shoppingList={shoppingList!} />
       </main>
       <AddItemMenu></AddItemMenu>
       <EditItemMenu></EditItemMenu>

@@ -42,11 +42,11 @@ export function useEditItemMenu() {
     if (shoppingItem) {
       newformData.id = shoppingItem.id!;
       newformData.name = shoppingItem.name!;
-      newformData.category_name = shoppingItem.category_name;
-      newformData.amount = shoppingItem.amount;
-      newformData.unit = shoppingItem.unit;
-      newformData.priority = shoppingItem.priority;
-      newformData.memo = shoppingItem.memo;
+      newformData.category_name = shoppingItem.category_name!;
+      newformData.amount = shoppingItem.amount!;
+      newformData.unit = shoppingItem.unit!;
+      newformData.priority = shoppingItem.priority!;
+      newformData.memo = shoppingItem.memo!;
     }
 
     setFormData(newformData);

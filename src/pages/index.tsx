@@ -1,4 +1,3 @@
-"use client"
 import React, { useEffect } from "react";
 
 import MyHeader from "@/components/MyHeader";
@@ -17,7 +16,7 @@ const HomePage = () => {
   return (
   <>
     <header>
-      <MyHeader title="お買い物リスト" isShare={false}></MyHeader>
+      <MyHeader></MyHeader>
     </header>
     <main>
       <ShoppingListBox></ShoppingListBox>

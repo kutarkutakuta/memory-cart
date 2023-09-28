@@ -6,8 +6,6 @@ import { useRouter } from "next/router";
 import {
   Button,
   Col,
-  Dropdown,
-  MenuProps,
   Row,
   Space,
   Tag,
@@ -23,7 +21,7 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 
 const { Paragraph } = Typography;
 
-const MyHeader = ({ title, isShare }: { title: string; isShare: boolean }) => {
+const MyHeader = () => {
   const pathname = usePathname();
   const router = useRouter();
 
