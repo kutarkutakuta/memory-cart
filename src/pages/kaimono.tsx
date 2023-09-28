@@ -1,18 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Button, Col, ConfigProvider, Row, ThemeConfig } from "antd";
+import React, { useEffect } from "react";
 
-import style from "./page.module.scss";
 import MyHeader from "@/components/MyHeader";
 import ShoppingBox from "@/components/ShoppingBox/ShoppingBox";
-import useShoppingListStore, {
-  ShoppingList,
-} from "@/stores/useShoppingListStore";
 import { AddItemMenu } from "@/components/Menu/AddItemMenu/AddItemMenu";
 import { EditItemMenu } from "@/components/Menu/EditItemMenu/EditItemMenu";
 import { PriceMenu } from "@/components/Menu/PriceMenu/PriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 
 const HomePage = () => {
@@ -22,9 +17,9 @@ const HomePage = () => {
   const { fetchData } = useMasterStore();
   useEffect(() => {
     const list_key = searchParams.get("key");
-    if(list_key) {
-      syncShoppingItem(list_key!);
-        fetchData();
+    if (list_key) {
+      fetchShoppingItems(list_key);
+      fetchData();
     }
     return () => {
       // ページを離れる際のクリーンアップ
@@ -32,11 +27,9 @@ const HomePage = () => {
     };
   }, [searchParams]);
 
-  const {
-    shoppingList,
-    syncShoppingItem,
-    clearShoppingItems,
-  } = useShoppingItemStore();
+  // 買物リスト操作用Hook
+  const { shoppingList, fetchShoppingItems, clearShoppingItems } =
+    useShoppingItemStore();
 
   return (
     <>

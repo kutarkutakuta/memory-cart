@@ -107,11 +107,8 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
     shoppingItems,
     loading,
     sortShoppingItem,
-    fetchShoppingItems,
-    clearShoppingItems,
     updateShoppingItem,
     removeShoppingItem,
-    syncShoppingItem,
   } = useShoppingItemStore();
 
   const [boughtOrder, SetboughtOrder] = useState(true);
