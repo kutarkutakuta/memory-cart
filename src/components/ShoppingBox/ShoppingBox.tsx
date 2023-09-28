@@ -107,7 +107,7 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
     shoppingItems,
     loading,
     sortShoppingItem,
-    updateShoppingItem,
+    updateShoppingItems,
     removeShoppingItem,
   } = useShoppingItemStore();
 
@@ -269,9 +269,7 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
         </>
       ),
       onClick: () => {
-        shoppingItems.forEach((item) =>
-          updateShoppingItem(item.id!, { finished_at: null })
-        );
+        updateShoppingItems(shoppingItems.map(itm=>itm.id!), { finished_at: null });
       },
     },
     {
@@ -283,9 +281,7 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
         </>
       ),
       onClick: () => {
-        shoppingItems.forEach((item) =>
-          updateShoppingItem(item.id!, { finished_at: new Date() })
-        );
+        updateShoppingItems(shoppingItems.map(itm=>itm.id!), { finished_at: new Date() });
       },
     },
     {
@@ -350,7 +346,7 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
           </Row>
         </Col>
       </Row>
-      <Spin spinning={loading} style={{ margin: "100px" }}>
+      <Spin spinning={loading}>
         <DndContext
           onDragEnd={handleDragEnd}
           sensors={sensors}

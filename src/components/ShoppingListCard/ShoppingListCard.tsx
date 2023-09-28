@@ -8,6 +8,7 @@ import {
   FolderAddOutlined,
   HolderOutlined,
   MoreOutlined,
+  ArrowRightOutlined,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingListCard.module.scss";
@@ -63,7 +64,20 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
   // メニュー項目
   const items: MenuProps["items"] = [
     {
-      key: "0",
+      key: "1",
+      label: (
+        <div>
+          品物の編集へ
+          <ArrowRightOutlined />
+        </div>
+      ),
+      onClick: () => router.push(`/kaimono?key=${item.list_key}`),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "2",
       label: (
         <div>
           <FormOutlined />
@@ -73,7 +87,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       onClick: () => openMenu("ShoppingListMenu", item),
     },
     {
-      key: "1",
+      key: "3",
       label: (
         <div>
           <LinkOutlined />
@@ -92,7 +106,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       type: "divider",
     },
     {
-      key: "2",
+      key: "4",
       label: (
         <div>
           <FolderAddOutlined />

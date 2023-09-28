@@ -15,17 +15,17 @@ export interface ShoppingItem {
   item_key: string;
   order_number: number;
   name: string;
-  category_name?: string;
-  amount?: number;
-  unit?: string;
-  priority?: string;
-  memo?: string;
-  buying_amount?: number;
-  buying_unit?: string;
-  buying_price?: number;
-  created_user?: string;
+  category_name?: string | null;
+  amount?: number | null;
+  unit?: string | null;
+  priority?: string | null;
+  memo?: string | null;
+  buying_amount?: number | null;
+  buying_unit?: string | null;
+  buying_price?: number | null;
+  created_user?: string | null;
   created_at?: Date;
-  finished_user?: string;
+  finished_user?: string | null;
   finished_at?: Date | null;
 }
 
@@ -38,11 +38,10 @@ interface ShoppingItemState {
   clearShoppingItems: () => void;
   addShoppingItem: (list_key: string, name: string) => Promise<void>;
   removeShoppingItem: (id: number) => Promise<void>;
-  updateShoppingItem: (
-    id: number,
+  updateShoppingItems: (
+    ids: number[],
     changes: { [keyPath: string]: any }
   ) => Promise<void>;
-  finishShoppingItem: (id: number) => Promise<void>;
   sortShoppingItem: (shoppingItems: ShoppingItem[]) => void;
   startPolling: (list_key: string) => void;
 }
@@ -105,7 +104,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               if (serverData["finished_user"] != localData.finished_user)
                 changes["finished_user"] = serverData["finished_user"];
               if (serverData["finished_at"] != localData.finished_at)
-                changes["finished_at"] = serverData["finished_at"];
+                changes["finished_at"] = serverData.finished_at ? new Date(serverData.finished_at) : null;
 
               if (Object.keys(changes).length > 0) {
                 await localdb.shopping_items.update(localData.id!, changes);
@@ -114,21 +113,21 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               // 追加
               const addItem: ShoppingItem = {
                 list_key: list_key,
-                item_key: serverData["item_key"],
-                order_number: serverData["order_number"],
-                name: serverData["name"],
-                category_name: serverData["category_name"],
-                amount: serverData["amount"],
-                unit: serverData["unit"],
-                priority: serverData["priority"],
-                memo: serverData["memo"],
-                buying_amount: serverData["buying_amount"],
-                buying_unit: serverData["buying_unit"],
-                buying_price: serverData["buying_price"],
-                created_user: serverData["created_user"],
-                created_at: serverData["created_at"],
-                finished_user: serverData["finished_user"],
-                finished_at: serverData["finished_at"],
+                item_key: serverData.item_key,
+                order_number: serverData.order_number,
+                name: serverData.name,
+                category_name: serverData.category_name,
+                amount: serverData.amount,
+                unit: serverData.unit,
+                priority: serverData.priority,
+                memo: serverData.memo,
+                buying_amount: serverData.buying_amount,
+                buying_unit: serverData.buying_unit,
+                buying_price: serverData.buying_price,
+                created_user: serverData.created_user,
+                created_at: new Date(serverData.created_at),
+                finished_user: serverData.finished_user,
+                finished_at: serverData.finished_at ? new Date(serverData.finished_at) : null,
               };
               await localdb.shopping_items.add(addItem);
             }
@@ -262,25 +261,32 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         set({ error, loading: false });
       }
     },
-    updateShoppingItem: async (id, changes) => {
+    updateShoppingItems: async (ids, changes) => {
       set({ loading: true, error: null });
       try {
         // ローカルDBを更新
-        await localdb.shopping_items.update(id, changes);
+        ids.forEach(
+          async (id) => await localdb.shopping_items.update(id, changes)
+        );
 
         // 共有の場合DBも更新
         const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
         const newItems = shoppingItems.map((n) => {
-          return n.id === id ? { ...n, ...changes } : n;
+          return ids.findIndex((id) => id === n.id) > -1
+            ? { ...n, ...changes }
+            : n;
         });
-        const newItem = newItems.find((n) => n.id == id)!;
-        if (shoppingList!.isShare) {
+
+        if (shoppingList && shoppingList.isShare) {
           // 共有済みなのでリストのデータを更新するだけ
           const { error } = await supabase
             .from("shopping_items")
             .update(changes)
-            .eq("list_key", newItem.list_key)
-            .eq("item_key", newItem.item_key);
+            .eq("list_key", shoppingList.list_key)
+            .in(
+              "item_key",
+              newItems.map((itm) => itm.item_key)
+            );
           if (error) throw error;
         }
 
@@ -290,11 +296,6 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       } catch (error: any) {
         set({ error, loading: false });
       }
-    },
-    finishShoppingItem: async (id) => {
-      const changes = { finished_at: new Date() };
-      const { updateShoppingItem } = useShoppingItemStore.getState();
-      await updateShoppingItem(id, changes);
     },
     sortShoppingItem: (shoppingItems) => {
       shoppingItems.forEach((item, i) => {

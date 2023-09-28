@@ -15,7 +15,7 @@ export interface ShoppingList {
   name: string | null;
   memo: string | null;
   isShare: boolean;
-  created_user: number | null;
+  created_user: string | null;
   created_at: Date;
 }
 
@@ -178,7 +178,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
           .from("shopping_lists")
           .update({
             list_key: newList.list_key,
-            name: newList.name,
+            name: newList.name!,
             memo: newList.memo,
           })
           .eq("list_key", newList.list_key);
@@ -223,7 +223,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       // サーバDBに買物リストを追加
       const { error: error1 } = await supabase.from("shopping_lists").insert({
         list_key: new_list_key,
-        name: localList.name,
+        name: localList.name!,
         memo: localList.memo,
         created_user: "GUEST",
       });

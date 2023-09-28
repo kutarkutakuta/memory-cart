@@ -45,7 +45,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     borderRadius: 5,
   };
 
-  const { removeShoppingItem, finishShoppingItem, updateShoppingItem } =
+  const { removeShoppingItem, updateShoppingItems } =
     useShoppingItemStore();
 
   // メニュー制御用Hook
@@ -58,7 +58,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
    * 買物済みチェック変更時
    */
   const onChangeShopped = () => {
-    updateShoppingItem(item.id!, {
+    updateShoppingItems([item.id!], {
       finished_at: item.finished_at == null ? new Date() : null,
     });
   };
@@ -148,10 +148,10 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 {item.category_name}
               </Tag>
               <Button
+              size="small"
                 type="text"
-                icon={<MoneyCollectOutlined />}
                 onClick={() => openMenu("PriceMenu", undefined, item)}
-              ></Button>
+              >￥</Button>
             </Col>
           </Row>
         </Col>
