@@ -104,7 +104,9 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               if (serverData["finished_user"] != localData.finished_user)
                 changes["finished_user"] = serverData["finished_user"];
               if (serverData["finished_at"] != localData.finished_at)
-                changes["finished_at"] = serverData.finished_at ? new Date(serverData.finished_at) : null;
+                changes["finished_at"] = serverData.finished_at
+                  ? new Date(serverData.finished_at)
+                  : null;
 
               if (Object.keys(changes).length > 0) {
                 await localdb.shopping_items.update(localData.id!, changes);
@@ -127,7 +129,9 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
                 created_user: serverData.created_user,
                 created_at: new Date(serverData.created_at),
                 finished_user: serverData.finished_user,
-                finished_at: serverData.finished_at ? new Date(serverData.finished_at) : null,
+                finished_at: serverData.finished_at
+                  ? new Date(serverData.finished_at)
+                  : null,
               };
               await localdb.shopping_items.add(addItem);
             }
@@ -184,7 +188,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       }
     },
     clearShoppingItems: () => {
-      set({ shoppingItems: [] });
+      set({ shoppingList: null, shoppingItems: [] });
       // ポーリングも停止！
       clearTimeout(pollTimer);
     },

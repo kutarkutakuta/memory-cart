@@ -1,6 +1,15 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, Col, Dropdown, MenuProps, Row, Tag, message } from "antd";
+import {
+  Button,
+  Col,
+  Dropdown,
+  MenuProps,
+  Modal,
+  Row,
+  Tag,
+  message,
+} from "antd";
 
 import {
   FormOutlined,
@@ -9,6 +18,9 @@ import {
   HolderOutlined,
   MoreOutlined,
   ArrowRightOutlined,
+  DisconnectOutlined,
+  DeleteFilled,
+  ExclamationCircleFilled,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingListCard.module.scss";
@@ -17,7 +29,7 @@ import useShoppingListStore, {
 } from "@/stores/useShoppingListStore";
 import { useRouter } from "next/navigation";
 import useMenuStore from "@/stores/useMenuStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ShoppingCardProps {
   item: ShoppingList;
@@ -40,6 +52,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     addShoppingList,
     shareShoppingList,
     unShareShoppingList,
+    removeShoppingList,
   } = useShoppingListStore();
 
   // メッセージ用Hook
@@ -90,16 +103,30 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       key: "3",
       label: (
         <div>
-          <LinkOutlined />
-          {item.isShare ? "リストの共有を解除" : "リストを共有する"}
+          <DeleteFilled />
+          リストの削除
         </div>
       ),
       onClick: () => {
-        if (item.isShare) {
-          unShareShoppingList(item.id);
-        } else {
-          shareShoppingList(item.id);
-        }
+        modal.confirm({
+          title: item.isShare
+            ? "共有中のリストを削除しようとしています！"
+            : "リストを削除します",
+          icon: <ExclamationCircleFilled />,
+          content:
+            (item.isShare
+              ? "サーバー上の共有データも削除するには共有解除を行ってください。"
+              : "削除したリストは元に戻せません！") +
+            "削除してよろしいですか？",
+          okText: "削除",
+          okType: "danger",
+          cancelText: "キャンセル",
+          onOk() {
+            removeShoppingList(item.id!).then(() =>
+              messageApi.info("リストを削除しました。")
+            );
+          },
+        });
       },
     },
     {
@@ -109,13 +136,70 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       key: "4",
       label: (
         <div>
+          <LinkOutlined />
+          リストを共有する
+        </div>
+      ),
+      onClick: () => {
+        shareShoppingList(item.id).then(() => {
+          modal.info({
+            title: "リストを共有しました。",
+            content: <>発行された共有キーを共有相手に渡してください。</>,
+          });
+        });
+      },
+      disabled: item.isShare,
+    },
+    {
+      key: "5",
+      label: (
+        <div>
+          <DisconnectOutlined />
+          リストの共有を解除
+        </div>
+      ),
+      onClick: async () => {
+        modal.confirm({
+          title: "リストの共有を解除します。",
+          icon: <ExclamationCircleFilled />,
+          content: (
+            <>
+              サーバー上の共有データが削除され、共有相手全員の共有が解除されます。
+              <br />
+              共有を解除してよろしいですか？
+            </>
+          ),
+          okText: "共有解除",
+          okType: "danger",
+          cancelText: "キャンセル",
+          onOk() {
+            removeShoppingList(item.id!).then(() =>
+              messageApi.info("リストの共有を解除しました。")
+            );
+          },
+        });
+      },
+      disabled: !item.isShare,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "5",
+      label: (
+        <div>
           <FolderAddOutlined />
           コピーしてリストを追加
         </div>
       ),
-      onClick: () => addShoppingList(item),
+      onClick: () => {
+        addShoppingList(item).then(() =>
+          messageApi.info("コピーしたリストを追加しました。")
+        );
+      },
     },
   ];
+  const [modal, contextHolder2] = Modal.useModal();
 
   return (
     <div
@@ -126,6 +210,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       {...listeners}
     >
       {contextHolder}
+      {contextHolder2}
+
       <Row wrap={false} align="middle">
         <Col
           flex="none"
@@ -152,16 +238,17 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           <Row justify="end">
             <Col>
               {item.isShare ? (
-                <Tag icon={<LinkOutlined />} style={{cursor:"pointer"}} color="#00A000" onClick={() =>{
-                  navigator.clipboard.writeText(
-                    item.list_key || ""
-                  );
-                  messageApi.open({
-                    type: "info",
-                    content: "クリップボードに共有キーをコピーしました。",
-                  });
-                }
-                }>
+                <Tag
+                  icon={<LinkOutlined />}
+                  style={{ cursor: "pointer" }}
+                  color="#2E8B57"
+                  onClick={() => {
+                    navigator.clipboard.writeText(item.list_key || "");
+                    messageApi.info(
+                      "共有キーをクリップボードにコピーしました。"
+                    );
+                  }}
+                >
                   共有中
                 </Tag>
               ) : null}

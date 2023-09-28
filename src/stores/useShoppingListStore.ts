@@ -120,19 +120,19 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       const { shoppingLists } = useShoppingListStore.getState();
       const deleteList = shoppingLists.find((n) => n.id == id)!;
 
-      // サーバDBの買物リストを削除
-      const { error: error1 } = await supabase
-        .from("shopping_items")
-        .delete()
-        .eq("list_key", deleteList.list_key);
-      if (error1) throw error1;
+      // // サーバDBの買物リストを削除
+      // const { error: error1 } = await supabase
+      //   .from("shopping_items")
+      //   .delete()
+      //   .eq("list_key", deleteList.list_key);
+      // if (error1) throw error1;
 
-      // サーバDBの品物を削除
-      const { error: error2 } = await supabase
-        .from("shopping_lists")
-        .delete()
-        .eq("list_key", deleteList.list_key);
-      if (error2) throw error2;
+      // // サーバDBの品物を削除
+      // const { error: error2 } = await supabase
+      //   .from("shopping_lists")
+      //   .delete()
+      //   .eq("list_key", deleteList.list_key);
+      // if (error2) throw error2;
 
       // ローカルDB買物品を削除
       const sourceItems = await localdb.shopping_items

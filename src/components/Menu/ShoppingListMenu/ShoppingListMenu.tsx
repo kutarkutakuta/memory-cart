@@ -42,9 +42,9 @@ export function ShoppingListMenu() {
 
   const showDeleteConfirm = () => {
     confirm({
-      title: "買物リストを削除します",
+      title: selectedList?.isShare ? "共有中のリストを削除しようとしています！" : "リストを削除します",
       icon: <ExclamationCircleFilled />,
-      content: "削除したリストは元に戻せませんが削除してよろしいですか？",
+      content: (selectedList?.isShare ? "サーバー上の共有データも削除するには共有解除を行ってください。" : "削除したリストは元に戻せません！") + "削除してよろしいですか？",
       okText: "削除",
       okType: "danger",
       cancelText: "キャンセル",
@@ -124,14 +124,14 @@ export function ShoppingListMenu() {
             更新
           </Button>
 
-          <Button
+          {/* <Button
             type="primary"
             danger
             style={{ width: "100%" }}
             onClick={showDeleteConfirm}
           >
             削除
-          </Button>
+          </Button> */}
 
           <Button
             style={{ width: "100%" }}

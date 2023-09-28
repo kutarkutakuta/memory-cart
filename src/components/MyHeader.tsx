@@ -19,12 +19,17 @@ import {
   UserOutlined,
   LinkOutlined,
 } from "@ant-design/icons";
+import useShoppingItemStore from "@/stores/useShoppingItemStore";
 
 const { Paragraph } = Typography;
 
 const MyHeader = ({ title, isShare }: { title: string; isShare: boolean }) => {
   const pathname = usePathname();
   const router = useRouter();
+
+    // 買物リスト操作用Hook
+    const { shoppingList } = useShoppingItemStore();
+
   const handleGoBack = () => {
     // 履歴が存在する場合のみ戻る操作を実行
     if (router && router.back) {
@@ -50,7 +55,7 @@ const MyHeader = ({ title, isShare }: { title: string; isShare: boolean }) => {
           <Col>
             <Paragraph ellipsis={true}>
               {pathname == "/" ? (
-                <span style={{ padding: 10 }}>{title}</span>
+                <span style={{ padding: 10 }}>お買い物リスト</span>
               ) : (
                 <>
                   <Button
@@ -59,10 +64,15 @@ const MyHeader = ({ title, isShare }: { title: string; isShare: boolean }) => {
                     onClick={() => handleGoBack()}
                   ></Button>{" "}
                   <Space>
-                    <span>{title}</span>
-                    {isShare ? (
-                      <Tag icon={<LinkOutlined />} color="#00A000"></Tag>
-                    ) : null}
+                    <span>{shoppingList?.name}</span>
+                    {shoppingList?.isShare ? (
+                <Tag
+                  icon={<LinkOutlined />}
+                  color="#2E8B57"
+                >
+                  共有中
+                </Tag>
+              ) : null}
                   </Space>
                 </>
               )}

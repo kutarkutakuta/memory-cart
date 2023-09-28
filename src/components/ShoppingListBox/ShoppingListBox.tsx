@@ -15,7 +15,7 @@ import {
 import { Button, Col, Input, Popover, Row, Space, message } from "antd";
 import { PlusCircleOutlined, LinkOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
-import type { KeyboardEvent,  PointerEvent } from "react";
+import type { KeyboardEvent, PointerEvent } from "react";
 import useShoppingListStore from "@/stores/useShoppingListStore";
 import ShoppingListCard from "../ShoppingListCard/ShoppingListCard";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -66,7 +66,6 @@ const ShoppingListBox = () => {
     })
   );
 
-
   // 買い物リスト制御用Hook
   const {
     loading,
@@ -81,15 +80,15 @@ const ShoppingListBox = () => {
     fetchShoppingList();
   }, []);
 
-    // メッセージ用Hook
-    const [messageApi, contextHolder] = message.useMessage();
-    useEffect(() => {
-      if (error)
-        messageApi.open({
-          type: "error",
-          content: error?.message,
-        });
-    }, [error]);
+  // メッセージ用Hook
+  const [messageApi, contextHolder] = message.useMessage();
+  useEffect(() => {
+    if (error)
+      messageApi.open({
+        type: "error",
+        content: error?.message,
+      });
+  }, [error]);
 
   const handleDragEnd = useCallback(
     (event: { active: any; over: any }) => {
@@ -119,8 +118,8 @@ const ShoppingListBox = () => {
 
   return (
     <div style={{ maxWidth: "500px" }}>
-    {contextHolder}
-      <Row justify="space-between" wrap={false} className = "sub-header">
+      {contextHolder}
+      <Row justify="space-between" wrap={false} className="sub-header">
         <Col flex="none">
           <Row justify="start">
             <Col>
@@ -128,26 +127,38 @@ const ShoppingListBox = () => {
                 type="text"
                 icon={<PlusCircleOutlined />}
                 onClick={() => {
-                  addShoppingList()
-                  .then(()=>messageApi.success("リストを追加しました。"));
+                  addShoppingList().then(() =>
+                    messageApi.success("リストを追加しました。")
+                  );
                 }}
               >
                 リストを追加
               </Button>
               <Popover
                 open={openShareKey}
-                onOpenChange={e=>setOpenShareKey(e)}
+                onOpenChange={(e) => setOpenShareKey(e)}
                 title="共有キーを入力してください"
                 content={
                   <>
-                  <Space.Compact>
-                    <Input value={shareKey} onChange={e=>setShareKey(e.target.value)}></Input>
-                    <Button onClick={()=>{
-                      addFromShareKey(shareKey)
-                      .then(()=>messageApi.success("リストを追加しました。"));
-                    }}>OK</Button>
+                    <Space.Compact>
+                      <Input
+                        value={shareKey}
+                        onChange={(e) => setShareKey(e.target.value)}
+                      ></Input>
+                      <Button
+                        onClick={() => {
+                          addFromShareKey(shareKey).then(() =>
+                            messageApi.success("リストを追加しました。")
+                          );
+                        }}
+                      >
+                        OK
+                      </Button>
                     </Space.Compact>
-                    <a onClick={()=>setOpenShareKey(false)}>Cancel</a>
+                    <div>
+                    <a onClick={() => setOpenShareKey(false)}>Cancel</a>
+                    </div>
+                    
                   </>
                 }
                 trigger="hover"
