@@ -289,7 +289,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             .eq("list_key", shoppingList.list_key)
             .in(
               "item_key",
-              newItems.map((itm) => itm.item_key)
+              newItems.filter(itm=> ids.findIndex(id=>id===itm.id) > -1).map((itm) => itm.item_key)
             );
           if (error) throw error;
         }
