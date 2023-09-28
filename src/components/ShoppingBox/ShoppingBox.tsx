@@ -116,22 +116,6 @@ const ShoppingBox = ({ shoppingList }: ShoppingListProps) => {
 
   const [boughtOrder, SetboughtOrder] = useState(true);
 
-  useEffect(() => {
-    if (shoppingList) {
-      // 共有の場合DBと同期
-      if(shoppingList.isShare){
-        syncShoppingItem(shoppingList.list_key);
-      }
-      else{
-        fetchShoppingItems(shoppingList.list_key);
-      }
-    }
-    // ページを離れる際のクリーンアップ
-    return () => {
-      clearShoppingItems(); // データを初期化
-    };
-  }, [shoppingList]);
-
   // ドラッグ後の並び替え処理
   const handleDragEnd = useCallback(
     (event: { active: any; over: any }) => {

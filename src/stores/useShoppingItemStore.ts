@@ -5,7 +5,7 @@ import localdb from "@/lib/localdb";
 import useMasterStore from "./useMasterStore";
 import {} from "swr";
 import { nanoid } from "nanoid";
-import useShoppingListStore from "./useShoppingListStore";
+import useShoppingListStore, { ShoppingList } from "./useShoppingListStore";
 import useShareStore from "./useShareStore";
 
 /**
@@ -32,6 +32,7 @@ export interface ShoppingItem {
 }
 
 interface ShoppingItemState {
+  shoppingList: ShoppingList | null;
   shoppingItems: ShoppingItem[];
   loading: boolean;
   error: Error | null;
@@ -56,6 +57,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
   let pollTimer: NodeJS.Timeout;
 
   return {
+    shoppingList: null,
     shoppingItems: [],
     loading: false,
     error: null,
@@ -63,11 +65,15 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       set({ loading: true, error: null });
       try {
         // ローカルDBから取得
-        const data = await localdb.shopping_items
+        const lst = await localdb.shopping_lists
+          .filter((m) => m.list_key == list_key)
+          .first();
+        const items = await localdb.shopping_items
           .orderBy("order_number")
           .filter((m) => m.list_key == list_key)
           .toArray();
-        set({ shoppingItems: data });
+        set({ shoppingList: lst });
+        set({ shoppingItems: items });
         set({ loading: false });
       } catch (error: any) {
         set({ error, loading: false });
@@ -75,51 +81,52 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
     },
     clearShoppingItems: () => {
       set({ shoppingItems: [] });
-
       // ポーリングも停止！
       clearTimeout(pollTimer);
     },
     addShoppingItem: async (list_key, name) => {
-      // マスター用Hook
-      const { commonItems } = useMasterStore.getState();
+      set({ loading: true, error: null });
+      try {
+        // マスター用Hook
+        const { commonItems } = useMasterStore.getState();
 
-      // 追加データ
-      const { shoppingItems } = useShoppingItemStore.getState();
-      const addItem: ShoppingItem = {
-        list_key: list_key,
-        item_key: nanoid(),
-        order_number: shoppingItems.length + 1,
-        name: name,
-        category_name: commonItems.find((m) => m.name == name)?.category_name!,
-        created_at: new Date(),
-      };
+        // 追加データ
+        const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
+        const addItem: ShoppingItem = {
+          list_key: list_key,
+          item_key: nanoid(),
+          order_number: shoppingItems.length + 1,
+          name: name,
+          category_name: commonItems.find((m) => m.name == name)
+            ?.category_name!,
+          created_at: new Date(),
+        };
 
-      // ローカルDBへ追加
-      const newId = await localdb.shopping_items.add(addItem);
-      addItem.id = newId;
+        // ローカルDBへ追加
+        const newId = await localdb.shopping_items.add(addItem);
+        addItem.id = newId;
 
-      // 共有の場合DBも更新
-      const { getShoppingList } = useShoppingListStore.getState();
-      const { isShare } = (await getShoppingList(addItem.list_key))!;
-      if (isShare) {
-        // 共有済みなのでリストのデータを更新するだけ
-        const { error } = await supabase.from("shopping_items").insert({
-          list_key: addItem.list_key,
-          item_key: addItem.item_key,
-          order_number: addItem.order_number,
-          name: addItem.name,
-          category_name: addItem.category_name,
-          created_user: "GUEST",
-        });
-        if (error) {
-          console.error(error);
+        // 共有の場合サーバDBにも追加
+        if (shoppingList!.isShare) {
+          const { error } = await supabase.from("shopping_items").insert({
+            list_key: addItem.list_key,
+            item_key: addItem.item_key,
+            order_number: addItem.order_number,
+            name: addItem.name,
+            category_name: addItem.category_name,
+            created_user: "GUEST",
+          });
+          if (error) throw error;
         }
-      }
 
-      // ステート更新
-      set((state) => ({
-        shoppingItems: [...state.shoppingItems, addItem],
-      }));
+        // ステート更新
+        set((state) => ({
+          shoppingItems: [...state.shoppingItems, addItem],
+        }));
+        set({ loading: false });
+      } catch (error: any) {
+        set({ error, loading: false });
+      }
     },
     removeShoppingItem: async (id) => {
       // ローカルDBから削除
@@ -190,111 +197,123 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       set({ shoppingItems });
     },
     syncShoppingItem: async (list_key) => {
-      // DBからデータ取得
-      const { data } = await supabase
-        .from("shopping_items")
-        .select("*")
-        .eq("list_key", list_key);
-
-      // ローカルDBへ反映
-      if (data && data.length > 0) {
-        // DBがあれば同期　存在しない場合は同期しない
-        for (const serverData of data) {
-          // ローカルDBから取得
-          const localData = await localdb.shopping_items
-            .filter(
-              (m) =>
-                m.list_key == list_key && m.item_key == serverData["item_key"]
-            )
-            .first();
-
-          if (localData) {
-            // 差分があれば更新
-            const changes: any = {};
-            if (serverData["name"] !== localData.name)
-              changes["name"] = serverData["name"];
-            if (serverData["category_name"] !== localData.category_name)
-              changes["category_name"] = serverData["category_name"];
-            if (serverData["amount"] !== localData.amount)
-              changes["amount"] = serverData["amount"];
-            if (serverData["unit"] !== localData.unit)
-              changes["unit"] = serverData["unit"];
-            if (serverData["priority"] !== localData.priority)
-              changes["priority"] = serverData["priority"];
-            if (serverData["memo"] !== localData.memo)
-              changes["memo"] = serverData["memo"];
-            if (serverData["buying_amount"] !== localData.buying_amount)
-              changes["buying_amount"] = serverData["buying_amount"];
-            if (serverData["buying_unit"] !== localData.buying_unit)
-              changes["buying_unit"] = serverData["buying_unit"];
-            if (serverData["buying_price"] !== localData.buying_price)
-              changes["buying_price"] = serverData["buying_price"];
-            if (serverData["finished_user"] !== localData.finished_user)
-              changes["finished_user"] = serverData["finished_user"];
-            if (serverData["finished_at"] !== localData.finished_at)
-              changes["finished_at"] = serverData["finished_at"];
-
-            if (Object.keys(changes).length > 0) {
-              await localdb.shopping_items.update(localData.id!, changes);
-            }
-          } else {
-            // 追加
-            const addItem: ShoppingItem = {
-              list_key: list_key,
-              item_key: serverData["item_key"],
-              order_number: serverData["order_number"],
-              name: serverData["name"],
-              category_name: serverData["category_name"],
-              amount: serverData["amount"],
-              unit: serverData["unit"],
-              priority: serverData["priority"],
-              memo: serverData["memo"],
-              buying_amount: serverData["buying_amount"],
-              buying_unit: serverData["buying_unit"],
-              buying_price: serverData["buying_price"],
-              created_user: serverData["created_user"],
-              created_at: serverData["created_at"],
-              finished_user: serverData["finished_user"],
-              finished_at: serverData["finished_at"],
-            };
-            await localdb.shopping_items.add(addItem);
-          }
-        }
-
-        const deleteItems = await localdb.shopping_items
-          .filter(
-            (itm) =>
-              itm.list_key == list_key &&
-              data.findIndex((d) => d.item_key == itm.item_key) == -1
-          )
-          .toArray();
-        if (deleteItems.length > 0) {
-          await localdb.shopping_items.bulkDelete(
-            deleteItems.map((itm) => itm.id!)
-          );
-        }
-
-        // フェッチしなおし
-        const { fetchShoppingItems } = useShoppingItemStore.getState();
-        fetchShoppingItems(list_key);
-      } else {
-        // データがないということは共有が切れた可能性があるのでチェックする。
-        const { data } = await supabase
-          .from("shopping_lists")
+      set({ loading: true, error: null });
+      try {
+        // DBからデータ取得
+        const { data, error: erro1 } = await supabase
+          .from("shopping_items")
           .select("*")
           .eq("list_key", list_key);
-        if (!data || data.length == 0) {
-          // 共有を解除
-          const shopping_list = await localdb.shopping_lists
-            .filter((m) => m.list_key == list_key)
-            .first();
-          if (shopping_list) {
-            const { updateShoppingList } = useShoppingListStore.getState();
-            await updateShoppingList(shopping_list.id, { isShare: false });
-          }
+        // オフラインの可能性があるのでThrowしない
+        if(erro1) console.error(erro1);
 
-          //TODO:メッセージ返したい
+        // ローカルDBへ反映
+        if (data && data.length > 0) {
+          // DBがあれば同期　存在しない場合は同期しない
+          for (const serverData of data) {
+            // ローカルDBから取得
+            const localData = await localdb.shopping_items
+              .filter(
+                (m) =>
+                  m.list_key == list_key && m.item_key == serverData["item_key"]
+              )
+              .first();
+  
+            if (localData) {
+              // 差分があれば更新
+              const changes: any = {};
+              if (serverData["name"] != localData.name)
+                changes["name"] = serverData["name"];
+              if (serverData["category_name"] != localData.category_name)
+                changes["category_name"] = serverData["category_name"];
+              if (serverData["amount"] != localData.amount)
+                changes["amount"] = serverData["amount"];
+              if (serverData["unit"] != localData.unit)
+                changes["unit"] = serverData["unit"];
+              if (serverData["priority"] != localData.priority)
+                changes["priority"] = serverData["priority"];
+              if (serverData["memo"] != localData.memo)
+                changes["memo"] = serverData["memo"];
+              if (serverData["buying_amount"] != localData.buying_amount)
+                changes["buying_amount"] = serverData["buying_amount"];
+              if (serverData["buying_unit"] != localData.buying_unit)
+                changes["buying_unit"] = serverData["buying_unit"];
+              if (serverData["buying_price"] != localData.buying_price)
+                changes["buying_price"] = serverData["buying_price"];
+              if (serverData["finished_user"] != localData.finished_user)
+                changes["finished_user"] = serverData["finished_user"];
+              if (serverData["finished_at"] != localData.finished_at)
+                changes["finished_at"] = serverData["finished_at"];
+  
+              if (Object.keys(changes).length > 0) {
+                await localdb.shopping_items.update(localData.id!, changes);
+              }
+            } else {
+              // 追加
+              const addItem: ShoppingItem = {
+                list_key: list_key,
+                item_key: serverData["item_key"],
+                order_number: serverData["order_number"],
+                name: serverData["name"],
+                category_name: serverData["category_name"],
+                amount: serverData["amount"],
+                unit: serverData["unit"],
+                priority: serverData["priority"],
+                memo: serverData["memo"],
+                buying_amount: serverData["buying_amount"],
+                buying_unit: serverData["buying_unit"],
+                buying_price: serverData["buying_price"],
+                created_user: serverData["created_user"],
+                created_at: serverData["created_at"],
+                finished_user: serverData["finished_user"],
+                finished_at: serverData["finished_at"],
+              };
+              await localdb.shopping_items.add(addItem);
+            }
+          }
+  
+          const deleteItems = await localdb.shopping_items
+            .filter(
+              (itm) =>
+                itm.list_key == list_key &&
+                data.findIndex((d) => d.item_key == itm.item_key) == -1
+            )
+            .toArray();
+          if (deleteItems.length > 0) {
+            await localdb.shopping_items.bulkDelete(
+              deleteItems.map((itm) => itm.id!)
+            );
+          }
+  
+        } else {
+          // データがないということは共有が切れた可能性があるのでチェックする。
+          const { data } = await supabase
+            .from("shopping_lists")
+            .select("*")
+            .eq("list_key", list_key);
+          if (!data || data.length == 0) {
+            // ローカルDBの共有を解除
+            const shopping_list = await localdb.shopping_lists
+              .filter((m) => m.list_key == list_key)
+              .first();
+            if (shopping_list) {
+              const changes = { isShare: false };
+              await localdb.shopping_lists.update(shopping_list.id, changes);
+              shopping_list.isShare = false;
+              set({ shoppingList: shopping_list});
+            }
+            // メッセージを返すためにthrow
+            throw new Error("サーバーにデータが存在しないため共有が解除されました。");
+          }
         }
+        set({ loading: false });
+      } catch (error: any) {
+        set({ error, loading: false });
+      }
+      finally{
+        // フェッチしなおし
+        const { fetchShoppingItems } = useShoppingItemStore.getState();
+        await fetchShoppingItems(list_key);
       }
     },
     startPolling: (list_key) => {

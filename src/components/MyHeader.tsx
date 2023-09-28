@@ -61,7 +61,7 @@ const MyHeader = ({ title, isShare }: { title: string; isShare: boolean }) => {
                   <Space>
                     <span>{title}</span>
                     {isShare ? (
-                      <Tag icon={<LinkOutlined />} color="#55acee"></Tag>
+                      <Tag icon={<LinkOutlined />} color="#00A000"></Tag>
                     ) : null}
                   </Space>
                 </>

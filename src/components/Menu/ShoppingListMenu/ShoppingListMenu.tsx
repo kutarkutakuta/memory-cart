@@ -1,25 +1,15 @@
 "use client";
 import useMenuStore from "@/stores/useMenuStore";
-import {
-  Button,
-  Checkbox,
-  Drawer,
-  Input,
-  Popconfirm,
-  Space,
-  Tooltip,
-  Modal
-} from "antd";
+import { Button, Drawer, Input, Space, Tooltip, Modal, message } from "antd";
 const { TextArea } = Input;
 const { confirm } = Modal;
 import {
   ShoppingCartOutlined,
-  QuestionCircleOutlined,
   CopyOutlined,
   ExclamationCircleFilled,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 
-import styles from "./ShoppingListMenu.module.scss";
 import useShoppingListStore from "@/stores/useShoppingListStore";
 import { useShoppingListMenu } from "./useShoppingListMenu";
 import { useEffect } from "react";
@@ -29,23 +19,35 @@ export function ShoppingListMenu() {
   const { openFlag, selectedList, closeMenu } = useMenuStore();
 
   // 買い物リスト制御用Hook
-  const { removeShoppingList, updateShoppingList } = useShoppingListStore();
+  const { loading, error, removeShoppingList, updateShoppingList } =
+    useShoppingListStore();
 
   // フォーム制御用Hook
   const { formData, initialFormData, handleChange } = useShoppingListMenu();
+
+  // メッセージ用Hook
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     initialFormData(selectedList);
   }, [openFlag["ShoppingListMenu"]]);
 
+  useEffect(() => {
+    if (error)
+      messageApi.open({
+        type: "error",
+        content: error?.message,
+      });
+  }, [error]);
+
   const showDeleteConfirm = () => {
     confirm({
-      title: '買物リストを削除します',
+      title: "買物リストを削除します",
       icon: <ExclamationCircleFilled />,
-      content: '削除したリストは元に戻せませんが削除してよろしいですか？',
-      okText: '削除',
-      okType: 'danger',
-      cancelText: 'キャンセル',
+      content: "削除したリストは元に戻せませんが削除してよろしいですか？",
+      okText: "削除",
+      okType: "danger",
+      cancelText: "キャンセル",
       onOk() {
         removeShoppingList(formData.id!);
         closeMenu("ShoppingListMenu");
@@ -55,6 +57,7 @@ export function ShoppingListMenu() {
 
   return (
     <>
+      {contextHolder}
       <Drawer
         title={
           <>
@@ -65,7 +68,7 @@ export function ShoppingListMenu() {
         placement={"left"}
         width={330}
         open={openFlag["ShoppingListMenu"]}
-        onClose={()=>closeMenu("ShoppingListMenu")}
+        onClose={() => closeMenu("ShoppingListMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
@@ -82,18 +85,12 @@ export function ShoppingListMenu() {
             value={formData.memo}
             onChange={(e) => handleChange("memo", e.target.value)}
           />
-
-          <Checkbox
-            checked={formData.isShare}
-            onChange={(e) => handleChange("isShare", e.target.checked)}
-          >
-            共有する
-            <Tooltip title="共有したい相手に共有キーを渡します。">
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </Checkbox>
-          {formData.isShare ? (
+          {selectedList?.isShare ? (
             <>
+              
+              <Tooltip title="共有したい相手に共有キーを渡します。">
+              ☆共有キー☆
+              </Tooltip>
               <Space.Compact style={{ width: "100%" }}>
                 <Input
                   value={selectedList?.list_key || ""}
@@ -101,11 +98,20 @@ export function ShoppingListMenu() {
                   bordered={false}
                   style={{ color: "#000", backgroundColor: "#323232" }}
                 />
-                <Tooltip title="クリップボードにコピー">
-                <Button  onClick={()=>navigator.clipboard.writeText(selectedList?.list_key || "")}>
-                  <CopyOutlined />
-                </Button>
-                </Tooltip>
+                <Button
+                    onClick={() =>{
+                      navigator.clipboard.writeText(
+                        selectedList?.list_key || ""
+                      );
+                      messageApi.open({
+                        type: "info",
+                        content: "クリップボードに共有キーをコピーしました。",
+                      });
+                    }
+                    }
+                  >
+                    <CopyOutlined />
+                  </Button>
               </Space.Compact>
             </>
           ) : null}
@@ -113,9 +119,11 @@ export function ShoppingListMenu() {
           <Button
             type="primary"
             style={{ width: "100%" }}
+            loading={loading}
             onClick={() => {
-              updateShoppingList(formData.id, formData);
-              closeMenu("ShoppingListMenu");
+              updateShoppingList(formData.id, formData)
+                .finally(() => closeMenu("ShoppingListMenu"))
+                .catch((e) => console.error(e));
             }}
           >
             更新
@@ -129,8 +137,6 @@ export function ShoppingListMenu() {
           >
             削除
           </Button>
-  
-          
 
           <Button
             style={{ width: "100%" }}

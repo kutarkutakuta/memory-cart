@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  // 2重レンダリングされるのでコメントアウト
+  // reactStrictMode: true,
   output: "export"
 }
 

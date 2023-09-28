@@ -7,6 +7,7 @@ const mytheme: ThemeConfig = {
   algorithm: theme.darkAlgorithm,
   token: {
     fontSize: 16,
+    colorLink: "#00FFFF",
   },
 };
 

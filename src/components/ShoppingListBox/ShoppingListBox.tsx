@@ -79,7 +79,7 @@ const ShoppingListBox = () => {
   } = useShoppingListStore();
   useEffect(() => {
     fetchShoppingList();
-  }, [fetchShoppingList]);
+  }, []);
 
   const handleDragEnd = useCallback(
     (event: { active: any; over: any }) => {

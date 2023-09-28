@@ -7,75 +7,12 @@ import localdb from "@/lib/localdb";
 
 interface ShareState {
   // TODO:エラー処理どうしよう・・・？　zustandである必要がないような？
-  shareList: (list: ShoppingList) => Promise<PostgrestError | null>;
   unShareList: (list_key: string) => Promise<PostgrestError | null>;
   addFromShareKey: (list_key: string) => Promise<PostgrestError | null>;
 }
 
 const useShareStore = create<ShareState>((set) => ({
-  shareList: async (list) => {
-    // 共有時はDBも更新
-    const { data } = await supabase
-      .from("shopping_lists")
-      .select("list_key")
-      .eq("list_key", list.list_key);
-    if (data && data.length > 0) {
-      // 共有済みなのでリストのデータを更新するだけ
-      const { error } = await supabase
-        .from("shopping_lists")
-        .update({
-          list_key: list.list_key,
-          name: list.name,
-          memo: list.memo,
-        })
-        .eq("list_key", list.list_key);
-      if (error) {
-        console.error(error);
-        return error;
-      }
-    } else {
-      // 新規に共有データを作成
-      const { error: error1 } = await supabase.from("shopping_lists").insert({
-        list_key: list.list_key,
-        name: list.name,
-        memo: list.memo,
-        created_user: "GUEST",
-      });
-      if (error1) {
-        console.error(error1);
-        return error1;
-      }
-      // 買物品もDBへ追加する
-      // ローカルDBから取得
-      const data = await localdb.shopping_items
-        .where({ list_key: list.list_key })
-        .toArray();
-      const { error: error2 } = await supabase.from("shopping_items").insert(
-        data.map((d) => ({
-          list_key: list.list_key,
-          item_key: d.item_key,
-          order_number: d.order_number,
-          name: d.name,
-          category_name: d.category_name,
-          amount: d.amount,
-          unit: d.unit,
-          priority: d.priority,
-          memo: d.memo,
-          buying_amount: d.buying_amount,
-          buying_unit: d.buying_unit,
-          buying_price: d.buying_price,
-          created_user: "GUEST",
-          finished_user: d.finished_user,
-          finished_at: d.finished_at,
-        }))
-      );
-      if (error2) {
-        console.error(error2);
-        return error2;
-      }
-    }
-    return null;
-  },
+
   unShareList: async (list_key) => {
     const { error: error1 } = await supabase
       .from("shopping_items")
