@@ -8,7 +8,6 @@ import { useState } from "react";
  * フォーム値定義
  */
 interface FormData {
-  id: number;
   name: string;
   category_name?: string;
   amount?: number;
@@ -24,7 +23,6 @@ interface FormData {
 export function useEditItemMenu() {
   // フォーム値保存用フック
   const [formData, setFormData] = useState<FormData>({
-    id: -1,
     name: "",
     memo: "",
   });
@@ -35,12 +33,10 @@ export function useEditItemMenu() {
    */
   const initialFormData = (shoppingItem: ShoppingItem | null) => {
     const newformData: FormData = {
-      id: -1,
       name: "",
     };
 
     if (shoppingItem) {
-      newformData.id = shoppingItem.id!;
       newformData.name = shoppingItem.name!;
       newformData.category_name = shoppingItem.category_name!;
       newformData.amount = shoppingItem.amount!;

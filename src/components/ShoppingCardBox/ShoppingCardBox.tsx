@@ -320,7 +320,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   ];
 
   return (
-    <div style={{ maxWidth: "500px" }}>
+    <div>
       <Row justify="space-between" wrap={false} className="sub-header">
         <Col flex="auto">
           <Row justify="start">
@@ -356,12 +356,11 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           </Row>
         </Col>
       </Row>
-      <DndContext
+      <DndContext 
         onDragEnd={handleDragEnd}
         sensors={sensors}
-        modifiers={[restrictToVerticalAxis]}
       >
-        <SortableContext
+        <SortableContext 
           items={shoppingItems.map((m) => m.id!)}
           strategy={rectSortingStrategy}
         >

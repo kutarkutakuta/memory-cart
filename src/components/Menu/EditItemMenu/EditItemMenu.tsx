@@ -11,6 +11,7 @@ import {
   Select,
   Space,
   Tag,
+  message,
 } from "antd";
 import { ShoppingOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
@@ -29,13 +30,24 @@ export function EditItemMenu() {
   const { categories, units } = useMasterStore();
 
   // 品物制御用Hook
-  const { updateShoppingItems, removeShoppingItem } = useShoppingItemStore();
+  const { loading, error, updateShoppingItems, removeShoppingItem } =
+    useShoppingItemStore();
 
   // フォーム用Hook
   const { formData, initialFormData, handleChange } = useEditItemMenu();
   useEffect(() => {
     initialFormData(selectedItem);
   }, [openFlag["EditItemMenu"]]);
+
+  // メッセージ用Hook
+  const [messageApi, contextHolder] = message.useMessage();
+  useEffect(() => {
+    if (error)
+      messageApi.open({
+        type: "error",
+        content: error?.message,
+      });
+  }, [error]);
 
   const getCategoryOption = () => {
     return categories.map((m) => ({ label: m.name, value: m.name }));
@@ -44,6 +56,7 @@ export function EditItemMenu() {
   const { Option } = Select;
   return (
     <>
+      {contextHolder}
       <Drawer
         title={
           <>
@@ -114,10 +127,12 @@ export function EditItemMenu() {
 
           <Button
             type="primary"
+            loading={loading}
             style={{ width: "100%" }}
             onClick={(e) => {
-              updateShoppingItems([formData.id], formData);
-              closeMenu("EditItemMenu");
+              updateShoppingItems([selectedItem?.id!], formData).then(() =>
+                closeMenu("EditItemMenu")
+              );
             }}
           >
             更新
