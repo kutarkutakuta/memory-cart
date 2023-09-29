@@ -1,3 +1,4 @@
+import { FavoriteItem } from "@/stores/useFavoriteItemStore";
 import { AppSetting } from "@/stores/useMasterStore";
 import { ShoppingItem } from "@/stores/useShoppingItemStore";
 import { ShoppingList } from "@/stores/useShoppingListStore";
@@ -8,6 +9,7 @@ class OkaimonoDatabase extends Dexie {
   app_settings: Dexie.Table<AppSetting, number>;
   shopping_lists: Dexie.Table<ShoppingList, number>;
   shopping_items: Dexie.Table<ShoppingItem, number>;
+  favorite_items: Dexie.Table<FavoriteItem, number>;
 
   constructor() {
     super("OkaimonoDatabase");
@@ -15,10 +17,12 @@ class OkaimonoDatabase extends Dexie {
       app_settings: "id",
       shopping_lists: "id, list_key, order_number, name",
       shopping_items: "++id, list_key, item_key, order_number, name",
+      favorite_items: "++id, category, order_number, name",
     });
     this.app_settings = this.table("app_settings");
     this.shopping_lists = this.table("shopping_lists");
     this.shopping_items = this.table("shopping_items");
+    this.favorite_items = this.table("favorite_items");
 
     // 初期データの挿入
     this.on("populate", () => {

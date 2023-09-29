@@ -125,26 +125,33 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               <span
                 style={{
                   textDecoration: item.finished_at ? "line-through" : "",
+                  lineHeight: 0.8,
                 }}
               >
                 {item.name}
               </span>
             </Button>
 
-            {item.amount ? (
-              <span
-                style={{
-                  fontSize: "smaller",
-                  fontWeight: "lighter",
-                }}
-              >
-                {item.amount}
-                {item.unit}
-              </span>
-            ) : null}
+            <div
+              style={{
+                fontSize: "smaller",
+                fontWeight: "lighter",
+                textAlign: "center",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <div style={{ marginTop: -5 }}>
+                {" "}
+                {item.amount ? <span>{item.amount}</span> : null}
+              </div>
+              <div style={{ marginTop: -5 }}>
+                {" "}
+                {item.amount ? <span>{item.unit}</span> : null}
+              </div>
+            </div>
 
             <div>
-              <div>
+              <div style={{ marginTop: -5 }}>
                 {item.priority ? (
                   <Tooltip trigger="click" title={item.priority}>
                     <ExclamationCircleTwoTone
@@ -159,7 +166,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                   </Tooltip>
                 ) : null}
               </div>
-              <div>
+              <div style={{ marginTop: -5 }}>
                 {item.memo ? (
                   <Tooltip title={item.memo} trigger="click">
                     <MessageTwoTone />
@@ -168,6 +175,20 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               </div>
             </div>
           </Space>
+        </Col>
+        <Col flex="none">
+          <div style={{ marginTop: -5 }}>
+            {item.buying_price ? (
+              <Tooltip
+                trigger="click"
+                title={"￥" + item.buying_price.toLocaleString()}
+              >
+                <Button type="text" shape="circle" size={"small"}>
+                  ￥
+                </Button>
+              </Tooltip>
+            ) : null}
+          </div>
         </Col>
         <Col flex="none">
           <div style={{ textAlign: "right" }}>
@@ -184,10 +205,18 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               {item.category_name}
             </Tag>
           </div>
-          <div style={{ fontSize: "smaller", marginRight:"6px", textAlign: "right"}}>
+          {/* <div
+            style={{
+              fontSize: "smaller",
+              marginRight: "6px",
+              textAlign: "right",
+            }}
+          >
             {item.buying_price ? "￥" + item.buying_price.toLocaleString() : ""}
-            {item.buying_amount ? "(" + item.buying_amount + (item.buying_unit || "") + ")" : ""}
-          </div>
+            {item.buying_amount
+              ? "(" + item.buying_amount + (item.buying_unit || "") + ")"
+              : ""}
+          </div> */}
         </Col>
         <Col flex="none">
           <Row justify="end">

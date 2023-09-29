@@ -4,13 +4,16 @@ import MyHeader from "@/components/MyHeader";
 import ShoppingListBox from "@/components/ShoppingListBox/ShoppingListBox";
 import { ShoppingListMenu } from "@/components/Menu/ShoppingListMenu/ShoppingListMenu";
 import useMasterStore from "@/stores/useMasterStore";
+import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
 
 const HomePage = () => {
   
    // マスター取得
    const { fetchData } = useMasterStore();
+   const { fetchFavoriteItems } = useFavoriteItemStore();
    useEffect(() => {
      fetchData();
+     fetchFavoriteItems();
    }, []);
    
   return (

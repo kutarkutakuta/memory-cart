@@ -29,6 +29,7 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
 import { SettingMenu } from "./Menu/SettingMenu/SettingMenu";
 import useShoppingListStore from "@/stores/useShoppingListStore";
+import { FavoriteItemMenu } from "./Menu/FavoireItemMenu/FavoriteItemMenu";
 
 const { Paragraph } = Typography;
 
@@ -71,8 +72,9 @@ const MyHeader = () => {
     },
     {
       key: "2",
-      label: "よく使う品物の登録",
+      label: "お気に入りの品物登録",
       icon: <ShoppingOutlined />,
+      onClick: () => openMenu("FavoriteItemMenu"),
     },
     {
       type: "divider",
@@ -166,6 +168,7 @@ const MyHeader = () => {
         </Col>
       </Row>
       <SettingMenu></SettingMenu>
+      <FavoriteItemMenu></FavoriteItemMenu>
     </>
   );
 };

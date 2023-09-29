@@ -91,7 +91,7 @@ export function PriceMenu() {
             キャンセル
           </Button>
 
-          <div>☆価格の履歴☆</div>
+          {/* <div>☆価格の履歴☆</div> */}
         </Space>
       </Drawer>
     </>

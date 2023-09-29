@@ -8,17 +8,20 @@ import { PriceMenu } from "@/components/Menu/PriceMenu/PriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import { Spin, message } from "antd";
+import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
 
 const HomePage = () => {
   const searchParams = useSearchParams();
 
   // マスター取得
   const { fetchData } = useMasterStore();
+  const { fetchFavoriteItems } = useFavoriteItemStore();
   useEffect(() => {
     const list_key = searchParams.get("key");
     if (list_key) {
       fetchShoppingItems(list_key);
       fetchData();
+      fetchFavoriteItems();
     }
     return () => {
       // ページを離れる際のクリーンアップ
