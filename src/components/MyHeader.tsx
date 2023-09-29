@@ -13,6 +13,7 @@ import {
   Row,
   Space,
   Tag,
+  Tooltip,
   Typography,
   message,
 } from "antd";
@@ -138,14 +139,14 @@ const MyHeader = () => {
                       icon={<ArrowLeftOutlined />}
                       onClick={() => handleGoBack()}
                     ></Button>
-                    <Space>
-                      <span>{shoppingList?.name}</span>
-                      {shoppingList?.isShare ? (
-                        <Tag icon={<LinkOutlined />} color="#2E8B57">
-                          共有中
-                        </Tag>
-                      ) : null}
-                    </Space>
+                    <span style={{ paddingRight: "10px" }}>
+                      {shoppingList?.name}
+                    </span>
+                    {shoppingList?.isShare ? (
+                      <Tooltip title="共有中">
+                        <Tag icon={<LinkOutlined />} color="#2E8B57"></Tag>
+                      </Tooltip>
+                    ) : null}
                   </>
                 )}
               </Paragraph>

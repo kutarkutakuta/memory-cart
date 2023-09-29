@@ -10,6 +10,7 @@ import {
   Row,
   Space,
   Tag,
+  Tooltip,
   message,
 } from "antd";
 
@@ -163,9 +164,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                         "https://memory-cart.onrender.com/kaimono?key=" +
                           share_key
                       );
-                      messageApi.info(
-                        "クリップボードにURLをコピーしました。"
-                      );
+                      messageApi.info("クリップボードにURLをコピーしました。");
                     }}
                   >
                     <CopyOutlined />
@@ -298,19 +297,9 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           <Row justify="end">
             <Col>
               {item.isShare ? (
-                <Tag
-                  icon={<LinkOutlined />}
-                  style={{ cursor: "pointer" }}
-                  color="#2E8B57"
-                  onClick={() => {
-                    navigator.clipboard.writeText(item.list_key || "");
-                    messageApi.info(
-                      "共有キーをクリップボードにコピーしました。"
-                    );
-                  }}
-                >
-                  共有中
-                </Tag>
+                <Tooltip title="共有中">
+                  <Tag icon={<LinkOutlined />} color="#2E8B57"></Tag>
+                </Tooltip>
               ) : null}
               <Dropdown menu={{ items }} placement="bottomRight">
                 <Button type="text" icon={<MoreOutlined />} />
