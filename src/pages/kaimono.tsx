@@ -7,7 +7,7 @@ import { EditItemMenu } from "@/components/Menu/EditItemMenu/EditItemMenu";
 import { PriceMenu } from "@/components/Menu/PriceMenu/PriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
-import { Spin } from "antd";
+import { Spin, message } from "antd";
 
 const HomePage = () => {
   const searchParams = useSearchParams();
@@ -27,15 +27,25 @@ const HomePage = () => {
   }, [searchParams]);
 
   // 買物リスト操作用Hook
-  const { shoppingList, fetchShoppingItems, clearShoppingItems } =
+  const { info, error, shoppingList, fetchShoppingItems, clearShoppingItems } =
     useShoppingItemStore();
+
+  // メッセージ用Hook
+  const [messageApi, contextHolder] = message.useMessage();
+  useEffect(() => {
+    if (error) messageApi.error(error?.message);
+  }, [error]);
+  useEffect(() => {
+    if (info) messageApi.info(info);
+  }, [info]);
 
   return (
     <>
+      {contextHolder}
       <header>
         <MyHeader></MyHeader>
       </header>
-      
+
       <main>
         <ShoppingCardBox shoppingList={shoppingList!} />
       </main>

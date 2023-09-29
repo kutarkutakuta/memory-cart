@@ -12,9 +12,9 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { Button, Col, Input, Popover, Row, Space, message } from "antd";
-import { PlusCircleOutlined, LinkOutlined } from "@ant-design/icons";
-import { useCallback, useEffect, useState } from "react";
+import { Button, Col, Row, message } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
+import { useCallback, useEffect } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
 import useShoppingListStore from "@/stores/useShoppingListStore";
 import ShoppingListCard from "../ShoppingListCard/ShoppingListCard";
@@ -78,10 +78,10 @@ const ShoppingListBox = () => {
   } = useShoppingListStore();
   useEffect(() => {
     fetchShoppingList();
-    return ()=> {
+    return () => {
       // ページを離れる際のクリーンアップ
       clearShoppingLists();
-    }
+    };
   }, []);
 
   // メッセージ用Hook
@@ -117,9 +117,6 @@ const ShoppingListBox = () => {
     [shoppingLists, sortShoppingList]
   );
 
-  const [openShareKey, setOpenShareKey] = useState(false);
-  const [shareKey, setShareKey] = useState("");
-
   return (
     <div style={{ maxWidth: "500px" }}>
       {contextHolder}
@@ -138,7 +135,6 @@ const ShoppingListBox = () => {
               >
                 リストを追加
               </Button>
-              
             </Col>
           </Row>
         </Col>
