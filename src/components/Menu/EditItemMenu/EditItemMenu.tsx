@@ -30,7 +30,7 @@ export function EditItemMenu() {
   const { categories, units } = useMasterStore();
 
   // 品物制御用Hook
-  const { loading, error, updateShoppingItems, removeShoppingItem } =
+  const { loading, error, updateShoppingItems } =
     useShoppingItemStore();
 
   // フォーム用Hook
@@ -137,18 +137,6 @@ export function EditItemMenu() {
           >
             更新
           </Button>
-
-          {/* <Button
-            type="primary"
-            danger
-            style={{ width: "100%" }}
-            onClick={() => {
-              removeShoppingItem(formData.id!);
-              closeMenu("EditItemMenu");
-            }}
-          >
-            削除
-          </Button> */}
 
           <Button
             style={{ width: "100%" }}

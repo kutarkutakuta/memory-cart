@@ -79,7 +79,7 @@ const MyHeader = () => {
           <Col>
             <Paragraph ellipsis={true} style={{margin:0,}}>
               {pathname == "/" ? (
-                <span style={{ padding: 10 }}>お買い物リスト</span>
+                <span style={{ paddingLeft: 10}}>買物リスト</span>
               ) : (
                 <>
                   <Button
