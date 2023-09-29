@@ -171,7 +171,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                     <CopyOutlined />
                   </Button>
                 </Space.Compact>
-                <Space.Compact style={{ width: "100%" }}>
+                <Space style={{ width: "100%" }}>
                   <EmailShareButton
                     url={
                       "https://memory-cart.onrender.com/kaimono?key=" +
@@ -179,7 +179,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                     }
                     title={"共有します"}
                   >
-                    <EmailIcon size={24} round />
+                    <EmailIcon size={40} round />
                   </EmailShareButton>
                   <FacebookShareButton
                     url={
@@ -188,7 +188,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                     }
                     quote={"共有します"}
                   >
-                    <FacebookIcon size={24} round />
+                    <FacebookIcon size={40} round />
                   </FacebookShareButton>
                   <TwitterShareButton
                     url={
@@ -197,7 +197,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                     }
                     title={"共有します"}
                   >
-                    <TwitterIcon size={24} round />
+                    <TwitterIcon size={40} round />
                   </TwitterShareButton>
                   <LineShareButton
                     url={
@@ -206,9 +206,9 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                     }
                     title={"共有します"}
                   >
-                    <LineIcon size={24} round />
+                    <LineIcon size={40} round />
                   </LineShareButton>
-                </Space.Compact>
+                </Space>
               </>
             ),
           });
