@@ -80,7 +80,7 @@ const MyHeader = () => {
       key: "3",
       label: "共有キーからリストを追加",
       icon: <LinkOutlined />,
-      onClick: ()=> setOpen(true),
+      onClick: () => setOpen(true),
     },
     {
       type: "divider",

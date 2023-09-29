@@ -33,6 +33,16 @@ import useShoppingListStore, {
 import { useRouter } from "next/navigation";
 import useMenuStore from "@/stores/useMenuStore";
 import { useEffect, useState } from "react";
+import {
+  EmailIcon,
+  EmailShareButton,
+  FacebookIcon,
+  FacebookShareButton,
+  LineIcon,
+  LineShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+} from "react-share";
 
 interface ShoppingCardProps {
   item: ShoppingList;
@@ -134,25 +144,73 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
         shareShoppingList(item.id).then((share_key) => {
           modal.info({
             title: "リストを共有しました。",
-            content: <>
-            発行された共有キーを共有相手に渡してください。
-            <Space.Compact style={{ width: "100%" }}>
-                <Input
-                  value={share_key}
-                  readOnly
-                  bordered={false}
-                  style={{ color: "#000", backgroundColor: "#323232" }}
-                />
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(share_key!);
-                    messageApi.info("クリップボードに共有キーをコピーしました。");
-                  }}
-                >
-                  <CopyOutlined />
-                </Button>
-              </Space.Compact>
-            </>,
+            content: (
+              <>
+                <div>発行されたURLを共有相手に送ってください。</div>
+                <Space.Compact style={{ width: "100%" }}>
+                  <Input
+                    value={
+                      "https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key
+                    }
+                    readOnly
+                    bordered={false}
+                    style={{ color: "#000", backgroundColor: "#323232" }}
+                  />
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        "https://memory-cart.onrender.com/kaimono?key=" +
+                          share_key
+                      );
+                      messageApi.info(
+                        "クリップボードにURLをコピーしました。"
+                      );
+                    }}
+                  >
+                    <CopyOutlined />
+                  </Button>
+                </Space.Compact>
+                <Space.Compact style={{ width: "100%" }}>
+                  <EmailShareButton
+                    url={
+                      "https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key
+                    }
+                    title={"共有します"}
+                  >
+                    <EmailIcon size={24} round />
+                  </EmailShareButton>
+                  <FacebookShareButton
+                    url={
+                      "https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key
+                    }
+                    quote={"共有します"}
+                  >
+                    <FacebookIcon size={24} round />
+                  </FacebookShareButton>
+                  <TwitterShareButton
+                    url={
+                      "https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key
+                    }
+                    title={"共有します"}
+                  >
+                    <TwitterIcon size={24} round />
+                  </TwitterShareButton>
+                  <LineShareButton
+                    url={
+                      "https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key
+                    }
+                    title={"共有します"}
+                  >
+                    <LineIcon size={24} round />
+                  </LineShareButton>
+                </Space.Compact>
+              </>
+            ),
           });
         });
       },

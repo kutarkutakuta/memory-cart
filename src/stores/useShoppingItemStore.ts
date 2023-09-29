@@ -405,7 +405,7 @@ export const addFromShareKey = async (list_key: string) => {
     .single();
   if (erro1) {
     console.error(erro1);
-    throw new Error("サーバーに接続できないか共有キーが存在しません。");
+    throw new Error("サーバーに接続できないか共有データが存在しません。");
   }
 
   if (listData) {
