@@ -47,7 +47,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     borderRadius: 5,
   };
 
-  const { removeShoppingItem, updateShoppingItems } = useShoppingItemStore();
+  const { removeShoppingItems, updateShoppingItems } = useShoppingItemStore();
 
   // メニュー制御用Hook
   const { openMenu } = useMenuStore();
@@ -59,30 +59,22 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: (
-        <div>
-          <EditOutlined />
-          品物の編集
-        </div>
-      ),
+      label: "品物の編集",
+      icon: <EditOutlined />,
       onClick: () => openMenu("EditItemMenu", undefined, item),
     },
     {
       key: "2",
-      label: (
-        <div>
-          <DeleteOutlined />
-          品物の削除
-        </div>
-      ),
-      onClick: () => removeShoppingItem(item.id!),
+      label: "品物の削除",
+      icon: <DeleteOutlined />,
+      onClick: () => removeShoppingItems([item.id!]),
     },
     {
       type: "divider",
     },
     {
       key: "3",
-      label: <div>￥ 金額を入力</div>,
+      label: "￥ 金額を入力",
       onClick: () => openMenu("PriceMenu", undefined, item),
     },
     {
@@ -107,7 +99,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
-      <Row wrap={false} align={"middle"}>
+      <Row wrap={false} align={"middle"} >
         <Col
           flex="none"
           style={{ paddingRight: "10px", cursor: "grab", touchAction: "none" }}

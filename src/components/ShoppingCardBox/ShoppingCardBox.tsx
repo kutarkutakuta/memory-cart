@@ -107,7 +107,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
     loading,
     sortShoppingItem,
     updateShoppingItems,
-    removeShoppingItem,
+    removeShoppingItems,
   } = useShoppingItemStore();
 
   const [boughtOrder, SetboughtOrder] = useState(true);
@@ -140,13 +140,9 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   // 並び替え項目
   const sortItems: MenuProps["items"] = [
     {
-      key: "2",
-      label: (
-        <>
-          <OrderedListOutlined />
-          登録順
-        </>
-      ),
+      key: "1",
+      label: "登録順",
+      icon: <OrderedListOutlined />,
       onClick: () => {
         const newItems = shoppingItems.sort((a, b) => {
           // 購入済みでソートする場合
@@ -175,13 +171,9 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       },
     },
     {
-      key: "3",
-      label: (
-        <>
-          <SortAscendingOutlined />
-          アイウエオ順
-        </>
-      ),
+      key: "2",
+      label: "アイウエオ順",
+      icon: <SortAscendingOutlined />,
       onClick: () => {
         const newItems = shoppingItems.sort((a, b) => {
           // 購入済みでソートする場合
@@ -199,13 +191,9 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       },
     },
     {
-      key: "1",
-      label: (
-        <>
-          <DatabaseOutlined />
-          カテゴリー順
-        </>
-      ),
+      key: "3",
+      label: "カテゴリー順",
+      icon: <DatabaseOutlined />,
       onClick: () => {
         const newItems = shoppingItems.sort((a, b) => {
           // 購入済みでソートする場合
@@ -239,7 +227,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       type: "divider",
     },
     {
-      key: "0",
+      key: "4",
       label: (
         <div onClick={(e) => e.stopPropagation()}>
           <Checkbox
@@ -259,13 +247,9 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   // メニュー項目
   const menuItems: MenuProps["items"] = [
     {
-      key: "0",
-      label: (
-        <>
-          <BorderOutlined />
-          全て買い物前に戻す
-        </>
-      ),
+      key: "1",
+      label: "全て買い物前に戻す",
+      icon: <BorderOutlined />, 
       onClick: () => {
         updateShoppingItems(
           shoppingItems.map((itm) => itm.id!),
@@ -274,13 +258,9 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       },
     },
     {
-      key: "1",
-      label: (
-        <>
-          <CheckSquareOutlined />
-          全て買い物済にする
-        </>
-      ),
+      key: "2",
+      label: "全て買い物済にする",
+      icon: <CheckSquareOutlined />,
       onClick: () => {
         updateShoppingItems(
           shoppingItems.map((itm) => itm.id!),
@@ -292,29 +272,19 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       type: "divider",
     },
     {
-      key: "2",
-      label: (
-        <>
-          <DeleteOutlined />
-          買い物済を全て削除
-        </>
-      ),
+      key: "3",
+      label: "買い物済を全て削除",
+      icon: <DeleteOutlined />,
       onClick: () => {
-        shoppingItems
-          .filter((item) => item.finished_at != null)
-          .forEach((item) => removeShoppingItem(item.id!));
+        removeShoppingItems(shoppingItems.filter((itm) => itm.finished_at != null).map(itm=>itm.id!));
       },
     },
     {
-      key: "3",
-      label: (
-        <>
-          <DeleteFilled />
-          全て削除
-        </>
-      ),
+      key: "4",
+      label: "全て削除",
+      icon: <DeleteFilled />,
       onClick: () => {
-        shoppingItems.forEach((item) => removeShoppingItem(item.id!));
+        removeShoppingItems(shoppingItems.map(itm=>itm.id!));
       },
     },
   ];
@@ -344,7 +314,6 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
                 <Dropdown
                   menu={{ items: sortItems }}
                   placement="bottomRight"
-                  trigger={["click"]}
                 >
                   <Button type="text" icon={<FilterOutlined />}></Button>
                 </Dropdown>

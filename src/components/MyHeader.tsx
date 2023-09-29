@@ -3,14 +3,18 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 
-import { Button, Col, Row, Space, Tag, Typography } from "antd";
+import { Button, Col, Dropdown, MenuProps, Row, Space, Tag, Typography } from "antd";
 import {
   QuestionCircleOutlined,
   ArrowLeftOutlined,
   UserOutlined,
   LinkOutlined,
+  SettingOutlined,
+  ShoppingOutlined,
 } from "@ant-design/icons";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
+import useMenuStore from "@/stores/useMenuStore";
+import { SettingMenu } from "./Menu/SettingMenu/SettingMenu";
 
 const { Paragraph } = Typography;
 
@@ -18,6 +22,10 @@ const MyHeader = () => {
   const pathname = usePathname();
   const router = useRouter();
 
+  
+  // メニュー制御用Hook
+  const { openMenu } = useMenuStore();
+  
   // 買物リスト操作用Hook
   const { shoppingList } = useShoppingItemStore();
 
@@ -39,7 +47,32 @@ const MyHeader = () => {
       router.push("/");
     }
   };
+
+  // メニュー項目
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "ユーザー設定",
+      icon: <UserOutlined />,
+      onClick: ()=> openMenu("SettingMenu")
+    },
+    {
+      key: "2",
+      label: "よく使う品物の登録",
+      icon: <ShoppingOutlined />,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "3",
+      label: "ヘルプ",
+      icon: <QuestionCircleOutlined />,
+    },
+  ];
+  
   return (
+    <>
     <Row wrap={false} align={"middle"}>
       <Col flex="auto">
         <Row justify="start">
@@ -72,13 +105,16 @@ const MyHeader = () => {
         <Row justify="end">
           <Col>
             <Space>
-              <Button type="text" icon={<QuestionCircleOutlined />}></Button>
-              <Button type="text" icon={<UserOutlined />}></Button>
+              <Dropdown menu={{ items }} placement="bottomRight">
+                  <Button type="text" icon={<SettingOutlined />}></Button>
+                </Dropdown>
             </Space>
           </Col>
         </Row>
       </Col>
     </Row>
+    <SettingMenu></SettingMenu>
+    </>
   );
 };
 export default MyHeader;

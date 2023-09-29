@@ -37,11 +37,11 @@ interface ShoppingItemState {
   fetchShoppingItems: (list_key: string) => Promise<void>;
   clearShoppingItems: () => void;
   addShoppingItem: (list_key: string, name: string) => Promise<void>;
-  removeShoppingItem: (id: number) => Promise<void>;
   updateShoppingItems: (
     ids: number[],
     changes: { [keyPath: string]: any }
   ) => Promise<void>;
+  removeShoppingItems: (ids: number[]) => Promise<void>;
   sortShoppingItem: (shoppingItems: ShoppingItem[]) => void;
   startPolling: (list_key: string) => void;
 }
@@ -165,7 +165,9 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               .eq("list_key", list_key);
             if (!data || data.length == 0) {
               // 共有フラグ解除
-              await localdb.shopping_lists.update(shopping_list.id, { isShare: false });
+              await localdb.shopping_lists.update(shopping_list.id, {
+                isShare: false,
+              });
               shopping_list.isShare = false;
               // メッセージを返すためにthrow
               throw new Error(
@@ -236,35 +238,6 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         set({ error, loading: false });
       }
     },
-    removeShoppingItem: async (id) => {
-      set({ loading: true, error: null });
-      try {
-        // ローカルDBから削除
-        await localdb.shopping_items.delete(id);
-
-        // 共有の場合DBも更新
-        const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
-        const deleteItem = shoppingItems.find((n) => n.id == id)!;
-        if (shoppingList!.isShare) {
-          // 共有済みなのでリストのデータを更新するだけ
-          const { error } = await supabase
-            .from("shopping_items")
-            .delete()
-            .eq("list_key", deleteItem.list_key)
-            .eq("item_key", deleteItem.item_key);
-          if (error) throw error;
-        }
-
-        // ステート更新
-        set((state) => {
-          const m = state.shoppingItems.filter((n) => n.id !== id);
-          return { shoppingItems: m };
-        });
-        set({ loading: false });
-      } catch (error: any) {
-        set({ error, loading: false });
-      }
-    },
     updateShoppingItems: async (ids, changes) => {
       set({ loading: true, error: null });
       try {
@@ -296,6 +269,41 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           if (error) throw error;
         }
 
+        // ステート更新
+        set({ shoppingItems: newItems });
+        set({ loading: false });
+      } catch (error: any) {
+        set({ error, loading: false });
+      }
+    },
+    removeShoppingItems: async (ids) => {
+      set({ loading: true, error: null });
+      try {
+        // ローカルDBから削除
+        ids.forEach(async (id) => await localdb.shopping_items.delete(id));
+
+        // 共有の場合DBも更新
+        const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
+
+        const deleteItems = shoppingItems.filter((n) => {
+          return ids.findIndex((id) => id === n.id) > -1;
+        });
+
+        if (shoppingList && shoppingList.isShare) {
+          const { error } = await supabase
+            .from("shopping_items")
+            .delete()
+            .eq("list_key", shoppingList.list_key)
+            .in(
+              "item_key",
+              deleteItems.map((itm) => itm.item_key)
+            );
+          if (error) throw error;
+        }
+
+        const newItems = shoppingItems.filter(
+          (n) => ids.findIndex((id) => id === n.id) === -1
+        );
         // ステート更新
         set({ shoppingItems: newItems });
         set({ loading: false });

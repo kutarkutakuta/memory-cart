@@ -45,12 +45,12 @@ export interface CommonItem {
 }
 
 interface MasterState {
+  loading: boolean;
+  error: Error | null;
   appSetting: AppSetting | null;
   categories: Category[];
   units: Unit[];
   commonItems: CommonItem[];
-  loading: boolean;
-  error: Error | null;
   fetchData: () => Promise<void>;
   updateSetting: (changes: { [keyPath: string]: any }) => void;
 }
@@ -59,12 +59,12 @@ interface MasterState {
  * マスタ用Hook
  */
 const useMasterStore = create<MasterState>((set) => ({
+  loading: false,
+  error: null,
   appSetting: null,
   categories: [],
   units:[],
   commonItems: [],
-  loading: false,
-  error: null,
   fetchData: async () => {
     set({ loading: true, error: null });
     try {

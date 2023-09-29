@@ -1,14 +1,6 @@
 "use client";
 import useMenuStore from "@/stores/useMenuStore";
-import {
-  Button,
-  Drawer,
-  Select,
-  SelectProps,
-  Space,
-  Tag,
-  message,
-} from "antd";
+import { Button, Drawer, Select, SelectProps, Space, Tag, message } from "antd";
 
 import styles from "./AddItemMenu.module.scss";
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
@@ -35,6 +27,7 @@ export function AddItemMenu() {
   const [list_key, setListKey] = useState<string | null>(null);
   const [addItems, setAddItems] = useState<string[]>([]);
   const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [itemCount, setItemCount] = useState<number>(0);
   const [viewCount, setViewCount] = useState<number>(25);
   const [viewItems, setViewItems] = useState<CommonItem[]>(commonItems);
 
@@ -45,9 +38,9 @@ export function AddItemMenu() {
         return m.category_name == categoryName;
       });
     }
-    setViewItems(newItems.filter((m, i) => i < viewCount));
+    setItemCount(newItems.length);
+    setViewItems(newItems.filter((_m, i) => i < viewCount));
   }, [commonItems, categoryName, viewCount]);
-
 
   const getCategoryOption = () => {
     return categories.map((m) => ({ label: m.name, value: m.name }));
@@ -78,12 +71,17 @@ export function AddItemMenu() {
 
   const { shoppingItems, addShoppingItem } = useShoppingItemStore();
 
-  const [itemOptions, setItemOptions] = useState<SelectProps['options']>([]);
+  const [itemOptions, setItemOptions] = useState<SelectProps["options"]>([]);
   const handleItemSearch = (newValue: string) => {
-    const newOptions = newValue.length > 0 ? commonItems.filter(itm => itm.name?.startsWith(newValue)).map(itm => ({
-      value: itm.name,
-                  label:itm.name,
-    })) : [];
+    const newOptions =
+      newValue.length > 0
+        ? commonItems
+            .filter((itm) => itm.name?.startsWith(newValue))
+            .map((itm) => ({
+              value: itm.name,
+              label: itm.name,
+            }))
+        : [];
     setItemOptions(newOptions);
   };
 
@@ -113,7 +111,7 @@ export function AddItemMenu() {
         }
         placement={"right"}
         open={openFlag["AddItemMenu"]}
-        onClose={()=>closeMenu("AddItemMenu")}
+        onClose={() => closeMenu("AddItemMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <div>☆よく買う物から探す☆</div>
@@ -140,13 +138,19 @@ export function AddItemMenu() {
               </Tag>
             ))}
           </Space>
-          <Button
-            type="link"
-            onClick={() => setViewCount(viewCount + 50)}
-            style={{ marginLeft: "auto", marginRight: "auto" }}
-          >
-            もっと表示
-          </Button>
+
+          {itemCount > viewCount ? (
+            <div style={{ textAlign: "center" }}>
+              <Button
+                type="link"
+                size="small"
+                onClick={() => setViewCount(viewCount + 50)}
+                style={{ fontSize: "smaller" }}
+              >
+                もっと表示
+              </Button>
+            </div>
+          ) : null}
 
           <Button
             type="primary"
@@ -161,7 +165,10 @@ export function AddItemMenu() {
             追加
           </Button>
 
-          <Button style={{ width: "100%" }} onClick={()=>closeMenu("AddItemMenu")}>
+          <Button
+            style={{ width: "100%" }}
+            onClick={() => closeMenu("AddItemMenu")}
+          >
             キャンセル
           </Button>
         </Space>

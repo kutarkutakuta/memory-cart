@@ -90,22 +90,14 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "2",
-      label: (
-        <div>
-          <FormOutlined />
-          リストの編集
-        </div>
-      ),
+      label: "リストの編集",
+      icon: <FormOutlined />,
       onClick: () => openMenu("ShoppingListMenu", item),
     },
     {
       key: "3",
-      label: (
-        <div>
-          <DeleteFilled />
-          リストの削除
-        </div>
-      ),
+      label: "リストの削除",
+      icon: <DeleteFilled />,
       onClick: () => {
         modal.confirm({
           title: item.isShare
@@ -133,12 +125,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "4",
-      label: (
-        <div>
-          <LinkOutlined />
-          リストを共有する
-        </div>
-      ),
+      label: "リストを共有する",
+      icon: <LinkOutlined />,
       onClick: () => {
         shareShoppingList(item.id).then(() => {
           modal.info({
@@ -151,12 +139,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "5",
-      label: (
-        <div>
-          <DisconnectOutlined />
-          リストの共有を解除
-        </div>
-      ),
+      label: "リストの共有を解除",
+      icon: <DisconnectOutlined />,
       onClick: async () => {
         modal.confirm({
           title: "リストの共有を解除します。",
@@ -172,7 +156,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           okType: "danger",
           cancelText: "キャンセル",
           onOk() {
-            removeShoppingList(item.id!).then(() =>
+            unShareShoppingList(item.id!).then(() =>
               messageApi.info("リストの共有を解除しました。")
             );
           },
@@ -185,12 +169,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "6",
-      label: (
-        <div>
-          <FolderAddOutlined />
-          コピーしてリストを追加
-        </div>
-      ),
+      label: "コピーしてリストを追加",
+      icon: <FolderAddOutlined />,
       onClick: () => {
         addShoppingList(item).then(() =>
           messageApi.info("コピーしたリストを追加しました。")
