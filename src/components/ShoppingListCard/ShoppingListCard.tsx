@@ -4,9 +4,11 @@ import {
   Button,
   Col,
   Dropdown,
+  Input,
   MenuProps,
   Modal,
   Row,
+  Space,
   Tag,
   message,
 } from "antd";
@@ -21,6 +23,7 @@ import {
   DisconnectOutlined,
   DeleteFilled,
   ExclamationCircleFilled,
+  CopyOutlined,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingListCard.module.scss";
@@ -112,7 +115,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           okText: "削除",
           okType: "danger",
           cancelText: "キャンセル",
-          onOk() {
+          onOk: () => {
             removeShoppingList(item.id!).then(() =>
               messageApi.info("リストを削除しました。")
             );
@@ -128,10 +131,28 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       label: "リストを共有する",
       icon: <LinkOutlined />,
       onClick: () => {
-        shareShoppingList(item.id).then(() => {
+        shareShoppingList(item.id).then((share_key) => {
           modal.info({
             title: "リストを共有しました。",
-            content: <>発行された共有キーを共有相手に渡してください。</>,
+            content: <>
+            発行された共有キーを共有相手に渡してください。
+            <Space.Compact style={{ width: "100%" }}>
+                <Input
+                  value={share_key}
+                  readOnly
+                  bordered={false}
+                  style={{ color: "#000", backgroundColor: "#323232" }}
+                />
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(share_key!);
+                    messageApi.info("クリップボードに共有キーをコピーしました。");
+                  }}
+                >
+                  <CopyOutlined />
+                </Button>
+              </Space.Compact>
+            </>,
           });
         });
       },
@@ -155,7 +176,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           okText: "共有解除",
           okType: "danger",
           cancelText: "キャンセル",
-          onOk() {
+          onOk: () => {
             unShareShoppingList(item.id!).then(() =>
               messageApi.info("リストの共有を解除しました。")
             );

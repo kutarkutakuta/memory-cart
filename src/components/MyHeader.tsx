@@ -1,9 +1,21 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 
-import { Button, Col, Dropdown, MenuProps, Row, Space, Tag, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Dropdown,
+  Input,
+  MenuProps,
+  Modal,
+  Row,
+  Space,
+  Tag,
+  Typography,
+  message,
+} from "antd";
 import {
   QuestionCircleOutlined,
   ArrowLeftOutlined,
@@ -15,6 +27,7 @@ import {
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
 import { SettingMenu } from "./Menu/SettingMenu/SettingMenu";
+import useShoppingListStore from "@/stores/useShoppingListStore";
 
 const { Paragraph } = Typography;
 
@@ -22,10 +35,9 @@ const MyHeader = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  
   // メニュー制御用Hook
   const { openMenu } = useMenuStore();
-  
+
   // 買物リスト操作用Hook
   const { shoppingList } = useShoppingItemStore();
 
@@ -54,7 +66,7 @@ const MyHeader = () => {
       key: "1",
       label: "ユーザー設定",
       icon: <UserOutlined />,
-      onClick: ()=> openMenu("SettingMenu")
+      onClick: () => openMenu("SettingMenu"),
     },
     {
       key: "2",
@@ -66,54 +78,93 @@ const MyHeader = () => {
     },
     {
       key: "3",
+      label: "共有キーからリストを追加",
+      icon: <LinkOutlined />,
+      onClick: ()=> setOpen(true),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "4",
       label: "ヘルプ",
       icon: <QuestionCircleOutlined />,
     },
   ];
-  
+
+  // メッセージ用Hook
+  const [messageApi, contextHolder] = message.useMessage();
+  // 買い物リスト制御用Hook
+  const { addFromShareKey } = useShoppingListStore();
+
+  const [open, setOpen] = useState(false);
+  const [shareKey, setShareKey] = useState("");
+
   return (
     <>
-    <Row wrap={false} align={"middle"}>
-      <Col flex="auto">
-        <Row justify="start">
-          <Col>
-            <Paragraph ellipsis={true} style={{margin:0,}}>
-              {pathname == "/" ? (
-                <span style={{ paddingLeft: 10}}>買物リスト</span>
-              ) : (
-                <>
-                  <Button
-                    type="text"
-                    icon={<ArrowLeftOutlined />}
-                    onClick={() => handleGoBack()}
-                  ></Button>
-                  <Space>
-                    <span>{shoppingList?.name}</span>
-                    {shoppingList?.isShare ? (
-                      <Tag icon={<LinkOutlined />} color="#2E8B57">
-                        共有中
-                      </Tag>
-                    ) : null}
-                  </Space>
-                </>
-              )}
-            </Paragraph>
-          </Col>
-        </Row>
-      </Col>
-      <Col flex="none">
-        <Row justify="end">
-          <Col>
-            <Space>
-              <Dropdown menu={{ items }} placement="bottomRight">
+      {contextHolder}
+      <Modal
+        title="共有キーを入力してください"
+        open={open}
+        onOk={() =>
+          addFromShareKey(shareKey).then(() => {
+            messageApi.success("リストを追加しました。");
+            setOpen(false);
+          })
+        }
+        onCancel={() => {
+          setOpen(false);
+          setShareKey("");
+        }}
+      >
+        <Input
+          placeholder="共有キー"
+          value={shareKey}
+          maxLength={50}
+          onChange={(e) => setShareKey(e.target.value)}
+        ></Input>
+      </Modal>
+      <Row wrap={false} align={"middle"}>
+        <Col flex="auto">
+          <Row justify="start">
+            <Col>
+              <Paragraph ellipsis={true} style={{ margin: 0 }}>
+                {pathname == "/" ? (
+                  <span style={{ paddingLeft: 10 }}>買物リスト</span>
+                ) : (
+                  <>
+                    <Button
+                      type="text"
+                      icon={<ArrowLeftOutlined />}
+                      onClick={() => handleGoBack()}
+                    ></Button>
+                    <Space>
+                      <span>{shoppingList?.name}</span>
+                      {shoppingList?.isShare ? (
+                        <Tag icon={<LinkOutlined />} color="#2E8B57">
+                          共有中
+                        </Tag>
+                      ) : null}
+                    </Space>
+                  </>
+                )}
+              </Paragraph>
+            </Col>
+          </Row>
+        </Col>
+        <Col flex="none">
+          <Row justify="end">
+            <Col>
+              <Space>
+                <Dropdown menu={{ items }} placement="bottomRight">
                   <Button type="text" icon={<SettingOutlined />}></Button>
                 </Dropdown>
-            </Space>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
-    <SettingMenu></SettingMenu>
+              </Space>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <SettingMenu></SettingMenu>
     </>
   );
 };

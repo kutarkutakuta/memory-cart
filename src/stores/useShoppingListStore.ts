@@ -24,6 +24,7 @@ interface ShoppingListState {
   loading: boolean;
   error: Error | null;
   fetchShoppingList: () => Promise<void>;
+  clearShoppingLists: () => void;
   addShoppingList: (copyItem?: ShoppingList) => Promise<void>;
   removeShoppingList: (id: number) => Promise<void>;
   updateShoppingList: (
@@ -31,7 +32,7 @@ interface ShoppingListState {
     changes: { [keyPath: string]: any }
   ) => Promise<void>;
   sortShoppingList: (odlIndex: number, newIndex: number) => void;
-  shareShoppingList: (id: number) => Promise<void>;
+  shareShoppingList: (id: number) => Promise<string | undefined>;
   unShareShoppingList: (id: number) => Promise<void>;
   addFromShareKey: (list_key: string) => Promise<void>;
 }
@@ -58,6 +59,9 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     } catch (error: any) {
       set({ error, loading: false });
     }
+  },
+  clearShoppingLists : ()=>{
+    set({ shoppingLists: [], loading: false, error :null });
   },
   addShoppingList: async (copyItem) => {
     set({ loading: true, error: null });
@@ -271,6 +275,8 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       });
       set({ shoppingLists: newShoppingLists });
       set({ loading: false });
+
+      return new_list_key;
     } catch (error: any) {
       set({ error, loading: false });
     }
@@ -328,11 +334,14 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         .select("*")
         .eq("list_key", list_key)
         .single();
-      if (erro1) throw erro1;
+      if (erro1) {
+        console.error(erro1);
+        throw new Error("サーバーに接続できないか共有キーが存在しません。");
+      }
 
       if (listData) {
         if (shoppingLists.findIndex((m) => m.list_key == list_key) > -1) {
-          throw "共有済みのリストが既に存在しています。";
+          throw new Error("共有済みのリストが既にあります。");
         }
 
         const addList: ShoppingList = {

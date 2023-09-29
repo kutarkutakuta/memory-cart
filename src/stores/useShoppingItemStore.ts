@@ -190,7 +190,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       }
     },
     clearShoppingItems: () => {
-      set({ shoppingList: null, shoppingItems: [] });
+      set({ shoppingList: null, shoppingItems: [], error: null, loading: false });
       // ポーリングも停止！
       clearTimeout(pollTimer);
     },

@@ -74,10 +74,14 @@ const ShoppingListBox = () => {
     sortShoppingList,
     addShoppingList,
     fetchShoppingList,
-    addFromShareKey,
+    clearShoppingLists,
   } = useShoppingListStore();
   useEffect(() => {
     fetchShoppingList();
+    return ()=> {
+      // ページを離れる際のクリーンアップ
+      clearShoppingLists();
+    }
   }, []);
 
   // メッセージ用Hook
@@ -134,39 +138,7 @@ const ShoppingListBox = () => {
               >
                 リストを追加
               </Button>
-              <Popover
-                open={openShareKey}
-                onOpenChange={(e) => setOpenShareKey(e)}
-                title="共有キーを入力してください"
-                content={
-                  <>
-                    <Space.Compact>
-                      <Input
-                        value={shareKey}
-                        onChange={(e) => setShareKey(e.target.value)}
-                      ></Input>
-                      <Button
-                        onClick={() => {
-                          addFromShareKey(shareKey).then(() =>
-                            messageApi.success("リストを追加しました。")
-                          );
-                        }}
-                      >
-                        OK
-                      </Button>
-                    </Space.Compact>
-                    <div>
-                    <a onClick={() => setOpenShareKey(false)}>Cancel</a>
-                    </div>
-                    
-                  </>
-                }
-                trigger="hover"
-              >
-                <Button type="text" icon={<LinkOutlined />}>
-                  共有キーから追加
-                </Button>
-              </Popover>
+              
             </Col>
           </Row>
         </Col>
