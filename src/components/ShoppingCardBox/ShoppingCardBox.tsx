@@ -338,6 +338,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
               display: "flex",
               flexWrap: "wrap",
               userSelect: "none",
+              gap: "2px",
             }}
           >
             {shoppingItems.map((item) => (

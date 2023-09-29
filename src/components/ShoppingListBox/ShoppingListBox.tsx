@@ -155,6 +155,7 @@ const ShoppingListBox = () => {
               display: "flex",
               flexWrap: "wrap",
               userSelect: "none",
+              gap: "2px",
             }}
           >
             {shoppingLists.map((item) => (

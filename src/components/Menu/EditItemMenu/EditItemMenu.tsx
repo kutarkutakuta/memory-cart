@@ -60,8 +60,12 @@ export function EditItemMenu() {
       <Drawer
         title={
           <>
-            <ShoppingOutlined />
-            <span style={{ paddingLeft: 4 }}>品物の編集</span>
+            <Input
+            placeholder="品物の名前"
+            maxLength={15}
+            value={formData.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+          />
           </>
         }
         placement={"left"}
@@ -70,12 +74,7 @@ export function EditItemMenu() {
         onClose={() => closeMenu("EditItemMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-          <Input
-            placeholder="品物の名前"
-            maxLength={15}
-            value={formData.name}
-            onChange={(e) => handleChange("name", e.target.value)}
-          />
+          
 
           <Select
             showSearch
@@ -91,14 +90,13 @@ export function EditItemMenu() {
               placeholder="数量"
               maxLength={5}
               inputMode="decimal"
-              style={{ width: "200px" }}
               value={formData.amount}
               onChange={(e) => handleChange("amount", e)}
             />
 
             <Select
               allowClear
-              style={{ width: 100 }}
+              style={{ width: "100px" }}
               options={units.map((m) => ({ label: m.name, value: m.name }))}
               value={formData.unit}
               onChange={(e) => handleChange("unit", e)}
@@ -129,7 +127,7 @@ export function EditItemMenu() {
             type="primary"
             loading={loading}
             style={{ width: "100%" }}
-            onClick={(e) => {
+            onClick={() => {
               updateShoppingItems([selectedItem?.id!], formData).then(() =>
                 closeMenu("EditItemMenu")
               );

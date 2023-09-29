@@ -83,7 +83,6 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    margin: 2,
     borderRadius: 5,
   };
 

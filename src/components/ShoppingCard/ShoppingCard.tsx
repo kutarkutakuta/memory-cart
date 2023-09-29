@@ -43,7 +43,6 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     transform: CSS.Transform.toString(transform),
     transition,
     // スタイル調整用
-    margin: 2,
     borderRadius: 5,
   };
 
@@ -77,9 +76,6 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       label: "￥ 金額を入力",
       onClick: () => openMenu("PriceMenu", undefined, item),
     },
-    {
-      type: "divider",
-    },
   ];
 
   /**
@@ -99,13 +95,13 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
-      <Row wrap={false} align={"middle"} >
+      <Row wrap={false} align={"middle"}>
         <Col
           flex="none"
           style={{ paddingRight: "10px", cursor: "grab", touchAction: "none" }}
           data-enable-dnd="true"
         >
-          <div style={{ padding: 5 }}>
+          <div style={{ paddingLeft: 5, paddingRight: 5 }}>
             <HolderOutlined />
           </div>
         </Col>
@@ -147,42 +143,55 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
               </span>
             ) : null}
 
-            {item.priority ? (
-              <Tooltip trigger="click" title={item.priority}>
-                <ExclamationCircleTwoTone
-                  twoToneColor={
-                    item.priority == "高くても買う"
-                      ? "#eb2f96"
-                      : item.priority == "価格を見て決める"
-                      ? "#52c41a"
-                      : ""
-                  }
-                />
-              </Tooltip>
-            ) : null}
-
-            {item.memo ? (
-              <Tooltip title={item.memo} trigger="click">
-                <MessageTwoTone />
-              </Tooltip>
-            ) : null}
+            <div>
+              <div>
+                {item.priority ? (
+                  <Tooltip trigger="click" title={item.priority}>
+                    <ExclamationCircleTwoTone
+                      twoToneColor={
+                        item.priority == "高くても買う"
+                          ? "#eb2f96"
+                          : item.priority == "価格を見て決める"
+                          ? "#52c41a"
+                          : ""
+                      }
+                    />
+                  </Tooltip>
+                ) : null}
+              </div>
+              <div>
+                {item.memo ? (
+                  <Tooltip title={item.memo} trigger="click">
+                    <MessageTwoTone />
+                  </Tooltip>
+                ) : null}
+              </div>
+            </div>
           </Space>
+        </Col>
+        <Col flex="none">
+          <div style={{ textAlign: "right" }}>
+            <Tag
+              color={
+                categories.find((n) => n.name == item.category_name)?.bgcolor!
+              }
+              style={{
+                color: categories.find((n) => n.name == item.category_name)
+                  ?.color!,
+              }}
+              bordered={false}
+            >
+              {item.category_name}
+            </Tag>
+          </div>
+          <div style={{ fontSize: "smaller", marginRight:"6px", textAlign: "right"}}>
+            {item.buying_price ? "￥" + item.buying_price.toLocaleString() : ""}
+            {item.buying_amount ? "(" + item.buying_amount + (item.buying_unit || "") + ")" : ""}
+          </div>
         </Col>
         <Col flex="none">
           <Row justify="end">
             <Col>
-              <Tag
-                color={
-                  categories.find((n) => n.name == item.category_name)?.bgcolor!
-                }
-                style={{
-                  color: categories.find((n) => n.name == item.category_name)
-                    ?.color!,
-                }}
-                bordered={false}
-              >
-                {item.category_name}
-              </Tag>
               {/* <Button
               size="small"
                 type="text"
