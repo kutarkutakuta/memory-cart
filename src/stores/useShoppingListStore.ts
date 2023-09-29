@@ -3,7 +3,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import supabase from "@/lib/supabase";
 import localdb from "@/lib/localdb";
 import { nanoid } from "nanoid";
-import { ShoppingItem } from "./useShoppingItemStore";
+import { ShoppingItem, addFromShareKey } from "./useShoppingItemStore";
 
 /**
  * 買い物リスト
@@ -60,8 +60,8 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       set({ error, loading: false });
     }
   },
-  clearShoppingLists : ()=>{
-    set({ shoppingLists: [], loading: false, error :null });
+  clearShoppingLists: () => {
+    set({ shoppingLists: [], loading: false, error: null });
   },
   addShoppingList: async (copyItem) => {
     set({ loading: true, error: null });
@@ -325,83 +325,13 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
   addFromShareKey: async (list_key) => {
     set({ loading: true, error: null });
     try {
-      // 買い物リスト操作用Hook
-      const { shoppingLists } = useShoppingListStore.getState();
+      // 共有キーから買い物リストと品物を作成
+      const addList = await addFromShareKey(list_key);
 
-      // サーバーDBから買い物リストを取得
-      const { data: listData, error: erro1 } = await supabase
-        .from("shopping_lists")
-        .select("*")
-        .eq("list_key", list_key)
-        .single();
-      if (erro1) {
-        console.error(erro1);
-        throw new Error("サーバーに接続できないか共有キーが存在しません。");
-      }
-
-      if (listData) {
-        if (shoppingLists.findIndex((m) => m.list_key == list_key) > -1) {
-          throw new Error("共有済みのリストが既にあります。");
-        }
-
-        const addList: ShoppingList = {
-          id:
-            shoppingLists.reduce((max, current) => {
-              if (current.id > max) return current.id;
-              else return max;
-            }, 0) + 1,
-          list_key: list_key,
-          order_number: shoppingLists.length + 1,
-          name: listData.name,
-          memo: listData.memo,
-          isShare: true,
-          created_user: listData.created_user,
-          created_at: listData.created_at,
-        };
-
-        // ローカルDBに買物リストを追加
-        await localdb.shopping_lists.add(addList);
-
-        // サーバーDBから品物を取得
-        const { data: itemData, error: error2 } = await supabase
-          .from("shopping_items")
-          .select("*")
-          .eq("list_key", list_key);
-        if (error2) throw error2;
-
-        // ローカルDBに品物を追加
-        if (itemData && itemData.length > 0) {
-          await localdb.shopping_items.bulkAdd(
-            itemData.map((item: ShoppingItem) => ({
-              list_key: list_key,
-              item_key: item.item_key,
-              order_number: item.order_number,
-              name: item.name,
-              category_name: item.category_name
-                ? item.category_name
-                : undefined,
-              amount: item.amount ? item.amount : undefined,
-              unit: item.unit ? item.unit : undefined,
-              priority: item.priority ? item.priority : undefined,
-              memo: item.memo ? item.memo : undefined,
-              buying_amount: item.buying_amount
-                ? item.buying_amount
-                : undefined,
-              buying_unit: item.buying_unit ? item.buying_unit : undefined,
-              buying_price: item.buying_price ? item.buying_price : undefined,
-              created_user: item.created_user ? item.created_user : undefined,
-              created_at: item.created_at ? item.created_at : undefined,
-              finished_user: item.finished_user
-                ? item.finished_user
-                : undefined,
-              finished_at: item.finished_at ? item.finished_at : undefined,
-            }))
-          );
-        }
-
-        // ステート更新
-        set({ shoppingLists: [...shoppingLists, addList] });
-      }
+      // ステート更新
+      set((state) => {
+        return { shoppingLists: [...state.shoppingLists, addList!] };
+      });
 
       set({ loading: false });
     } catch (error: any) {
