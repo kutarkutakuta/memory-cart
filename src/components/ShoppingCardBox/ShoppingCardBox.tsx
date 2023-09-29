@@ -368,7 +368,6 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
             style={{
               display: "flex",
               flexWrap: "wrap",
-              paddingLeft: "5px",
               userSelect: "none",
             }}
           >

@@ -69,8 +69,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    margin: 4,
-    padding: 2,
+    margin: 2,
     borderRadius: 5,
   };
 
@@ -218,7 +217,9 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           style={{ paddingRight: "10px", cursor: "grab", touchAction: "none" }}
           data-enable-dnd="true"
         >
-          <HolderOutlined />
+          <div style={{ padding: 5 }}>
+            <HolderOutlined />
+          </div>
         </Col>
         <Col flex="auto">
           <Button
