@@ -1,11 +1,21 @@
 "use client";
 import useMenuStore from "@/stores/useMenuStore";
-import { Button, Drawer, Select, SelectProps, Space, Tag, message } from "antd";
+import {
+  Button,
+  Drawer,
+  Radio,
+  Select,
+  SelectProps,
+  Space,
+  Tag,
+  message,
+} from "antd";
 
 import styles from "./AddItemMenu.module.scss";
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
 import { useEffect, useState } from "react";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
+import useFavoriteItemStore, { FavoriteItem } from "@/stores/useFavoriteItemStore";
 
 export function AddItemMenu() {
   // メニュー制御用Hook
@@ -14,13 +24,16 @@ export function AddItemMenu() {
   // マスター用Hook
   const { categories, commonItems } = useMasterStore();
 
+  // お気に入り品用Hook
+  const { favoriteItems } = useFavoriteItemStore();
+
   // 初期化
   useEffect(() => {
     if (selectedList) {
       setListKey(selectedList.list_key);
       setAddItems([]);
       setCategoryName(null);
-      setViewCount(25);
+      setViewItemCount(25);
     }
   }, [openFlag["AddItemMenu"]]);
 
@@ -28,32 +41,35 @@ export function AddItemMenu() {
   const [addItems, setAddItems] = useState<string[]>([]);
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [itemCount, setItemCount] = useState<number>(0);
-  const [viewCount, setViewCount] = useState<number>(25);
-  const [viewItems, setViewItems] = useState<CommonItem[]>(commonItems);
+  const [viewItemCount, setViewItemCount] = useState<number>(25);
+  const [viewCommons, setViewCommons] = useState<CommonItem[]>(commonItems);
+  const [viewFavorites, setViewFavorites] = useState<FavoriteItem[]>([]);
+  const [searchMode, setSearchMode] = useState(1);
 
   useEffect(() => {
-    let newItems = commonItems;
-    if (categoryName != null) {
-      newItems = commonItems.filter((m) => {
-        return m.category_name == categoryName;
-      });
+
+    if(searchMode === 1){
+      let items: FavoriteItem[] = favoriteItems;
+      if (categoryName != null) {
+        items = favoriteItems.filter((m) => {
+          return m.category_name == categoryName;
+        });
+      }
+      setItemCount(items.length);
+      setViewFavorites(items.filter((_m, i) => i < viewItemCount));
     }
-    setItemCount(newItems.length);
-    setViewItems(newItems.filter((_m, i) => i < viewCount));
-  }, [commonItems, categoryName, viewCount]);
-
-  const getCategoryOption = () => {
-    return categories.map((m) => ({ label: m.name, value: m.name }));
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setCategoryName(value);
-    setViewCount(20);
-  };
-
-  const handleItemChange = (value: Array<string>) => {
-    setAddItems(value);
-  };
+    else{
+      let newItems = commonItems;
+      if (categoryName != null) {
+        newItems = commonItems.filter((m) => {
+          return m.category_name == categoryName;
+        });
+      }
+      setItemCount(newItems.length);
+      setViewCommons(newItems.filter((_m, i) => i < viewItemCount));
+    }
+    
+  }, [commonItems, favoriteItems, searchMode, categoryName, viewItemCount]);
 
   const handleTagClick = (value: string) => {
     if (
@@ -67,27 +83,40 @@ export function AddItemMenu() {
     }
   };
 
+  // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();
 
   const { shoppingItems, addShoppingItem } = useShoppingItemStore();
 
   const [itemOptions, setItemOptions] = useState<SelectProps["options"]>([]);
+  
   const handleItemSearch = (newValue: string) => {
-    const newOptions =
-      newValue.length > 0
-        ? commonItems
-            .filter((itm) => itm.name?.startsWith(newValue))
-            .map((itm) => ({
-              value: itm.name,
-              label: itm.name,
-            }))
-        : [];
-    setItemOptions(newOptions);
+
+    if(newValue.length > 0){
+      const a = commonItems
+      .filter((itm) => itm.name?.startsWith(newValue))
+      .map((itm) => ({
+        value: itm.name!,
+        label: itm.name!,
+      }));
+      const b = favoriteItems
+      .filter((itm) => itm.name?.startsWith(newValue))
+      .map((itm) => ({
+        value: itm.name,
+        label: itm.name,
+      }));
+      ;
+      setItemOptions(a.concat(b));
+    }
+    else{
+      setItemOptions([]);
+    }
   };
+
 
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <Drawer
         title={
           <>
@@ -105,7 +134,7 @@ export function AddItemMenu() {
                   value: d.value,
                   label: d.text,
                 }))}
-                onChange={handleItemChange}
+                onChange={(e)=>setAddItems(e)}
               />
             </span>
           </>
@@ -115,7 +144,17 @@ export function AddItemMenu() {
         onClose={() => closeMenu("AddItemMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-          <div>☆よく買う物から探す☆</div>
+
+          <Select
+            style={{ width: "100%" }}
+            onChange={(e) => {
+              setViewItemCount(20);
+              setSearchMode(e);
+            }}
+            options={[{ value: 1, label: "お気に入りから探す" },{ value: 2, label: "一般品から探す" }]}
+            value={searchMode}
+          />
+
           <Select
             showSearch
             allowClear
@@ -123,28 +162,45 @@ export function AddItemMenu() {
             maxLength={500}
             style={{ width: "100%" }}
             placeholder="カテゴリで絞り込み"
-            onChange={handleCategoryChange}
-            options={getCategoryOption()}
+            onChange={(e) =>{
+              setViewItemCount(20);
+              setCategoryName(e);
+            }}
+            options={categories.map((m) => ({ label: m.name, value: m.name }))}
             value={categoryName}
           />
-          <Space size={[0, 8]} wrap>
-            {viewItems.map((m) => (
-              <Tag
-                key={m.id}
-                style={{ cursor: "pointer" }}
-                onClick={() => handleTagClick(m.name!)}
-              >
-                {m.name}
-              </Tag>
-            ))}
-          </Space>
+          {searchMode === 1 ? (
+            <Space size={[0, 8]} wrap>
+              {viewFavorites.map((m) => (
+                <Tag
+                  key={m.id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleTagClick(m.name!)}
+                >
+                  {m.name}
+                </Tag>
+              ))}
+            </Space>
+          ) : (
+            <Space size={[0, 8]} wrap>
+              {viewCommons.map((m) => (
+                <Tag
+                  key={m.id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleTagClick(m.name!)}
+                >
+                  {m.name}
+                </Tag>
+              ))}
+            </Space>
+          )}
 
-          {itemCount > viewCount ? (
+          {itemCount > viewItemCount ? (
             <div style={{ textAlign: "center" }}>
               <Button
                 type="link"
                 size="small"
-                onClick={() => setViewCount(viewCount + 50)}
+                onClick={() => setViewItemCount(viewItemCount + 50)}
                 style={{ fontSize: "smaller" }}
               >
                 もっと表示

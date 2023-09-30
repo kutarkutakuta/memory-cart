@@ -36,13 +36,13 @@ export function FavoriteItemMenu() {
   // 初期化
   useEffect(() => {
     setCategoryName(null);
-    setCommonViewCount(25);
+    setViewCommonCount(25);
   }, [openFlag["FavoriteItemMenu"]]);
 
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [commonItemCount, setCommonItemCount] = useState<number>(0);
-  const [commonViewCount, setCommonViewCount] = useState<number>(25);
-  const [commonViewItems, setCommonViewItems] = useState<CommonItem[]>([]);
+  const [viewCommonCount, setViewCommonCount] = useState<number>(25);
+  const [viewCommons, setviewCommons] = useState<CommonItem[]>([]);
   const [viewFavorites, setViewFavorites] = useState<FavoriteItem[]>([]);
 
   useEffect(() => {
@@ -53,8 +53,8 @@ export function FavoriteItemMenu() {
       });
     }
     setCommonItemCount(commons.length);
-    setCommonViewItems(commons.filter((_m, i) => i < commonViewCount));
-  }, [categoryName, commonItems, commonViewCount]);
+    setviewCommons(commons.filter((_m, i) => i < viewCommonCount));
+  }, [categoryName, commonItems, viewCommonCount]);
 
   useEffect(() => {
     let items: FavoriteItem[] = [];
@@ -68,7 +68,7 @@ export function FavoriteItemMenu() {
 
   const handleCategoryChange = (value: string) => {
     setCategoryName(value);
-    setCommonViewCount(20);
+    setViewCommonCount(20);
   };
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -84,10 +84,13 @@ export function FavoriteItemMenu() {
    */
   const handleInputConfirm = () => {
     if (inputValue) {
-      if (viewFavorites.findIndex((itm) => itm.name == inputValue) === -1) {
-        addFavoriteItem(categoryName!, inputValue);
+      const itm = favoriteItems.find((itm) => itm.name == inputValue);
+      if (itm) {
+        messageApi.warning(
+          `${inputValue}は「${itm.category_name}」に追加済みです`
+        );
       } else {
-        messageApi.warning(`${inputValue}は追加済みです`);
+        addFavoriteItem(categoryName!, inputValue);
       }
     }
     setInputVisible(false);
@@ -106,10 +109,13 @@ export function FavoriteItemMenu() {
    * @param value
    */
   const handleTagClick = (value: CommonItem) => {
-    if (viewFavorites.findIndex((itm) => itm.name == value.name) === -1) {
-      addFavoriteItem(categoryName!, value.name!);
+    const itm = favoriteItems.find((itm) => itm.name == value.name);
+    if (itm) {
+      messageApi.warning(
+        `${value.name}は「${itm.category_name}」に追加済みです`
+      );
     } else {
-      messageApi.warning(`${value.name!}は追加済みです`);
+      addFavoriteItem(categoryName!, value.name!);
     }
   };
 
@@ -141,38 +147,39 @@ export function FavoriteItemMenu() {
             </Divider> */}
             <br />
             <br />
-            {inputVisible ? (
-              <Input
-                ref={inputRef}
-                type="text"
-                size="small"
-                maxLength={20}
-                style={{
-                  width: "100%",
-                  height: 24,
-                  marginInlineEnd: 8,
-                  verticalAlign: "top",
-                }}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onBlur={handleInputConfirm}
-                onPressEnter={handleInputConfirm}
-              />
-            ) : (
-              <Tag
-                style={{
-                  height: 24,
-                  background: token.colorBgContainer,
-                  borderStyle: "dashed",
-                }}
-                icon={<PlusOutlined />}
-                onClick={() => setInputVisible(true)}
-              >
-                New Item
-              </Tag>
-            )}
 
             <Space size={[0, 8]} wrap>
+              {inputVisible ? (
+                <Input
+                  ref={inputRef}
+                  type="text"
+                  size="small"
+                  maxLength={20}
+                  style={{
+                    width: "100%",
+                    height: 24,
+                    marginInlineEnd: 8,
+                    verticalAlign: "top",
+                  }}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onBlur={handleInputConfirm}
+                  onPressEnter={handleInputConfirm}
+                />
+              ) : (
+                <Tag
+                  style={{
+                    height: 24,
+                    background: token.colorBgContainer,
+                    borderStyle: "dashed",
+                  }}
+                  icon={<PlusOutlined />}
+                  onClick={() => setInputVisible(true)}
+                >
+                  New Item
+                </Tag>
+              )}
+
               {viewFavorites.map((tag, index) => {
                 const tagElem = (
                   <Tag
@@ -196,7 +203,7 @@ export function FavoriteItemMenu() {
               ▽ 一般的な品物から探す ▽
             </Divider>
             <Space size={[0, 8]} wrap>
-              {commonViewItems.map((m) => (
+              {viewCommons.map((m) => (
                 <Tag
                   key={m.id}
                   style={{ cursor: "pointer" }}
@@ -206,12 +213,12 @@ export function FavoriteItemMenu() {
                 </Tag>
               ))}
             </Space>
-            {commonItemCount > commonViewCount ? (
+            {commonItemCount > viewCommonCount ? (
               <div style={{ textAlign: "center" }}>
                 <Button
                   type="link"
                   size="small"
-                  onClick={() => setCommonViewCount(commonViewCount + 50)}
+                  onClick={() => setViewCommonCount(viewCommonCount + 50)}
                   style={{ fontSize: "smaller" }}
                 >
                   もっと表示

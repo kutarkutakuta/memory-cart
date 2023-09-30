@@ -36,6 +36,22 @@ export function PriceMenu() {
         onClose={() => closeMenu("PriceMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+
+          <Space.Compact>
+            <InputNumber
+              inputMode="decimal"
+              placeholder="価格"
+              prefix="￥"
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
+              style={{ width: "150px" }}
+              value={(formData.buying_price || "").toString()}
+              onChange={(e) => handleChange("buying_price", e)}
+              maxLength={8}
+            />
+          </Space.Compact>
           <Space.Compact>
             <InputNumber
               placeholder="数量"
@@ -52,21 +68,6 @@ export function PriceMenu() {
               onChange={(e) => handleChange("buying_unit", e)}
             ></Select>
           </Space.Compact>
-          <Space.Compact>
-            <InputNumber
-              placeholder="価格"
-              prefix="￥"
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
-              style={{ width: "150px" }}
-              value={(formData.buying_price || "").toString()}
-              onChange={(e) => handleChange("buying_price", e)}
-              maxLength={8}
-            />
-          </Space.Compact>
-
           <Button
             type="primary"
             style={{ width: "100%" }}

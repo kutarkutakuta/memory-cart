@@ -5,6 +5,7 @@ import useMasterStore from "./useMasterStore";
 import {} from "swr";
 import { nanoid } from "nanoid";
 import { ShoppingList } from "./useShoppingListStore";
+import useFavoriteItemStore from "./useFavoriteItemStore";
 
 /**
  * 買い物品
@@ -150,6 +151,12 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       try {
         // マスター用Hook
         const { commonItems } = useMasterStore.getState();
+        // お気に入り品用Hook
+        const { favoriteItems } = useFavoriteItemStore.getState();
+
+        // 名称からカテゴリを取得
+        const categroy_name = favoriteItems.find(itm => itm.name == name)?.category_name ||
+        commonItems.find((m) => m.name == name)?.category_name;
 
         // 追加データ
         const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
@@ -158,8 +165,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           item_key: nanoid(),
           order_number: shoppingItems.length + 1,
           name: name,
-          category_name: commonItems.find((m) => m.name == name)
-            ?.category_name!,
+          category_name: categroy_name,
           created_at: new Date(),
         };
 

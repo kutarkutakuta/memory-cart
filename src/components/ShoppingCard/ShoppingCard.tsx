@@ -15,6 +15,7 @@ import {
   Tooltip,
   Dropdown,
   MenuProps,
+  Popover,
 } from "antd";
 import {
   HolderOutlined,
@@ -179,14 +180,14 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
         <Col flex="none">
           <div style={{ marginTop: -5 }}>
             {item.buying_price ? (
-              <Tooltip
-                trigger="click"
-                title={"￥" + item.buying_price.toLocaleString()}
-              >
+                <Popover content={<div style={{textAlign:"right"}}>
+                  <p>{"￥" + item.buying_price.toLocaleString()}</p>
+                  <p>{item.buying_amount ? "(" + item.buying_amount.toLocaleString() + (item.buying_unit || "") + ")" : null }</p>
+                </div>}>
                 <Button type="text" shape="circle" size={"small"}>
                   ￥
                 </Button>
-              </Tooltip>
+                </Popover>
             ) : null}
           </div>
         </Col>
