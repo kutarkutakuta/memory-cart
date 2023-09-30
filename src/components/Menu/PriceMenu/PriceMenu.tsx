@@ -4,16 +4,20 @@ import { Button, Drawer, InputNumber, Select, Space } from "antd";
 import { usePriceMenu } from "./usePriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function PriceMenu() {
   // メニュー制御用Hook
   const { openFlag, selectedItem, closeMenu } = useMenuStore();
 
+
+  const inputRef = useRef<any | null>(null);
+
   // フォーム制御用Hook
   const { formData, initialFormData, handleChange } = usePriceMenu();
   useEffect(() => {
     initialFormData(selectedItem);
+    inputRef.current?.focus();
   }, [openFlag["PriceMenu"]]);
 
   // マスター用Hook
@@ -39,6 +43,7 @@ export function PriceMenu() {
 
           <Space.Compact>
             <InputNumber
+              ref={inputRef}
               inputMode="decimal"
               placeholder="価格"
               prefix="￥"

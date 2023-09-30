@@ -98,12 +98,19 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           } else if (server_list) {
             // サーバーからローカルへ同期
             fetchFromServer(local_list, server_list);
+            // ローカルの買物リストを更新
+            await localdb.shopping_lists.update(local_list.id!, {
+              name: server_list.name,
+              memo: server_list.memo,
+            });
+            local_list.name = server_list.name;
+            local_list.memo = server_list.memo;
           } else {
-            // 共有解除
+            // ローカルの買物リストを未共有へ更新
             await localdb.shopping_lists.update(local_list.id, {
               isShare: false,
             });
-            local_list = { ...local_list, isShare: false };
+            local_list.isShare = false;
             set({
               info: "サーバーにデータが存在しないため共有を解除しました。",
             });
@@ -330,11 +337,6 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
  * @param server_list
  */
 const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
-  // ローカルの買物リストを更新
-  await localdb.shopping_lists.update(local_list.id!, {
-    name: server_list.name,
-    memo: server_list.memo,
-  });
 
   // サーバーDBからデータ取得
   const { data, error: erro1 } = await supabase

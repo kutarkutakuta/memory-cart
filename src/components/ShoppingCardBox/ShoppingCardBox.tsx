@@ -21,6 +21,7 @@ import {
   Row,
   Space,
   Spin,
+  message,
 } from "antd";
 import {
   PlusCircleOutlined,
@@ -33,6 +34,7 @@ import {
   DatabaseOutlined,
   OrderedListOutlined,
   SortAscendingOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import { useCallback, useState } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
@@ -105,6 +107,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
     sortShoppingItem,
     updateShoppingItems,
     removeShoppingItems,
+    fetchShoppingItems,
   } = useShoppingItemStore();
 
   const [boughtOrder, SetboughtOrder] = useState(true);
@@ -314,6 +317,16 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           <Row justify="end">
             <Col>
               <Space>
+                {shoppingList?.isShare ? (
+                  <Button
+                    type={"text"}
+                    icon={<SyncOutlined />}
+                    onClick={() => 
+                      fetchShoppingItems(shoppingList?.list_key!)
+                      .then(()=>message.info("共有データをサーバーと同期しました。"))
+                    }
+                  ></Button>
+                ) : null}
                 <Dropdown menu={{ items: sortItems }} placement="bottomRight">
                   <Button type="text" icon={<FilterOutlined />}></Button>
                 </Dropdown>

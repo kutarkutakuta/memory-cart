@@ -16,17 +16,21 @@ import styles from "./AddItemMenu.module.scss";
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
 import { useEffect, useState } from "react";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
-import useFavoriteItemStore, { FavoriteItem } from "@/stores/useFavoriteItemStore";
+import useFavoriteItemStore, {
+  FavoriteItem,
+} from "@/stores/useFavoriteItemStore";
 
 export function AddItemMenu() {
   // メニュー制御用Hook
   const { openFlag, selectedList, closeMenu } = useMenuStore();
-
   // マスター用Hook
   const { categories, commonItems } = useMasterStore();
-
   // お気に入り品用Hook
   const { favoriteItems } = useFavoriteItemStore();
+  // メッセージ用Hook
+  const [messageApi, contextHolder] = message.useMessage();
+  // 品物用Hook
+  const { shoppingItems, addShoppingItem } = useShoppingItemStore();
 
   // 初期化
   useEffect(() => {
@@ -48,8 +52,7 @@ export function AddItemMenu() {
   const [searchMode, setSearchMode] = useState(1);
 
   useEffect(() => {
-
-    if(searchMode === 1){
+    if (searchMode === 1) {
       let items: FavoriteItem[] = favoriteItems;
       if (categoryName != null) {
         items = favoriteItems.filter((m) => {
@@ -58,8 +61,7 @@ export function AddItemMenu() {
       }
       setItemCount(items.length);
       setViewFavorites(items.filter((_m, i) => i < viewItemCount));
-    }
-    else{
+    } else {
       let newItems = commonItems;
       if (categoryName != null) {
         newItems = commonItems.filter((m) => {
@@ -69,7 +71,6 @@ export function AddItemMenu() {
       setItemCount(newItems.length);
       setViewCommons(newItems.filter((_m, i) => i < viewItemCount));
     }
-    
   }, [commonItems, favoriteItems, searchMode, categoryName, viewItemCount]);
 
   const handleTagClick = (value: string) => {
@@ -84,36 +85,28 @@ export function AddItemMenu() {
     }
   };
 
-  // メッセージ用Hook
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const { shoppingItems, addShoppingItem } = useShoppingItemStore();
-
+  // 追加する品物の名前用の項目
   const [itemOptions, setItemOptions] = useState<SelectProps["options"]>([]);
-  
-  const handleItemSearch = (newValue: string) => {
 
-    if(newValue.length > 0){
+  const handleItemSearch = (newValue: string) => {
+    if (newValue.length > 0) {
       const a = commonItems
-      .filter((itm) => itm.name?.startsWith(newValue))
-      .map((itm) => ({
-        value: itm.name!,
-        label: itm.name!,
-      }));
+        .filter((itm) => itm.name?.startsWith(newValue))
+        .map((itm) => ({
+          value: itm.name!,
+          label: itm.name!,
+        }));
       const b = favoriteItems
-      .filter((itm) => itm.name?.startsWith(newValue))
-      .map((itm) => ({
-        value: itm.name,
-        label: itm.name,
-      }));
-      ;
+        .filter((itm) => itm.name?.startsWith(newValue))
+        .map((itm) => ({
+          value: itm.name,
+          label: itm.name,
+        }));
       setItemOptions(a.concat(b));
-    }
-    else{
+    } else {
       setItemOptions([]);
     }
   };
-
 
   return (
     <>
@@ -135,7 +128,7 @@ export function AddItemMenu() {
                   value: d.value,
                   label: d.text,
                 }))}
-                onChange={(e)=>setAddItems(e)}
+                onChange={(e) => setAddItems(e)}
               />
             </span>
           </>
@@ -145,14 +138,16 @@ export function AddItemMenu() {
         onClose={() => closeMenu("AddItemMenu")}
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-
           <Select
             style={{ width: "100%" }}
             onChange={(e) => {
               setViewItemCount(20);
               setSearchMode(e);
             }}
-            options={[{ value: 1, label: "お気に入りから探す" },{ value: 2, label: "一般品から探す" }]}
+            options={[
+              { value: 1, label: "お気に入りから探す" },
+              { value: 2, label: "一般品から探す" },
+            ]}
             value={searchMode}
           />
 
@@ -163,7 +158,7 @@ export function AddItemMenu() {
             maxLength={500}
             style={{ width: "100%" }}
             placeholder="カテゴリで絞り込み"
-            onChange={(e) =>{
+            onChange={(e) => {
               setViewItemCount(20);
               setCategoryName(e);
             }}
@@ -172,8 +167,9 @@ export function AddItemMenu() {
           />
           {searchMode === 1 ? (
             <Space size={[0, 8]} wrap>
-              
-            {viewFavorites.length == 0 ? "お気に入りが登録されていません": ""}
+              {viewFavorites.length == 0
+                ? "お気に入りが登録されていません"
+                : ""}
               {viewFavorites.map((m) => (
                 <Tag
                   key={m.id}
@@ -186,7 +182,7 @@ export function AddItemMenu() {
             </Space>
           ) : (
             <Space size={[0, 8]} wrap>
-            {viewCommons.length == 0 ? "一般品が見つかりません": ""}
+              {viewCommons.length == 0 ? "一般品が見つかりません" : ""}
               {viewCommons.map((m) => (
                 <Tag
                   key={m.id}
@@ -211,15 +207,21 @@ export function AddItemMenu() {
               </Button>
             </div>
           ) : null}
-<Divider style={{margin:0}}></Divider>
+          <Divider style={{ margin: 0 }}></Divider>
           <Button
             type="primary"
             style={{ width: "100%" }}
-            onClick={(e) => {
-              addItems.forEach((name) => {
-                addShoppingItem(list_key!, name);
-              });
-              closeMenu("AddItemMenu");
+            onClick={() => {
+              if(addItems.length > 0){
+                addItems.forEach((name) => {
+                  addShoppingItem(list_key!, name);
+                });
+                closeMenu("AddItemMenu");
+              }
+              else{
+                messageApi.warning("品物を追加してください。");
+              }
+              
             }}
           >
             追加
