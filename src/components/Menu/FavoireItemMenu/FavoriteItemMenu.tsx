@@ -6,21 +6,19 @@ import {
   Input,
   InputRef,
   Select,
-  SelectProps,
   Space,
   Tag,
   message,
   theme,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, HeartOutlined } from "@ant-design/icons";
 
-import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
 import { useEffect, useRef, useState } from "react";
 import useFavoriteItemStore, {
   FavoriteItem,
 } from "@/stores/useFavoriteItemStore";
 
-import styles from "./FavoriteItemMenu.module.scss";
+import useMasterStore, { CommonItem } from "@/stores/useMasterStore";
 
 export function FavoriteItemMenu() {
   // メニュー制御用Hook
@@ -123,7 +121,12 @@ export function FavoriteItemMenu() {
     <>
       {contextHolder}
       <Drawer
-        title={"お気に入り品の登録"}
+        title={
+          <>
+            <HeartOutlined />
+            <span style={{ paddingLeft: 4 }}>お気に入り品の登録</span>
+          </>
+        }
         placement={"left"}
         open={openFlag["FavoriteItemMenu"]}
         onClose={() => closeMenu("FavoriteItemMenu")}

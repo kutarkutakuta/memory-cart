@@ -4,7 +4,7 @@ import { Button, Drawer, Input, Space, Tooltip, Modal, message } from "antd";
 const { TextArea } = Input;
 const { confirm } = Modal;
 import {
-  ShoppingCartOutlined,
+  FormOutlined,
   CopyOutlined,
   ExclamationCircleFilled,
   QuestionCircleOutlined,
@@ -76,7 +76,7 @@ export function ShoppingListMenu() {
       <Drawer
         title={
           <>
-            <ShoppingCartOutlined />
+            <FormOutlined />
             <span style={{ paddingLeft: 4 }}>リストの編集</span>
           </>
         }
@@ -100,11 +100,36 @@ export function ShoppingListMenu() {
             value={formData.memo}
             onChange={(e) => handleChange("memo", e.target.value)}
           />
+
+<Button
+            type="primary"
+            style={{ width: "100%" }}
+            loading={loading}
+            onClick={() => {
+              updateShoppingList(formData.id, formData).then(() => {
+                messageApi.success("リストを更新しました。");
+                closeMenu("ShoppingListMenu");
+              });
+            }}
+          >
+            更新
+          </Button>
+
+          <Button
+            style={{ width: "100%" }}
+            onClick={() => {
+              closeMenu("ShoppingListMenu");
+            }}
+          >
+            キャンセル
+          </Button>
           {selectedList?.isShare ? (
             <>
-              <Tooltip title="共有したい相手にURLを送ります。">
-                ☆リストの共有☆
-              </Tooltip>
+            <div>
+              共有URL　
+              <Tooltip title="共有相手にURLを送ります。">
+              <QuestionCircleOutlined/>
+              </Tooltip></div>
               <Space.Compact style={{ width: "100%" }}>
                 <Input
                   value={
@@ -170,37 +195,7 @@ export function ShoppingListMenu() {
             </>
           ) : null}
 
-          <Button
-            type="primary"
-            style={{ width: "100%" }}
-            loading={loading}
-            onClick={() => {
-              updateShoppingList(formData.id, formData).then(() => {
-                messageApi.success("リストを更新しました。");
-                closeMenu("ShoppingListMenu");
-              });
-            }}
-          >
-            更新
-          </Button>
 
-          {/* <Button
-            type="primary"
-            danger
-            style={{ width: "100%" }}
-            onClick={showDeleteConfirm}
-          >
-            削除
-          </Button> */}
-
-          <Button
-            style={{ width: "100%" }}
-            onClick={() => {
-              closeMenu("ShoppingListMenu");
-            }}
-          >
-            キャンセル
-          </Button>
         </Space>
       </Drawer>
     </>

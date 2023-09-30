@@ -19,7 +19,7 @@ import {
   UserOutlined,
   LinkOutlined,
   SettingOutlined,
-  ShoppingOutlined,
+  HeartOutlined,
 } from "@ant-design/icons";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
@@ -79,8 +79,8 @@ const MyHeader = () => {
     },
     {
       key: "2",
-      label: "お気に入りの品物登録",
-      icon: <ShoppingOutlined />,
+      label: "お気に入り品の登録",
+      icon: <HeartOutlined />,
       onClick: () => openMenu("FavoriteItemMenu"),
     },
     {
