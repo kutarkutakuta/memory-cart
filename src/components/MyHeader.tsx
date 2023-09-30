@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
@@ -7,15 +6,12 @@ import {
   Button,
   Col,
   Dropdown,
-  Input,
   MenuProps,
-  Modal,
   Row,
   Space,
   Tag,
   Tooltip,
   Typography,
-  message,
 } from "antd";
 import {
   QuestionCircleOutlined,
@@ -28,7 +24,6 @@ import {
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
 import { SettingMenu } from "./Menu/SettingMenu/SettingMenu";
-import useShoppingListStore from "@/stores/useShoppingListStore";
 import { FavoriteItemMenu } from "./Menu/FavoireItemMenu/FavoriteItemMenu";
 
 const { Paragraph } = Typography;
@@ -43,16 +38,16 @@ const MyHeader = () => {
   // 買物リスト操作用Hook
   const { shoppingList } = useShoppingItemStore();
 
-  const [listName , setListName] = useState<string>("");
-  const [isShare , setisShare] = useState<boolean>(false);
+  const [listName, setListName] = useState<string>("");
+  const [isShare, setisShare] = useState<boolean>(false);
 
   useEffect(() => {
     setListName(shoppingList?.name!);
     setisShare(shoppingList?.isShare!);
-    return ()=>{
+    return () => {
       setListName("");
       setisShare(false);
-    }
+    };
   }, [shoppingList]);
 
   const handleGoBack = () => {
@@ -92,12 +87,6 @@ const MyHeader = () => {
       type: "divider",
     },
     {
-      key: "3",
-      label: "共有キーからリストを追加",
-      icon: <LinkOutlined />,
-      onClick: () => setOpen(true),
-    },
-    {
       type: "divider",
     },
     {
@@ -107,38 +96,8 @@ const MyHeader = () => {
     },
   ];
 
-  // メッセージ用Hook
-  const [messageApi, contextHolder] = message.useMessage();
-  // 買い物リスト制御用Hook
-  const { addFromShareKey } = useShoppingListStore();
-
-  const [open, setOpen] = useState(false);
-  const [shareKey, setShareKey] = useState("");
-
   return (
     <>
-      {contextHolder}
-      <Modal
-        title="共有キーを入力してください"
-        open={open}
-        onOk={() =>
-          addFromShareKey(shareKey).then(() => {
-            messageApi.success("リストを追加しました。");
-            setOpen(false);
-          })
-        }
-        onCancel={() => {
-          setOpen(false);
-          setShareKey("");
-        }}
-      >
-        <Input
-          placeholder="共有キー"
-          value={shareKey}
-          maxLength={50}
-          onChange={(e) => setShareKey(e.target.value)}
-        ></Input>
-      </Modal>
       <Row wrap={false} align={"middle"}>
         <Col flex="auto">
           <Row justify="start">
@@ -153,9 +112,7 @@ const MyHeader = () => {
                       icon={<ArrowLeftOutlined />}
                       onClick={() => handleGoBack()}
                     ></Button>
-                    <span style={{ paddingRight: "10px" }}>
-                      {listName}
-                    </span>
+                    <span style={{ paddingRight: "10px" }}>{listName}</span>
                     {isShare ? (
                       <Tooltip title="共有中">
                         <Tag icon={<LinkOutlined />} color="#4169E1"></Tag>
