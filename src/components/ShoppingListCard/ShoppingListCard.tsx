@@ -150,8 +150,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                 <Space.Compact style={{ width: "100%" }}>
                   <Input
                     value={
-                      "https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key
+                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key)
                     }
                     readOnly
                     bordered={false}
@@ -160,8 +160,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                   <Button
                     onClick={() => {
                       navigator.clipboard.writeText(
-                        "https://memory-cart.onrender.com/kaimono?key=" +
-                          share_key
+                        encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
+                          share_key)
                       );
                       messageApi.info("クリップボードにURLをコピーしました。");
                     }}
@@ -172,8 +172,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                 <Space style={{ width: "100%" }}>
                   <EmailShareButton
                     url={
-                      "https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key
+                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key)
                     }
                     title={"共有します"}
                   >
@@ -181,8 +181,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                   </EmailShareButton>
                   <FacebookShareButton
                     url={
-                      "https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key
+                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key)
                     }
                     quote={"共有します"}
                   >
@@ -190,8 +190,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                   </FacebookShareButton>
                   <TwitterShareButton
                     url={
-                      "https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key
+                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key)
                     }
                     title={"共有します"}
                   >
@@ -199,8 +199,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                   </TwitterShareButton>
                   <LineShareButton
                     url={
-                      "https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key
+                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
+                      share_key)
                     }
                     title={"共有します"}
                   >
