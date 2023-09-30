@@ -89,7 +89,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             .single();
           if (error) console.error(error);
 
-          if (server_status === 0 ) {
+          if (server_status === 0) {
             // なにもしないでスルー
             // throw new Error("サーバーに接続できません");
             set({
@@ -103,7 +103,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             await localdb.shopping_lists.update(local_list.id, {
               isShare: false,
             });
-            local_list =  {...local_list, isShare: false};
+            local_list = { ...local_list, isShare: false };
             set({
               info: "サーバーにデータが存在しないため共有を解除しました。",
             });
@@ -167,7 +167,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         // 追加データ
         const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
 
-        if(!shoppingList) {
+        if (!shoppingList) {
           throw new Error("リストが特定できないため処理できません。");
         }
 
@@ -194,7 +194,9 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             name: addItem.name,
             category_name: addItem.category_name,
             created_user: appSetting?.user_name!,
+            created_ip_address: appSetting?.ip_address!,
             updated_user: appSetting?.user_name!,
+            updated_ip_address: appSetting?.ip_address!,
           });
           if (error) throw error;
         }
@@ -235,9 +237,15 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
 
         if (shoppingList && shoppingList.isShare) {
           // 共有済みなのでリストのデータを更新するだけ
-          const { error, status, statusText } = await supabase
+          const server_changes = {
+            ...changes,
+            ...{
+              updated_ip_address: appSetting?.ip_address!,
+            },
+          };
+          const { error } = await supabase
             .from("shopping_items")
-            .update(changes)
+            .update(server_changes)
             .eq("list_key", shoppingList.list_key)
             .in(
               "item_key",
@@ -280,10 +288,10 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               "item_key",
               deleteItems.map((itm) => itm.item_key)
             );
-            if (error) {
-              console.error(error);
-              throw new Error("サーバーに接続できないか削除に失敗しました。");
-            }
+          if (error) {
+            console.error(error);
+            throw new Error("サーバーに接続できないか削除に失敗しました。");
+          }
         }
 
         const newItems = shoppingItems.filter(

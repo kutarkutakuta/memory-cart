@@ -183,7 +183,8 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
             list_key: newList.list_key,
             name: newList.name!,
             memo: newList.memo,
-            updated_user: newList.updated_user,
+            updated_user: appSetting?.user_name!,
+            updated_ip_address: appSetting?.ip_address!,
           })
           .eq("list_key", newList.list_key);
         if (error1) throw error1;
@@ -231,7 +232,9 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         name: localList.name!,
         memo: localList.memo,
         created_user: appSetting?.user_name,
+        created_ip_address: appSetting?.ip_address!,
         updated_user: appSetting?.user_name,
+        updated_ip_address: appSetting?.ip_address!,
       });
       if (error1) throw error1;
 

@@ -11,6 +11,7 @@ export interface AppSetting {
   theme: string;
   font_size: string;
   notification: boolean;
+  ip_address: string;
 }
 
 /**
@@ -78,8 +79,18 @@ const useMasterStore = create<MasterState>((set) => ({
           theme: "dark",
           font_size: "16",
           notification: false,
+          ip_address: "",
         };
         await localdb.app_settings.add(app_setting);
+      }
+      // IPアドレスをセット
+      try {
+        const response = await fetch("https://api64.ipify.org?format=json");
+        const data = await response.json();
+        app_setting.ip_address = data.ip;
+      } catch (error) {
+        // 何もしない
+        console.warn("ネットワークに接続されていません", error);
       }
       set({ appSetting: app_setting });
 
