@@ -69,7 +69,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           .first();
 
         // ローカル共有なし　→　スルー
-        // ローカル共有ありサーバー接続不可　→　エラー
+        // ローカル共有ありサーバー接続不可　→　スルー
         // ローカル共有ありサーバーあり　→　共有中であればサーバーからローカルへ同期
         // ローカル共有ありサーバーなし　→　共有中であれば共有解除
         // ローカルなしサーバーあり　→　共有作成
@@ -90,7 +90,8 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           if (error) console.error(error);
 
           if (server_status !== 200) {
-            throw new Error("サーバーに接続できません");
+            // なにもしないでスルー
+            // throw new Error("サーバーに接続できません");
           } else if (server_list) {
             // サーバーからローカルへ同期
             fetchFromServer(local_list, server_list);
@@ -362,7 +363,7 @@ const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
             : null;
         if (serverData["updated_user"] != localData.updated_user)
           changes["updated_user"] = serverData["updated_user"];
-          
+
         if (Object.keys(changes).length > 0) {
           await localdb.shopping_items.update(localData.id!, changes);
         }
@@ -385,8 +386,8 @@ const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
           finished_at: serverData.finished_at
             ? new Date(serverData.finished_at)
             : null,
-            created_user: serverData.created_user,
-            updated_user: serverData.updated_user,
+          created_user: serverData.created_user,
+          updated_user: serverData.updated_user,
         };
         await localdb.shopping_items.add(addItem);
       }

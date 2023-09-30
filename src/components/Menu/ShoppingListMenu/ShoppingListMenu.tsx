@@ -59,7 +59,7 @@ export function ShoppingListMenu() {
       content:
         (selectedList?.isShare
           ? "サーバー上の共有データも削除するには共有解除を行ってください。"
-          : "削除したリストは元に戻せません！") + "削除してよろしいですか？",
+          : "削除したリストは元に戻せません。") + "削除しますか？",
       okText: "削除",
       okType: "danger",
       cancelText: "キャンセル",

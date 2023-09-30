@@ -2,6 +2,7 @@
 import useMenuStore from "@/stores/useMenuStore";
 import {
   Button,
+  Divider,
   Drawer,
   Radio,
   Select,
@@ -171,6 +172,8 @@ export function AddItemMenu() {
           />
           {searchMode === 1 ? (
             <Space size={[0, 8]} wrap>
+              
+            {viewFavorites.length == 0 ? "お気に入りが登録されていません": ""}
               {viewFavorites.map((m) => (
                 <Tag
                   key={m.id}
@@ -183,6 +186,7 @@ export function AddItemMenu() {
             </Space>
           ) : (
             <Space size={[0, 8]} wrap>
+            {viewCommons.length == 0 ? "一般品が見つかりません": ""}
               {viewCommons.map((m) => (
                 <Tag
                   key={m.id}
@@ -207,7 +211,7 @@ export function AddItemMenu() {
               </Button>
             </div>
           ) : null}
-
+<Divider style={{margin:0}}></Divider>
           <Button
             type="primary"
             style={{ width: "100%" }}

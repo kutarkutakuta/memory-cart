@@ -120,8 +120,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           content:
             (item.isShare
               ? "サーバー上の共有データも削除するには共有解除を行ってください。"
-              : "削除したリストは元に戻せません！") +
-            "削除してよろしいですか？",
+              : "削除したリストは元に戻せません。") +
+            "削除しますか？",
           okText: "削除",
           okType: "danger",
           cancelText: "キャンセル",
@@ -224,9 +224,9 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           icon: <ExclamationCircleFilled />,
           content: (
             <>
-              サーバー上の共有データが削除され、共有相手全員の共有が解除されます。
+              サーバー上の共有データが削除されて、共有相手全員の共有が解除されます。
               <br />
-              共有を解除してよろしいですか？
+              共有を解除しますか？
             </>
           ),
           okText: "共有解除",

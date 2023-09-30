@@ -136,7 +136,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             <div
               style={{
                 fontSize: "smaller",
-                fontWeight: "lighter",
+                opacity: 0.7,
                 textAlign: "center",
                 whiteSpace: "nowrap",
               }}
