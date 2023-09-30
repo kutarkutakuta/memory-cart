@@ -29,7 +29,7 @@ export function SettingMenu() {
             <Input
               placeholder="ユーザー名"
               maxLength={20}
-              value={appSetting!.user_name}
+              value={appSetting?.user_name}
               onChange={(e) => updateSetting({ user_name: e.target.value })}
             />
           </Form.Item>
@@ -42,7 +42,7 @@ export function SettingMenu() {
                 { value: "18px", label: "大きい" },
                 { value: "20px", label: "すごく大きい" },
               ]}
-              value={appSetting!.font_size}
+              value={appSetting?.font_size}
               onChange={(e) => updateSetting({ font_size: e })}
             />
           </Form.Item>
@@ -53,7 +53,7 @@ export function SettingMenu() {
                 { value: "dark", label: "ダーク" },
                 { value: "light", label: "ライト" },
               ]}
-              value={appSetting!.theme}
+              value={appSetting?.theme}
               onChange={(e) => updateSetting({ theme: e })}
             />
           </Form.Item>
