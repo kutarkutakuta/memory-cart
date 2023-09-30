@@ -153,15 +153,15 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
               return -1;
             }
           }
-          // 登録日でソート
-          if (a.created_at && b.created_at) {
-            const comp = a.created_at.getTime() - b.created_at.getTime();
+          // 登録日でソート　→　IDでソート
+          if (a.id && b.id) {
+            const comp = a.id - b.id;
             if (comp != 0) return comp;
           }
-          if (b.created_at) {
+          if (b.id) {
             return -1;
           }
-          if (a.created_at) {
+          if (a.id) {
             return 1;
           }
           // 登録日が同じなら名前でソート
