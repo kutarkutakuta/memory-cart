@@ -1,10 +1,5 @@
 import useMenuStore from "@/stores/useMenuStore";
 import { Button, Drawer, InputNumber, Select, Space } from "antd";
-import {
-  MoneyCollectOutlined,
-  LinkOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
 
 import { usePriceMenu } from "./usePriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
