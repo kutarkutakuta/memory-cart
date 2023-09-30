@@ -87,9 +87,6 @@ const MyHeader = () => {
       type: "divider",
     },
     {
-      type: "divider",
-    },
-    {
       key: "4",
       label: "ヘルプ",
       icon: <QuestionCircleOutlined />,
