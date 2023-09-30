@@ -20,6 +20,7 @@ import {
   LinkOutlined,
   SettingOutlined,
   HeartOutlined,
+  ShoppingOutlined,
 } from "@ant-design/icons";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
@@ -100,8 +101,8 @@ const MyHeader = () => {
           <Row justify="start">
             <Col>
               <Paragraph ellipsis={true} style={{ margin: 0 }}>
-                {pathname == "/" ? (
-                  <span style={{ paddingLeft: 10 }}>買物リスト</span>
+                {pathname == "/" ? (<>
+                  <span style={{ paddingLeft: 10 }}><ShoppingOutlined />お買い物リスト</span></>
                 ) : (
                   <>
                     <Button

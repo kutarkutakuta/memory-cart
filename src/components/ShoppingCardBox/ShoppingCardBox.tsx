@@ -323,7 +323,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
                     icon={<SyncOutlined />}
                     onClick={() => 
                       fetchShoppingItems(shoppingList?.list_key!)
-                      .then(()=>message.info("共有データをサーバーと同期しました。"))
+                      .then(()=>message.info("データをサーバーと同期しました。"))
                     }
                   ></Button>
                 ) : null}
