@@ -108,8 +108,8 @@ export function ShoppingListMenu() {
               <Space.Compact style={{ width: "100%" }}>
                 <Input
                   value={
-                    encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                    selectedList?.list_key)
+                    "https://memory-cart.onrender.com/kaimono?key=" +
+                    selectedList?.list_key
                   }
                   readOnly
                   bordered={false}
@@ -118,8 +118,8 @@ export function ShoppingListMenu() {
                 <Button
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                        selectedList?.list_key)
+                      "https://memory-cart.onrender.com/kaimono?key=" +
+                        selectedList?.list_key
                     );
                     messageApi.info(
                       "クリップボードにURLをコピーしました。"
@@ -135,7 +135,7 @@ export function ShoppingListMenu() {
                     encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
                     selectedList?.list_key)
                   }
-                  title={"共有します"}
+                  title={selectedList?.name!}
                 >
                   <EmailIcon size={40} round />
                 </EmailShareButton>
@@ -144,7 +144,7 @@ export function ShoppingListMenu() {
                     encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
                     selectedList?.list_key)
                   }
-                  quote={"共有します"}
+                  quote={selectedList?.name!}
                 >
                   <FacebookIcon size={40} round />
                 </FacebookShareButton>
@@ -153,7 +153,7 @@ export function ShoppingListMenu() {
                     encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
                     selectedList?.list_key)
                   }
-                  title={"共有します"}
+                  title={selectedList?.name!}
                 >
                   <TwitterIcon size={40} round />
                 </TwitterShareButton>
@@ -162,7 +162,7 @@ export function ShoppingListMenu() {
                     encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
                     selectedList?.list_key)
                   }
-                  title={"共有します"}
+                  title={selectedList?.name!}
                 >
                   <LineIcon size={40} round />
                 </LineShareButton>
