@@ -3,7 +3,8 @@ import { arrayMove } from "@dnd-kit/sortable";
 import supabase from "@/lib/supabase";
 import localdb from "@/lib/localdb";
 import { nanoid } from "nanoid";
-import { ShoppingItem, addFromShareKey } from "./useShoppingItemStore";
+import { addFromShareKey } from "./useShoppingItemStore";
+import useMasterStore from "./useMasterStore";
 
 /**
  * 買い物リスト
@@ -16,7 +17,7 @@ export interface ShoppingList {
   memo: string | null;
   isShare: boolean;
   created_user: string | null;
-  created_at: Date;
+  updated_user: string | null;
 }
 
 interface ShoppingListState {
@@ -67,6 +68,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     set({ loading: true, error: null });
     try {
       const { shoppingLists } = useShoppingListStore.getState();
+      const { appSetting } = useMasterStore.getState();
 
       const addList: ShoppingList = {
         id:
@@ -79,8 +81,8 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         name: `買い物リスト${shoppingLists.length + 1}`,
         memo: "",
         isShare: false,
-        created_user: null,
-        created_at: new Date(),
+        created_user: appSetting?.user_name!,
+        updated_user: appSetting?.user_name!,
       };
 
       if (copyItem) {
@@ -101,12 +103,14 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         sourceItems.forEach((itm) => {
           itm.id = undefined;
           itm.list_key = addList.list_key;
-          (itm.item_key = nanoid()), (itm.buying_amount = undefined);
+          itm.item_key = nanoid();
+          itm.buying_amount = undefined;
           itm.buying_unit = undefined;
           itm.buying_price = undefined;
           itm.finished_at = undefined;
           itm.finished_user = undefined;
-          itm.created_at = new Date();
+          itm.created_user = appSetting?.user_name!;
+          itm.updated_user = appSetting?.user_name!;
         });
         await localdb.shopping_items.bulkAdd(sourceItems);
       }
@@ -123,20 +127,6 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     try {
       const { shoppingLists } = useShoppingListStore.getState();
       const deleteList = shoppingLists.find((n) => n.id == id)!;
-
-      // // サーバDBの買物リストを削除
-      // const { error: error1 } = await supabase
-      //   .from("shopping_items")
-      //   .delete()
-      //   .eq("list_key", deleteList.list_key);
-      // if (error1) throw error1;
-
-      // // サーバDBの品物を削除
-      // const { error: error2 } = await supabase
-      //   .from("shopping_lists")
-      //   .delete()
-      //   .eq("list_key", deleteList.list_key);
-      // if (error2) throw error2;
 
       // ローカルDB買物品を削除
       const sourceItems = await localdb.shopping_items
@@ -165,6 +155,15 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     set({ loading: true, error: null });
 
     try {
+      // 更新情報をマージ
+      const { appSetting } = useMasterStore.getState();
+      changes = {
+        ...changes,
+        ...{
+          updated_user: appSetting?.user_name!,
+        },
+      };
+
       // ローカルDBを更新
       await localdb.shopping_lists.update(id, changes);
 
@@ -184,6 +183,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
             list_key: newList.list_key,
             name: newList.name!,
             memo: newList.memo,
+            updated_user: newList.updated_user,
           })
           .eq("list_key", newList.list_key);
         if (error1) throw error1;
@@ -215,6 +215,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     try {
       // 買い物リスト操作用Hook
       const { shoppingLists } = useShoppingListStore.getState();
+      const { appSetting } = useMasterStore.getState();
 
       // ローカルの買物リストを取得
       const localList = shoppingLists.find(
@@ -229,7 +230,8 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         list_key: new_list_key,
         name: localList.name!,
         memo: localList.memo,
-        created_user: "GUEST",
+        created_user: appSetting?.user_name,
+        updated_user: appSetting?.user_name,
       });
       if (error1) throw error1;
 
@@ -237,25 +239,28 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       const localItems = await localdb.shopping_items
         .where({ list_key: localList.list_key })
         .toArray();
-      const { error: error2 } = await supabase.from("shopping_items").insert(
-        localItems.map((d) => ({
-          list_key: new_list_key,
-          item_key: d.item_key,
-          order_number: d.order_number,
-          name: d.name,
-          category_name: d.category_name,
-          amount: d.amount,
-          unit: d.unit,
-          priority: d.priority,
-          memo: d.memo,
-          buying_amount: d.buying_amount,
-          buying_unit: d.buying_unit,
-          buying_price: d.buying_price,
-          created_user: "GUEST",
-          finished_user: d.finished_user,
-          finished_at: d.finished_at,
-        }))
-      );
+      const { data, error: error2 } = await supabase
+        .from("shopping_items")
+        .insert(
+          localItems.map((d) => ({
+            list_key: new_list_key,
+            item_key: d.item_key,
+            order_number: d.order_number,
+            name: d.name,
+            category_name: d.category_name,
+            amount: d.amount,
+            unit: d.unit,
+            priority: d.priority,
+            memo: d.memo,
+            buying_amount: d.buying_amount,
+            buying_unit: d.buying_unit,
+            buying_price: d.buying_price,
+            finished_user: d.finished_user,
+            finished_at: d.finished_at,
+            created_user: appSetting?.user_name,
+            updated_user: appSetting?.user_name,
+          }))
+        );
       if (error2) throw error2;
 
       // ローカルDBを更新
@@ -264,6 +269,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       localItems.forEach(async (itm) => {
         await localdb.shopping_items.update(itm.id!, {
           list_key: new_list_key,
+          updated_user: appSetting?.user_name!,
         });
       });
 
@@ -286,6 +292,8 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     try {
       // 買い物リスト操作用Hook
       const { shoppingLists } = useShoppingListStore.getState();
+      const { appSetting } = useMasterStore.getState();
+
       // ローカルの買物リストを取得
       const localList = shoppingLists.find(
         (lst) => lst.id == id
@@ -306,7 +314,10 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       if (error2) throw error2;
 
       // ローカルDBを更新
-      const changes = { isShare: false };
+      const changes = {
+        isShare: false,
+        updated_user: appSetting?.user_name!,
+      };
       await localdb.shopping_lists.update(id, changes);
       const newShoppingLists = shoppingLists.map((lst) => {
         if (lst.id === id) {

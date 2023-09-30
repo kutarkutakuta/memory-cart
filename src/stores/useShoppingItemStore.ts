@@ -24,10 +24,10 @@ export interface ShoppingItem {
   buying_amount?: number | null;
   buying_unit?: string | null;
   buying_price?: number | null;
-  created_user?: string | null;
-  created_at?: Date;
   finished_user?: string | null;
   finished_at?: Date | null;
+  created_user: string | null;
+  updated_user: string | null;
 }
 
 interface ShoppingItemState {
@@ -116,7 +116,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           }
 
           // 共有作成
-          local_list =await addFromShareKey(list_key);
+          local_list = await addFromShareKey(list_key);
 
           set({ info: "共有データから買物リストが作成されました。" });
         }
@@ -150,13 +150,14 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       set({ loading: true, error: null });
       try {
         // マスター用Hook
-        const { commonItems } = useMasterStore.getState();
+        const { appSetting, commonItems } = useMasterStore.getState();
         // お気に入り品用Hook
         const { favoriteItems } = useFavoriteItemStore.getState();
 
         // 名称からカテゴリを取得
-        const categroy_name = favoriteItems.find(itm => itm.name == name)?.category_name ||
-        commonItems.find((m) => m.name == name)?.category_name;
+        const categroy_name =
+          favoriteItems.find((itm) => itm.name == name)?.category_name ||
+          commonItems.find((m) => m.name == name)?.category_name;
 
         // 追加データ
         const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
@@ -166,7 +167,8 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           order_number: shoppingItems.length + 1,
           name: name,
           category_name: categroy_name,
-          created_at: new Date(),
+          created_user: appSetting?.user_name!,
+          updated_user: appSetting?.user_name!,
         };
 
         // ローカルDBへ追加
@@ -181,7 +183,8 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             order_number: addItem.order_number,
             name: addItem.name,
             category_name: addItem.category_name,
-            created_user: "GUEST",
+            created_user: appSetting?.user_name!,
+            updated_user: appSetting?.user_name!,
           });
           if (error) throw error;
         }
@@ -198,12 +201,21 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
     updateShoppingItems: async (ids, changes) => {
       set({ loading: true, error: null });
       try {
+        // 更新情報をマージ
+        const { appSetting } = useMasterStore.getState();
+        changes = {
+          ...changes,
+          ...{
+            updated_user: appSetting?.user_name!,
+          },
+        };
+
         // ローカルDBを更新
         ids.forEach(
           async (id) => await localdb.shopping_items.update(id, changes)
         );
 
-        // 共有の場合DBも更新
+        // ステート更新用の変数を準備
         const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
         const newItems = shoppingItems.map((n) => {
           return ids.findIndex((id) => id === n.id) > -1
@@ -239,7 +251,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         // ローカルDBから削除
         ids.forEach(async (id) => await localdb.shopping_items.delete(id));
 
-        // 共有の場合DBも更新
+        // 共有の場合DBも削除
         const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
 
         const deleteItems = shoppingItems.filter((n) => {
@@ -348,7 +360,9 @@ const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
           changes["finished_at"] = serverData.finished_at
             ? new Date(serverData.finished_at)
             : null;
-
+        if (serverData["updated_user"] != localData.updated_user)
+          changes["updated_user"] = serverData["updated_user"];
+          
         if (Object.keys(changes).length > 0) {
           await localdb.shopping_items.update(localData.id!, changes);
         }
@@ -367,12 +381,12 @@ const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
           buying_amount: serverData.buying_amount,
           buying_unit: serverData.buying_unit,
           buying_price: serverData.buying_price,
-          created_user: serverData.created_user,
-          created_at: new Date(serverData.created_at),
           finished_user: serverData.finished_user,
           finished_at: serverData.finished_at
             ? new Date(serverData.finished_at)
             : null,
+            created_user: serverData.created_user,
+            updated_user: serverData.updated_user,
         };
         await localdb.shopping_items.add(addItem);
       }
@@ -395,7 +409,7 @@ const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
 
 /**
  * 共有キーから買い物リストと品物を作成
- * @param list_key 
+ * @param list_key
  */
 export const addFromShareKey = async (list_key: string) => {
   // ローカルDBから取得
@@ -431,7 +445,7 @@ export const addFromShareKey = async (list_key: string) => {
       memo: listData.memo,
       isShare: true,
       created_user: listData.created_user,
-      created_at: listData.created_at,
+      updated_user: listData.updated_user,
     };
 
     // ローカルDBに買物リストを追加
@@ -460,10 +474,10 @@ export const addFromShareKey = async (list_key: string) => {
           buying_amount: item.buying_amount ? item.buying_amount : undefined,
           buying_unit: item.buying_unit ? item.buying_unit : undefined,
           buying_price: item.buying_price ? item.buying_price : undefined,
-          created_user: item.created_user ? item.created_user : undefined,
-          created_at: item.created_at ? item.created_at : undefined,
           finished_user: item.finished_user ? item.finished_user : undefined,
           finished_at: item.finished_at ? item.finished_at : undefined,
+          created_user: item.created_user!,
+          updated_user: item.updated_user!,
         }))
       );
     }
