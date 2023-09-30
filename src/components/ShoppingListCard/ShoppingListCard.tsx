@@ -146,7 +146,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
             title: "リストを共有しました。",
             content: (
               <>
-                <div>発行されたURLを共有相手に送ってください。</div>
+                <div>次のURLを共有相手に送って下さい。</div>
                 <Space.Compact style={{ width: "100%" }}>
                   <Input
                     value={
@@ -297,7 +297,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
             <Col>
               {item.isShare ? (
                 <Tooltip title="共有中">
-                  <Tag icon={<LinkOutlined />} color="#2E8B57"></Tag>
+                  <Tag icon={<LinkOutlined />} color="#4169E1"></Tag>
                 </Tooltip>
               ) : null}
               <Dropdown menu={{ items }} placement="bottomRight">

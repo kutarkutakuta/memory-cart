@@ -63,49 +63,85 @@ const useMasterStore = create<MasterState>((set) => ({
   error: null,
   appSetting: null,
   categories: [],
-  units:[],
+  units: [],
   commonItems: [],
   fetchData: async () => {
     set({ loading: true, error: null });
     try {
       // app_settings
-        const data = await localdb.app_settings.toArray();
-      set({ appSetting: data[0] });
+      let app_setting = await localdb.app_settings.get(1);
+      if (!app_setting) {
+        // 初期データ
+        app_setting = {
+          id: 1,
+          user_name: "Guest",
+          theme: "dark",
+          font_size: "16",
+          notification: false,
+        };
+        await localdb.app_settings.add(app_setting);
+      }
+      set({ appSetting: app_setting });
 
       // categories
-      const { data: categories, error: categoriesError } = await supabase
-        .from("categories")
-        .select("*");
-      if (categoriesError) throw categoriesError;
+      let categories = await localdb.categories
+        .orderBy("order_number")
+        .toArray();
+      if (categories.length === 0) {
+        // 初期データをサーバーDBから取得
+        const { data, error } = await supabase
+          .from("categories")
+          .select("*")
+          .order("order_number");
+        if (error) console.error(error);
+        categories = data as Category[];
+        await localdb.categories.bulkAdd(categories);
+      }
       set({ categories });
-      
+
       // units
-      const { data: units, error: unitsError } = await supabase
-        .from("units")
-        .select("*");
-      if (unitsError) throw unitsError;
+      let units = await localdb.units.orderBy("order_number").toArray();
+      if (units.length === 0) {
+        // 初期データをサーバーDBから取得
+        const { data, error } = await supabase
+          .from("units")
+          .select("*")
+          .order("order_number");
+        if (error) console.error(error);
+        units = data as Unit[];
+        await localdb.units.bulkAdd(units);
+      }
       set({ units });
 
       // commonItems
-      const { data: commonItems, error: commonItemsError } = await supabase
-        .from("common_items")
-        .select("*");
-      if (commonItemsError) throw commonItemsError;
-      set({ commonItems });
+      let common_items = await localdb.common_items
+        .orderBy("order_number")
+        .toArray();
+      if (common_items.length === 0) {
+        // 初期データをサーバーDBから取得
+        const { data, error } = await supabase
+          .from("common_items")
+          .select("*")
+          .order("order_number");
+        if (error) console.error(error);
+        common_items = data as CommonItem[];
+        await localdb.common_items.bulkAdd(common_items);
+      }
+      set({ commonItems: common_items });
 
       set({ loading: false });
     } catch (error: any) {
       set({ error, loading: false });
     }
   },
-  updateSetting: (changes) =>{
+  updateSetting: (changes) => {
     // ローカルDBを更新
     localdb.app_settings.update(1, changes).then((m) => {
       set((state) => {
         return { appSetting: { ...state.appSetting!, ...changes } };
       });
     });
-  }
+  },
 }));
 
 export default useMasterStore;

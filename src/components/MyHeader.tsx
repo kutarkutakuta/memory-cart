@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 
@@ -42,6 +42,18 @@ const MyHeader = () => {
 
   // 買物リスト操作用Hook
   const { shoppingList } = useShoppingItemStore();
+
+  const [listName , setListName] = useState<string>("");
+  const [isShare , setisShare] = useState<boolean>(false);
+
+  useEffect(() => {
+    setListName(shoppingList?.name!);
+    setisShare(shoppingList?.isShare!);
+    return ()=>{
+      setListName("");
+      setisShare(false);
+    }
+  }, [shoppingList]);
 
   const handleGoBack = () => {
     // 履歴が存在する場合のみ戻る操作を実行
@@ -142,11 +154,11 @@ const MyHeader = () => {
                       onClick={() => handleGoBack()}
                     ></Button>
                     <span style={{ paddingRight: "10px" }}>
-                      {shoppingList?.name}
+                      {listName}
                     </span>
-                    {shoppingList?.isShare ? (
+                    {isShare ? (
                       <Tooltip title="共有中">
-                        <Tag icon={<LinkOutlined />} color="#2E8B57"></Tag>
+                        <Tag icon={<LinkOutlined />} color="#4169E1"></Tag>
                       </Tooltip>
                     ) : null}
                   </>

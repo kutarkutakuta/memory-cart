@@ -1,4 +1,3 @@
-"use client";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import {
   DndContext,
@@ -18,9 +17,7 @@ import {
   Checkbox,
   Col,
   Dropdown,
-  Input,
   MenuProps,
-  Popover,
   Row,
   Space,
   Spin,
@@ -37,8 +34,8 @@ import {
   OrderedListOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons";
-import { useCallback, useEffect, useState } from "react";
-import type { KeyboardEvent, MouseEventHandler, PointerEvent } from "react";
+import { useCallback, useState } from "react";
+import type { KeyboardEvent, PointerEvent } from "react";
 import ShoppingCard from "../ShoppingCard/ShoppingCard";
 import useMenuStore from "@/stores/useMenuStore";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -249,7 +246,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
     {
       key: "1",
       label: "全て買い物前に戻す",
-      icon: <BorderOutlined />, 
+      icon: <BorderOutlined />,
       onClick: () => {
         updateShoppingItems(
           shoppingItems.map((itm) => itm.id!),
@@ -276,7 +273,11 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       label: "買い物済を全て削除",
       icon: <DeleteOutlined />,
       onClick: () => {
-        removeShoppingItems(shoppingItems.filter((itm) => itm.finished_at != null).map(itm=>itm.id!));
+        removeShoppingItems(
+          shoppingItems
+            .filter((itm) => itm.finished_at != null)
+            .map((itm) => itm.id!)
+        );
       },
     },
     {
@@ -284,7 +285,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       label: "全て削除",
       icon: <DeleteFilled />,
       onClick: () => {
-        removeShoppingItems(shoppingItems.map(itm=>itm.id!));
+        removeShoppingItems(shoppingItems.map((itm) => itm.id!));
       },
     },
   ];
@@ -302,8 +303,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
               >
                 品物を追加
               </Button>
-                {/* ローディングをここに置く */}
-                <span><Spin spinning={loading} ></Spin></span>
+              {/* ローディングをここに置く */}
+              <span>
+                <Spin spinning={loading}></Spin>
+              </span>
             </Col>
           </Row>
         </Col>
@@ -311,10 +314,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           <Row justify="end">
             <Col>
               <Space>
-                <Dropdown
-                  menu={{ items: sortItems }}
-                  placement="bottomRight"
-                >
+                <Dropdown menu={{ items: sortItems }} placement="bottomRight">
                   <Button type="text" icon={<FilterOutlined />}></Button>
                 </Dropdown>
                 <Dropdown menu={{ items: menuItems }} placement="bottomRight">
@@ -325,11 +325,8 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           </Row>
         </Col>
       </Row>
-      <DndContext 
-        onDragEnd={handleDragEnd}
-        sensors={sensors}
-      >
-        <SortableContext 
+      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+        <SortableContext
           items={shoppingItems.map((m) => m.id!)}
           strategy={rectSortingStrategy}
         >

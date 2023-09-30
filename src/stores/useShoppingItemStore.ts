@@ -89,9 +89,12 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             .single();
           if (error) console.error(error);
 
-          if (server_status !== 200) {
+          if (server_status === 0 ) {
             // なにもしないでスルー
             // throw new Error("サーバーに接続できません");
+            set({
+              info: "サーバーに接続できないため参照モードで実行しています。",
+            });
           } else if (server_list) {
             // サーバーからローカルへ同期
             fetchFromServer(local_list, server_list);
@@ -100,6 +103,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             await localdb.shopping_lists.update(local_list.id, {
               isShare: false,
             });
+            local_list =  {...local_list, isShare: false};
             set({
               info: "サーバーにデータが存在しないため共有を解除しました。",
             });
@@ -113,7 +117,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             .single();
           if (error) console.error(error);
           if (!server_list) {
-            throw new Error("データが存在しません");
+            throw new Error("リストが存在しません。");
           }
 
           // 共有作成
@@ -162,6 +166,11 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
 
         // 追加データ
         const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
+
+        if(!shoppingList) {
+          throw new Error("リストが特定できないため処理できません。");
+        }
+
         const addItem: ShoppingItem = {
           list_key: list_key,
           item_key: nanoid(),
@@ -226,7 +235,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
 
         if (shoppingList && shoppingList.isShare) {
           // 共有済みなのでリストのデータを更新するだけ
-          const { error } = await supabase
+          const { error, status, statusText } = await supabase
             .from("shopping_items")
             .update(changes)
             .eq("list_key", shoppingList.list_key)
@@ -236,7 +245,10 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
                 .filter((itm) => ids.findIndex((id) => id === itm.id) > -1)
                 .map((itm) => itm.item_key)
             );
-          if (error) throw error;
+          if (error) {
+            console.error(error);
+            throw new Error("サーバーに接続できないか更新に失敗しました。");
+          }
         }
 
         // ステート更新
@@ -268,7 +280,10 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
               "item_key",
               deleteItems.map((itm) => itm.item_key)
             );
-          if (error) throw error;
+            if (error) {
+              console.error(error);
+              throw new Error("サーバーに接続できないか削除に失敗しました。");
+            }
         }
 
         const newItems = shoppingItems.filter(
