@@ -9,13 +9,16 @@ import {
   Space,
   message,
 } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, HeartTwoTone } from "@ant-design/icons";
 const { TextArea } = Input;
 
 import useMasterStore from "@/stores/useMasterStore";
 import { useEditItemMenu } from "./useEditItemMenu";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
+import useFavoriteItemStore, {
+  FavoriteItem,
+} from "@/stores/useFavoriteItemStore";
 
 export function EditItemMenu() {
   // メニュー制御用Hook
@@ -25,14 +28,37 @@ export function EditItemMenu() {
   const { categories, units } = useMasterStore();
 
   // 品物制御用Hook
-  const { loading, error, updateShoppingItems } =
-    useShoppingItemStore();
+  const { loading, error, updateShoppingItems } = useShoppingItemStore();
+
+  // お気に入りの品物用Hook
+  const { addFavoriteItem, removeFavoriteItem, getFavoriteItem } =
+    useFavoriteItemStore();
+  const [favoriteItem, setFavoriteItem] = useState<FavoriteItem | null>(null);
 
   // フォーム用Hook
   const { formData, initialFormData, handleChange } = useEditItemMenu();
   useEffect(() => {
     initialFormData(selectedItem);
+    if (selectedItem) {
+      getFavoriteItem(selectedItem?.name).then((ret) => {
+        setFavoriteItem(ret);
+      });
+    }
   }, [openFlag["EditItemMenu"]]);
+
+  const handleChangeFavorite = () => {
+    if (favoriteItem) {
+      removeFavoriteItem(favoriteItem?.id!);
+      setFavoriteItem(null);
+      messageApi.success("お気に入りから削除しました。");
+    } else {
+      addFavoriteItem(selectedItem?.category_name!, selectedItem?.name!)
+      .finally(()=>getFavoriteItem(selectedItem?.name!).then((ret) => {
+        setFavoriteItem(ret);
+        messageApi.success("お気に入りに登録しました。");
+      }));
+    }
+  };
 
   // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();
@@ -55,7 +81,7 @@ export function EditItemMenu() {
       <Drawer
         title={
           <>
-          <EditOutlined />
+            <EditOutlined />
             <span style={{ paddingLeft: 4 }}>品物の編集</span>
           </>
         }
@@ -65,13 +91,20 @@ export function EditItemMenu() {
         onClose={() => closeMenu("EditItemMenu")}
       >
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
-          
-        <Input
-            placeholder="品物の名前"
-            maxLength={15}
-            value={formData.name}
-            onChange={(e) => handleChange("name", e.target.value)}
-          />
+          <Space style={{ width: "100%" }}>
+            <Input
+              placeholder="品物の名前"
+              maxLength={15}
+              value={formData.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+            />
+            <Button
+              type={"text"}
+              icon={<HeartTwoTone twoToneColor={favoriteItem ? "#eb2f96" : ""} />}
+              onClick={() => handleChangeFavorite()}
+            ></Button>
+          </Space>
+
           <Select
             showSearch
             allowClear

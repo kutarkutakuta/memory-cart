@@ -23,6 +23,7 @@ interface FavoriteItemState {
   ) => Promise<void>;
   removeFavoriteItem: (id: number) => Promise<void>;
   sortFavoriteItem: (favoriteItems: FavoriteItem[]) => void;
+  getFavoriteItem: (name: string) => Promise<FavoriteItem | null>;
 }
 
 /**
@@ -119,6 +120,13 @@ const useFavoriteItemStore = create<FavoriteItemState>((set) => {
       // ステート更新
       set({ favoriteItems });
     },
+    getFavoriteItem :async  (name) =>{
+      // ローカルDBのデータを取得
+      const favorite_item = await localdb.favorite_items
+      .where({name: name})
+      .first();
+      return favorite_item ? favorite_item : null;
+    }
   };
 });
 

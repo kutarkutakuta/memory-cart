@@ -228,7 +228,9 @@ export function AddItemMenu() {
 
           <Button
             style={{ width: "100%" }}
-            onClick={() => closeMenu("AddItemMenu")}
+            onClick={() => {
+              closeMenu("AddItemMenu");
+            }}
           >
             キャンセル
           </Button>
