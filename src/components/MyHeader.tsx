@@ -9,9 +9,7 @@ import {
   MenuProps,
   Row,
   Space,
-  Tag,
   Tooltip,
-  Typography,
 } from "antd";
 import {
   QuestionCircleOutlined,
@@ -21,6 +19,7 @@ import {
   SettingOutlined,
   HeartOutlined,
   ShoppingOutlined,
+  SafetyOutlined,
 } from "@ant-design/icons";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
@@ -86,9 +85,19 @@ const MyHeader = () => {
       type: "divider",
     },
     {
+      key: "3",
+      label: "プライバシーポリシー",
+      icon: <SafetyOutlined />,
+      onClick: () => router.push(`/privacy`),
+    },
+    {
+      type: "divider",
+    },
+    {
       key: "4",
       label: "ヘルプ",
       icon: <QuestionCircleOutlined />,
+      onClick: () => router.push(`/help`),
     },
   ];
 
@@ -103,7 +112,7 @@ const MyHeader = () => {
             width: "100px",
           }}
         >
-          {pathname == "/" ? (
+          {pathname === "/" ? (
             <>
               <span
                 style={{
@@ -114,10 +123,11 @@ const MyHeader = () => {
                 }}
               >
                 <ShoppingOutlined />
-                お買い物リスト
+                {pathname == "/" ? "お買い物リスト" : ""}
               </span>
             </>
-          ) : (
+          ) : null}
+          {pathname === "/help" || pathname === "/privacy" ? (
             <>
               <span
                 style={{
@@ -132,22 +142,42 @@ const MyHeader = () => {
                 icon={<ArrowLeftOutlined />}
                 onClick={() => handleGoBack()}
               ></Button>
-                {listName}
-                
-              {isShare ? (
-                <Tooltip title="共有中">
-                  <Button
-                    type="text"
-                    icon={<LinkOutlined />}
-                    onClick={() => openMenu("ShareInfoMenu", shoppingList!)                     
-                    }
-                  ></Button>
-                </Tooltip>
-              ) : null}
+                {pathname == "/help" ? "ヘルプ" : ""}
+                {pathname == "/privacy" ? "プライバシーポリシー" : ""}
               </span>
-              
             </>
-          )}
+          ) : null}
+          {pathname === "/kaimono" ? (
+            <>
+              <span
+                style={{
+                  paddingLeft: 10,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                <Button
+                  type="text"
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => handleGoBack()}
+                ></Button>
+                {listName}
+
+                {isShare ? (
+                  <Tooltip title="共有中">
+                    <Button
+                      type="text"
+                      icon={<LinkOutlined />}
+                      onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
+                    ></Button>
+                  </Tooltip>
+                ) : null}
+              </span>
+            </>
+          ) :null
+
+          }
         </Col>
         <Col flex="none">
           <Row justify="end">
