@@ -35,8 +35,8 @@ const ShareConfirm = (title: string ,share_key : string, list_name:string) => ({
         <Space style={{ width: "100%",paddingTop:"10px" }}>
           <EmailShareButton
             url={
-              encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-              share_key)
+              "https://memory-cart.onrender.com/kaimono?key=" +
+              share_key
             }
             title={list_name}
           >

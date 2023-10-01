@@ -10,7 +10,7 @@ export function PriceMenu() {
   // メニュー制御用Hook
   const { openFlag, selectedItem, closeMenu } = useMenuStore();
 
-
+  // フォーカス制御用Ref
   const inputRef = useRef<any | null>(null);
 
   // フォーム制御用Hook

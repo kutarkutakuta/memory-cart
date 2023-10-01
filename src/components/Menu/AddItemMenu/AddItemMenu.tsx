@@ -146,7 +146,7 @@ export function AddItemMenu() {
             }}
             options={[
               { value: 1, label: "お気に入りから探す" },
-              { value: 2, label: "一般品から探す" },
+              { value: 2, label: "一般的な品物から探す" },
             ]}
             value={searchMode}
           />
@@ -182,7 +182,7 @@ export function AddItemMenu() {
             </Space>
           ) : (
             <Space size={[0, 8]} wrap>
-              {viewCommons.length == 0 ? "一般品が見つかりません" : ""}
+              {viewCommons.length == 0 ? "一般的な品物が見つかりません" : ""}
               {viewCommons.map((m) => (
                 <Tag
                   key={m.id}

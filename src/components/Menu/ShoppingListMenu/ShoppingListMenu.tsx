@@ -12,7 +12,7 @@ import {
 
 import useShoppingListStore from "@/stores/useShoppingListStore";
 import { useShoppingListMenu } from "./useShoppingListMenu";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   EmailIcon,
   EmailShareButton,
@@ -27,19 +27,19 @@ import {
 export function ShoppingListMenu() {
   // メニュー制御用Hook
   const { openFlag, selectedList, closeMenu } = useMenuStore();
-
   // 買い物リスト制御用Hook
   const { loading, error, removeShoppingList, updateShoppingList } =
     useShoppingListStore();
-
   // フォーム制御用Hook
   const { formData, initialFormData, handleChange } = useShoppingListMenu();
-
   // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();
+  // フォーカス制御用Ref
+  const inputRef = useRef<any | null>(null);
 
   useEffect(() => {
     initialFormData(selectedList);
+    inputRef.current?.focus();
   }, [openFlag["ShoppingListMenu"]]);
 
   useEffect(() => {
@@ -87,6 +87,7 @@ export function ShoppingListMenu() {
       >
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Input
+            ref={inputRef}
             placeholder="リストの名前"
             maxLength={20}
             value={formData.name}
@@ -101,7 +102,7 @@ export function ShoppingListMenu() {
             onChange={(e) => handleChange("memo", e.target.value)}
           />
 
-<Button
+          <Button
             type="primary"
             style={{ width: "100%" }}
             loading={loading}
@@ -125,11 +126,12 @@ export function ShoppingListMenu() {
           </Button>
           {selectedList?.isShare ? (
             <>
-            <div>
-              共有URL　
-              <Tooltip title="共有相手にURLを送ります。">
-              <QuestionCircleOutlined/>
-              </Tooltip></div>
+              <div>
+                共有URL　
+                <Tooltip title="共有相手にURLを送ります。">
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </div>
               <Space.Compact style={{ width: "100%" }}>
                 <Input
                   value={
@@ -146,9 +148,7 @@ export function ShoppingListMenu() {
                       "https://memory-cart.onrender.com/kaimono?key=" +
                         selectedList?.list_key
                     );
-                    messageApi.info(
-                      "クリップボードにURLをコピーしました。"
-                    );
+                    messageApi.info("クリップボードにURLをコピーしました。");
                   }}
                 >
                   <CopyOutlined />
@@ -157,36 +157,36 @@ export function ShoppingListMenu() {
               <Space style={{ width: "100%" }}>
                 <EmailShareButton
                   url={
-                    encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                    selectedList?.list_key)
+                    "https://memory-cart.onrender.com/kaimono?key=" +
+                      selectedList?.list_key
                   }
                   title={selectedList?.name!}
                 >
                   <EmailIcon size={40} round />
                 </EmailShareButton>
                 <FacebookShareButton
-                  url={
-                    encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                    selectedList?.list_key)
-                  }
+                  url={encodeURIComponent(
+                    "https://memory-cart.onrender.com/kaimono?key=" +
+                      selectedList?.list_key
+                  )}
                   quote={selectedList?.name!}
                 >
                   <FacebookIcon size={40} round />
                 </FacebookShareButton>
                 <TwitterShareButton
-                  url={
-                    encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                    selectedList?.list_key)
-                  }
+                  url={encodeURIComponent(
+                    "https://memory-cart.onrender.com/kaimono?key=" +
+                      selectedList?.list_key
+                  )}
                   title={selectedList?.name!}
                 >
                   <TwitterIcon size={40} round />
                 </TwitterShareButton>
                 <LineShareButton
-                  url={
-                    encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                    selectedList?.list_key)
-                  }
+                  url={encodeURIComponent(
+                    "https://memory-cart.onrender.com/kaimono?key=" +
+                      selectedList?.list_key
+                  )}
                   title={selectedList?.name!}
                 >
                   <LineIcon size={40} round />
@@ -194,8 +194,6 @@ export function ShoppingListMenu() {
               </Space>
             </>
           ) : null}
-
-
         </Space>
       </Drawer>
     </>
