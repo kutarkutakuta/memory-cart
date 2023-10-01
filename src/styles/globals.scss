@@ -17,13 +17,13 @@
 
 :root[theme="light"] {
   --foreground-color: #000000;
-  --background-color: #FDFFF4;
+  --background-color: #fdfff4;
 
   --header-color: #000000;
-  --header-background-color: #F8DEB0;
+  --header-background-color: #f8deb0;
 
   --sub-header-color: #000000;
-  --sub-header-background-color: #F6EACF;
+  --sub-header-background-color: #f6eacf;
 }
 
 * {
@@ -66,6 +66,7 @@ main {
     left: 0;
     width: 100%;
     z-index: 20;
+    padding-left: 5px;
     padding-right: 5px;
   }
   margin-top: 72px; /* ヘッダーの高さに合わせてメインコンテンツを下にスペースを確保 */

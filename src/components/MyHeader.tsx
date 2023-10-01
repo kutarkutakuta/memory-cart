@@ -116,7 +116,7 @@ const MyHeader = () => {
             <>
               <span
                 style={{
-                  paddingLeft: 10,
+                  paddingLeft: 5,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -131,7 +131,7 @@ const MyHeader = () => {
             <>
               <span
                 style={{
-                  paddingLeft: 10,
+                  paddingLeft: 5,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -151,7 +151,7 @@ const MyHeader = () => {
             <>
               <span
                 style={{
-                  paddingLeft: 10,
+                  paddingLeft: 5,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
