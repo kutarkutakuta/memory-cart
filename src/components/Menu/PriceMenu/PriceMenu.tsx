@@ -1,30 +1,41 @@
 import useMenuStore from "@/stores/useMenuStore";
-import { Button, Drawer, InputNumber, Select, Space } from "antd";
+import {
+  Button,
+  Divider,
+  Drawer,
+  InputNumber,
+  List,
+  Select,
+  Space,
+} from "antd";
 
 import { usePriceMenu } from "./usePriceMenu";
 import useMasterStore from "@/stores/useMasterStore";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import { useEffect, useRef } from "react";
+import usePriceHistoryStore from "@/stores/usePriceHistoryStore";
 
 export function PriceMenu() {
+  // マスター用Hook
+  const { units } = useMasterStore();
+  // 品物制御用Hook
+  const { updateShoppingItems } = useShoppingItemStore();
+  // 品物制御用Hook
+  const { upsertPriceHistory, fetchPriceHistories, priceHistories } =
+    usePriceHistoryStore();
   // メニュー制御用Hook
   const { openFlag, selectedItem, closeMenu } = useMenuStore();
-
   // フォーカス制御用Ref
   const inputRef = useRef<any | null>(null);
-
   // フォーム制御用Hook
   const { formData, initialFormData, handleChange } = usePriceMenu();
   useEffect(() => {
     initialFormData(selectedItem);
     inputRef.current?.focus();
+    if (selectedItem) {
+      fetchPriceHistories(selectedItem.category_name!, selectedItem.name);
+    }
   }, [openFlag["PriceMenu"]]);
-
-  // マスター用Hook
-  const { units } = useMasterStore();
-
-  // 品物制御用Hook
-  const { loading, error, updateShoppingItems } = useShoppingItemStore();
 
   return (
     <>
@@ -40,7 +51,6 @@ export function PriceMenu() {
         onClose={() => closeMenu("PriceMenu")}
       >
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
-
           <Space.Compact>
             <InputNumber
               ref={inputRef}
@@ -77,6 +87,7 @@ export function PriceMenu() {
             type="primary"
             style={{ width: "100%" }}
             onClick={() => {
+              upsertPriceHistory(selectedItem!);
               updateShoppingItems([selectedItem?.id!], formData).then(() =>
                 closeMenu("PriceMenu")
               );
@@ -91,8 +102,34 @@ export function PriceMenu() {
           >
             キャンセル
           </Button>
-
-          {/* <div>☆価格の履歴☆</div> */}
+          <Divider />
+          {priceHistories.length ? (
+            <>
+              ☆価格履歴☆
+              <table style={{width:"100%", }}>
+                  {priceHistories.map((item) => {
+                    return (
+                      <>
+                        <tr>
+                          <td style={{width:"90px", verticalAlign:"top"}}>{item.updated_at.toLocaleDateString()}</td>
+                          <td>
+                            ￥ {item.price.toLocaleString()}
+                            {item.amount
+                              ? " (" +
+                                item.amount.toLocaleString() +
+                                item.unit +
+                                ")"
+                              : null}
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  })}
+              </table>
+            </>
+          ) : (
+            ""
+          )}
         </Space>
       </Drawer>
     </>

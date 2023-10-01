@@ -29,8 +29,6 @@ import { FavoriteItemMenu } from "./Menu/FavoireItemMenu/FavoriteItemMenu";
 import modal from "antd/es/modal";
 import ShareConfirm from "./Menu/ShareConfirm/ShareConfirm";
 
-const { Paragraph } = Typography;
-
 const MyHeader = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -144,15 +142,15 @@ const MyHeader = () => {
                     type="text"
                     icon={<LinkOutlined />}
                     // TODO:ダークモードが解ける
-                    onClick={() =>
-                      modal.info(
-                        ShareConfirm(
-                          "リストを共有しています",
-                          shoppingList?.list_key!,
-                          shoppingList?.name!
-                        )
-                      )
-                    }
+                    // onClick={() =>
+                    //   modal.info(
+                    //     ShareConfirm(
+                    //       "リストを共有しています",
+                    //       shoppingList?.list_key!,
+                    //       shoppingList?.name!
+                    //     )
+                    //   )
+                    // }
                   ></Button>
                 </Tooltip>
               ) : null}

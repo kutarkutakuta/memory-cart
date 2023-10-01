@@ -41,7 +41,6 @@ export interface CommonItem {
   id: number;
   order_number: number;
   name: string | null;
-  color: string | null;
   category_name: string | null;
 }
 

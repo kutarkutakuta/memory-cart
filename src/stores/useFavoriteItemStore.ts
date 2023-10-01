@@ -6,9 +6,9 @@ import localdb from "@/lib/localdb";
  */
 export interface FavoriteItem {
   id?: number;
-  category_name: string;
   order_number: number;
   name: string;
+  category_name: string;
 }
 
 interface FavoriteItemState {
