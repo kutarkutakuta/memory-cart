@@ -14,24 +14,41 @@ const mytheme: ThemeConfig = {
 };
 
 export default function App({ Component, pageProps }: AppProps) {
-
-  const {appSetting} = useMasterStore();
+  const { appSetting } = useMasterStore();
   const [data, setData] = useState<ThemeConfig>(mytheme);
 
   useEffect(() => {
-    if(appSetting){
-      document.documentElement.setAttribute('theme', appSetting.theme);
+    if (appSetting) {
+      document.documentElement.setAttribute("theme", appSetting.theme);
+
+      let colorPrimary = "#1890ff";
+      switch (appSetting?.theme) {
+        case "light":
+          colorPrimary = "#ffc53d";
+          break;
+        case "green":
+          colorPrimary = "#389e0d";
+          break;
+        case "modern":
+          colorPrimary = "#434343";
+          break;
+      }
+
       const newtheme: ThemeConfig = {
-        algorithm: appSetting?.theme == "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        algorithm:
+          appSetting?.theme == "dark"
+            ? theme.darkAlgorithm
+            : theme.defaultAlgorithm,
         token: {
           fontSize: appSetting?.font_size,
           colorLink: "#00FFFF",
+          colorPrimary: colorPrimary,
         },
       };
       setData(newtheme);
     }
-  }, [appSetting])
-  
+  }, [appSetting]);
+
   return (
     <ConfigProvider theme={data}>
       <Component {...pageProps} />
