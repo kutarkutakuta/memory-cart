@@ -9,7 +9,7 @@ import {
   Space,
   message,
 } from "antd";
-import { ShoppingOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 
 import useMasterStore from "@/stores/useMasterStore";
@@ -55,12 +55,8 @@ export function EditItemMenu() {
       <Drawer
         title={
           <>
-            <Input
-            placeholder="品物の名前"
-            maxLength={15}
-            value={formData.name}
-            onChange={(e) => handleChange("name", e.target.value)}
-          />
+          <EditOutlined />
+            <span style={{ paddingLeft: 4 }}>品物の編集</span>
           </>
         }
         placement={"left"}
@@ -68,9 +64,14 @@ export function EditItemMenu() {
         open={openFlag["EditItemMenu"]}
         onClose={() => closeMenu("EditItemMenu")}
       >
-        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+        <Space direction="vertical" size="small" style={{ display: "flex" }}>
           
-
+        <Input
+            placeholder="品物の名前"
+            maxLength={15}
+            value={formData.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+          />
           <Select
             showSearch
             allowClear
@@ -111,7 +112,7 @@ export function EditItemMenu() {
           </Select>
 
           <TextArea
-            rows={4}
+            rows={3}
             placeholder="メモ"
             maxLength={500}
             value={formData.memo}

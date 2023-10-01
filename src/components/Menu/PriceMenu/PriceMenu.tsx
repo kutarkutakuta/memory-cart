@@ -39,7 +39,7 @@ export function PriceMenu() {
         open={openFlag["PriceMenu"]}
         onClose={() => closeMenu("PriceMenu")}
       >
-        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+        <Space direction="vertical" size="small" style={{ display: "flex" }}>
 
           <Space.Compact>
             <InputNumber

@@ -1,4 +1,3 @@
-"use client";
 import useMenuStore from "@/stores/useMenuStore";
 import {
   Button,
@@ -11,8 +10,8 @@ import {
   Tag,
   message,
 } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
-import styles from "./AddItemMenu.module.scss";
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
 import { useEffect, useState } from "react";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
@@ -49,7 +48,7 @@ export function AddItemMenu() {
   const [viewItemCount, setViewItemCount] = useState<number>(25);
   const [viewCommons, setViewCommons] = useState<CommonItem[]>(commonItems);
   const [viewFavorites, setViewFavorites] = useState<FavoriteItem[]>([]);
-  const [searchMode, setSearchMode] = useState(1);
+  const [searchMode, setSearchMode] = useState(2);
 
   useEffect(() => {
     if (searchMode === 1) {
@@ -114,9 +113,16 @@ export function AddItemMenu() {
       <Drawer
         title={
           <>
-            <span style={{ paddingLeft: 4 }}>
-              {" "}
-              <Select
+          <PlusCircleOutlined />
+            <span style={{ paddingLeft: 4 }}>品物を追加</span>
+          </>
+        }
+        placement={"right"}
+        open={openFlag["AddItemMenu"]}
+        onClose={() => closeMenu("AddItemMenu")}
+      >
+        <Space direction="vertical" size="small" style={{ display: "flex" }}>
+        <Select
                 mode="tags"
                 style={{ width: "100%" }}
                 placeholder="品物の名前(複数可)"
@@ -130,14 +136,8 @@ export function AddItemMenu() {
                 }))}
                 onChange={(e) => setAddItems(e)}
               />
-            </span>
-          </>
-        }
-        placement={"right"}
-        open={openFlag["AddItemMenu"]}
-        onClose={() => closeMenu("AddItemMenu")}
-      >
-        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+              
+          <Divider style={{ margin: 0 }}></Divider>
           <Select
             style={{ width: "100%" }}
             onChange={(e) => {
@@ -201,9 +201,8 @@ export function AddItemMenu() {
                 type="link"
                 size="small"
                 onClick={() => setViewItemCount(viewItemCount + 50)}
-                style={{ fontSize: "smaller" }}
               >
-                もっと表示
+              <span style={{ fontSize: "small" }}>もっと表示</span>
               </Button>
             </div>
           ) : null}

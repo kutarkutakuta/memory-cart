@@ -222,9 +222,9 @@ export function FavoriteItemMenu() {
                   type="link"
                   size="small"
                   onClick={() => setViewCommonCount(viewCommonCount + 50)}
-                  style={{ fontSize: "smaller" }}
+                  
                 >
-                  もっと表示
+                  <span style={{ fontSize: "small" }}>もっと表示</span>
                 </Button>
               </div>
             ) : null}
