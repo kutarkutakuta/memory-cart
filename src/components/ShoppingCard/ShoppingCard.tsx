@@ -142,7 +142,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 whiteSpace: "nowrap",
               }}
             >
-              <div style={{ marginTop: -5 }}>
+              <div style={{ marginTop: -5, padding:-5 }}>
                 {" "}
                 {item.amount ? <span>{item.amount}</span> : null}
               </div>
