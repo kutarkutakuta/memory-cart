@@ -113,7 +113,7 @@ export function AddItemMenu() {
       <Drawer
         title={
           <>
-          <PlusCircleOutlined />
+            <PlusCircleOutlined />
             <span style={{ paddingLeft: 4 }}>品物を追加</span>
           </>
         }
@@ -122,21 +122,21 @@ export function AddItemMenu() {
         onClose={() => closeMenu("AddItemMenu")}
       >
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
-        <Select
-                mode="tags"
-                style={{ width: "100%" }}
-                placeholder="品物の名前(複数可)"
-                value={addItems}
-                suffixIcon={null}
-                notFoundContent={null}
-                onSearch={handleItemSearch}
-                options={(itemOptions || []).map((d) => ({
-                  value: d.value,
-                  label: d.text,
-                }))}
-                onChange={(e) => setAddItems(e)}
-              />
-              
+          <Select
+            mode="tags"
+            style={{ width: "100%" }}
+            placeholder="品物の名前(複数可)"
+            value={addItems}
+            suffixIcon={null}
+            notFoundContent={null}
+            onSearch={handleItemSearch}
+            options={(itemOptions || []).map((d) => ({
+              value: d.value,
+              label: d.text,
+            }))}
+            onChange={(e) => setAddItems(e)}
+          />
+
           <Divider style={{ margin: 0 }}></Divider>
           <Select
             style={{ width: "100%" }}
@@ -202,7 +202,7 @@ export function AddItemMenu() {
                 size="small"
                 onClick={() => setViewItemCount(viewItemCount + 50)}
               >
-              <span style={{ fontSize: "small" }}>もっと表示</span>
+                <span style={{ fontSize: "small" }}>もっと表示</span>
               </Button>
             </div>
           ) : null}
@@ -211,16 +211,14 @@ export function AddItemMenu() {
             type="primary"
             style={{ width: "100%" }}
             onClick={() => {
-              if(addItems.length > 0){
+              if (addItems.length > 0) {
                 addItems.forEach((name) => {
                   addShoppingItem(list_key!, name);
                 });
                 closeMenu("AddItemMenu");
-              }
-              else{
+              } else {
                 messageApi.warning("品物を追加してください。");
               }
-              
             }}
           >
             追加

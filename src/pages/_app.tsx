@@ -20,12 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     if(appSetting){
-      if(appSetting.theme == "light"){
-        document.documentElement.setAttribute('theme', 'light');
-      }
-      else{
-        document.documentElement.setAttribute('theme', 'dark');
-      }
+      document.documentElement.setAttribute('theme', appSetting.theme);
       const newtheme: ThemeConfig = {
         algorithm: appSetting?.theme == "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: {
