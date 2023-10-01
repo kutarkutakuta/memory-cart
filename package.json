@@ -17,6 +17,7 @@
     "antd": "^5.9.3",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.6",
+    "html-react-parser": "^4.2.2",
     "nanoid": "^3.3.6",
     "next": "^13.5.3",
     "react": "^18.2.0",

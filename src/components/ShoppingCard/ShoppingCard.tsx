@@ -1,4 +1,5 @@
 "use client";
+import parse from "html-react-parser";
 import useShoppingItemStore, {
   ShoppingItem,
 } from "@/stores/useShoppingItemStore";
@@ -177,47 +178,45 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             </div>
           </Space>
         </Col>
-        <Col flex="none">
+        <Col>
           <div style={{ marginTop: -5 }}>
             {item.buying_price ? (
-                <Popover content={<div style={{textAlign:"right"}}>
-                  <p>{"￥" + item.buying_price.toLocaleString()}</p>
-                  <p>{item.buying_amount ? "(" + item.buying_amount.toLocaleString() + (item.buying_unit || "") + ")" : null }</p>
-                </div>}>
+              <Popover
+                content={
+                  <div style={{ textAlign: "right" }}>
+                    <p>{"￥" + item.buying_price.toLocaleString()}</p>
+                    <p>
+                      {item.buying_amount
+                        ? "(" +
+                          item.buying_amount.toLocaleString() +
+                          (item.buying_unit || "") +
+                          ")"
+                        : null}
+                    </p>
+                  </div>
+                }
+              >
                 <Button type="text" shape="circle" size={"small"}>
                   ￥
                 </Button>
-                </Popover>
+              </Popover>
             ) : null}
           </div>
         </Col>
-        <Col flex="none">
-          <div style={{ textAlign: "right" }}>
-            <Tag
-              color={
-                categories.find((n) => n.name == item.category_name)?.bgcolor!
-              }
-              style={{
-                color: categories.find((n) => n.name == item.category_name)
-                  ?.color!,
-              }}
-              bordered={false}
-            >
-              {item.category_name}
-            </Tag>
-          </div>
-          {/* <div
+        <Col style={{ display: "flex", textAlign: "right" }}>
+          <Tag
+            color={
+              categories.find((n) => n.name == item.category_name)?.bgcolor!
+            }
             style={{
-              fontSize: "smaller",
-              marginRight: "6px",
-              textAlign: "right",
+              lineHeight: "0.9",
+              color: categories.find((n) => n.name == item.category_name)
+                ?.color!,
             }}
+            bordered={false}
           >
-            {item.buying_price ? "￥" + item.buying_price.toLocaleString() : ""}
-            {item.buying_amount
-              ? "(" + item.buying_amount + (item.buying_unit || "") + ")"
-              : ""}
-          </div> */}
+            {parse(item.category_name!.replace("/", "/<br />"))}
+          </Tag>
         </Col>
         <Col flex="none">
           <Row justify="end">

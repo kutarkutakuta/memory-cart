@@ -71,6 +71,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
   } = useShoppingListStore();
 
   // メッセージ用Hook
+  const [modal, contextHolder2] = Modal.useModal();
   const [messageApi, contextHolder] = message.useMessage();
   useEffect(() => {
     if (error)
@@ -189,7 +190,6 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       },
     },
   ];
-  const [modal, contextHolder2] = Modal.useModal();
 
   return (
     <div
