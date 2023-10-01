@@ -107,8 +107,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           content:
             (item.isShare
               ? "サーバー上の共有データも削除するには共有解除を行ってください。"
-              : "削除したリストは元に戻せません。") +
-            "削除しますか？",
+              : "削除したリストは元に戻せません。") + "削除しますか？",
           okText: "削除",
           okType: "danger",
           cancelText: "キャンセル",
@@ -216,14 +215,12 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           <Row justify="end">
             <Col>
               {item.isShare ? (
-                <Tooltip title="共有中">
-                  <Button
-                type="text"
-                icon={<LinkOutlined />}
-                size="small"
-                onClick={()=>openMenu("ShareInfoMenu", item)}
-              ></Button>
-                </Tooltip>
+                <Button
+                  type="text"
+                  icon={<LinkOutlined />}
+                  size="small"
+                  onClick={() => openMenu("ShareInfoMenu", item)}
+                ></Button>
               ) : null}
               <Dropdown menu={{ items }} placement="bottomRight">
                 <Button type="text" icon={<MoreOutlined />} />

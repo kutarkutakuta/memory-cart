@@ -165,13 +165,11 @@ const MyHeader = () => {
                 {listName}
 
                 {isShare ? (
-                  <Tooltip title="共有中">
-                    <Button
-                      type="text"
-                      icon={<LinkOutlined />}
-                      onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
-                    ></Button>
-                  </Tooltip>
+                  <Button
+                  type="text"
+                  icon={<LinkOutlined />}
+                  onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
+                ></Button>
                 ) : null}
               </span>
             </>
