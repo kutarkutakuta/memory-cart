@@ -41,7 +41,6 @@ export default function App({ Component, pageProps }: AppProps) {
             : theme.defaultAlgorithm,
         token: {
           fontSize: appSetting?.font_size,
-          colorLink: "#00FFFF",
           colorPrimary: colorPrimary,
         },
       };
