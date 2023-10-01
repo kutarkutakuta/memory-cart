@@ -142,7 +142,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 whiteSpace: "nowrap",
               }}
             >
-              <div style={{ marginTop: -5, padding:-5 }}>
+              <div style={{ marginTop: -5, padding: -5 }}>
                 {" "}
                 {item.amount ? <span>{item.amount}</span> : null}
               </div>
@@ -204,19 +204,34 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
           </div>
         </Col>
         <Col style={{ display: "flex", textAlign: "right" }}>
-          <Tag
+          {item.category_name && item.category_name.includes("/") ? (
+            <Tag
+              color={
+                categories.find((n) => n.name == item.category_name)?.bgcolor!
+              }
+              style={{
+                lineHeight: "0.9",
+                color: categories.find((n) => n.name == item.category_name)
+                  ?.color!,
+              }}
+              bordered={false}
+            >
+              {parse(item.category_name?.replace("/", "/<br />"))}
+            </Tag>
+          ) : (
+            <Tag
             color={
               categories.find((n) => n.name == item.category_name)?.bgcolor!
             }
             style={{
-              lineHeight: "0.9",
               color: categories.find((n) => n.name == item.category_name)
                 ?.color!,
             }}
             bordered={false}
           >
-            {parse(item.category_name!.replace("/", "/<br />"))}
+            {item.category_name}
           </Tag>
+          )}
         </Col>
         <Col flex="none">
           <Row justify="end">
