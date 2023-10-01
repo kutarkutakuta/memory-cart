@@ -26,8 +26,6 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
 import { SettingMenu } from "./Menu/SettingMenu/SettingMenu";
 import { FavoriteItemMenu } from "./Menu/FavoireItemMenu/FavoriteItemMenu";
-import modal from "antd/es/modal";
-import ShareConfirm from "./Menu/ShareConfirm/ShareConfirm";
 
 const MyHeader = () => {
   const pathname = usePathname();
@@ -141,16 +139,8 @@ const MyHeader = () => {
                   <Button
                     type="text"
                     icon={<LinkOutlined />}
-                    // TODO:ダークモードが解ける
-                    // onClick={() =>
-                    //   modal.info(
-                    //     ShareConfirm(
-                    //       "リストを共有しています",
-                    //       shoppingList?.list_key!,
-                    //       shoppingList?.name!
-                    //     )
-                    //   )
-                    // }
+                    onClick={() => openMenu("ShareInfoMenu", shoppingList!)                     
+                    }
                   ></Button>
                 </Tooltip>
               ) : null}

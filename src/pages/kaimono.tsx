@@ -9,6 +9,7 @@ import useMasterStore from "@/stores/useMasterStore";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import { Spin, message } from "antd";
 import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
+import { ShareInfoMenu } from "@/components/Menu/ShareInfoMenu/ShareInfoMenu";
 
 const HomePage = () => {
   const searchParams = useSearchParams();
@@ -55,6 +56,7 @@ const HomePage = () => {
       <AddItemMenu></AddItemMenu>
       <EditItemMenu></EditItemMenu>
       <PriceMenu></PriceMenu>
+      <ShareInfoMenu></ShareInfoMenu>
     </>
   );
 };

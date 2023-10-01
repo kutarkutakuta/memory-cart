@@ -4,12 +4,9 @@ import {
   Button,
   Col,
   Dropdown,
-  Input,
   MenuProps,
   Modal,
   Row,
-  Space,
-  Tag,
   Tooltip,
   message,
 } from "antd";
@@ -24,7 +21,6 @@ import {
   DisconnectOutlined,
   DeleteFilled,
   ExclamationCircleFilled,
-  CopyOutlined,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingListCard.module.scss";
@@ -34,17 +30,6 @@ import useShoppingListStore, {
 import { useRouter } from "next/navigation";
 import useMenuStore from "@/stores/useMenuStore";
 import { useEffect, useState } from "react";
-import {
-  EmailIcon,
-  EmailShareButton,
-  FacebookIcon,
-  FacebookShareButton,
-  LineIcon,
-  LineShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-} from "react-share";
-import ShareConfirm from "../Menu/ShareConfirm/ShareConfirm";
 
 interface ShoppingCardProps {
   item: ShoppingList;
@@ -144,7 +129,8 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       icon: <LinkOutlined />,
       onClick: () => {
         shareShoppingList(item.id).then((share_key) => {
-          modal.info(ShareConfirm("リストを共有しました。", share_key!, item.name!));
+          item.list_key = share_key!;
+          openMenu("ShareInfoMenu", item);
         });
       },
       disabled: item.isShare,
@@ -235,7 +221,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
                 type="text"
                 icon={<LinkOutlined />}
                 size="small"
-                onClick={()=>modal.info(ShareConfirm("リストを共有しています", item.list_key, item.name!))}
+                onClick={()=>openMenu("ShareInfoMenu", item)}
               ></Button>
                 </Tooltip>
               ) : null}
