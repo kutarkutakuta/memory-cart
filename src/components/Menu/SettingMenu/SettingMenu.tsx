@@ -37,10 +37,10 @@ export function SettingMenu() {
             <Select
               placeholder="フォントサイズ"
               options={[
-                { value: "14px", label: "小さい" },
-                { value: "16px", label: "普通" },
-                { value: "18px", label: "大きい" },
-                { value: "20px", label: "すごく大きい" },
+                { value: 14, label: "小さい" },
+                { value: 16, label: "普通" },
+                { value: 18, label: "大きい" },
+                { value: 20, label: "すごく大きい" },
               ]}
               value={appSetting?.font_size}
               onChange={(e) => updateSetting({ font_size: e })}

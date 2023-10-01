@@ -26,6 +26,8 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
 import { SettingMenu } from "./Menu/SettingMenu/SettingMenu";
 import { FavoriteItemMenu } from "./Menu/FavoireItemMenu/FavoriteItemMenu";
+import modal from "antd/es/modal";
+import ShareConfirm from "./Menu/ShareConfirm/ShareConfirm";
 
 const { Paragraph } = Typography;
 
@@ -97,30 +99,67 @@ const MyHeader = () => {
   return (
     <>
       <Row wrap={false} align={"middle"}>
-        <Col flex="auto">
-          <Row justify="start">
-            <Col>
-              <Paragraph ellipsis={true} style={{ margin: 0 }}>
-                {pathname == "/" ? (<>
-                  <span style={{ paddingLeft: 10 }}><ShoppingOutlined />お買い物リスト</span></>
-                ) : (
-                  <>
-                    <Button
-                      type="text"
-                      icon={<ArrowLeftOutlined />}
-                      onClick={() => handleGoBack()}
-                    ></Button>
-                    <span style={{ paddingRight: "10px" }}>{listName}</span>
-                    {isShare ? (
-                      <Tooltip title="共有中">
-                        <Tag icon={<LinkOutlined />} color="#4169E1"></Tag>
-                      </Tooltip>
-                    ) : null}
-                  </>
-                )}
-              </Paragraph>
-            </Col>
-          </Row>
+        <Col
+          flex="auto"
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            width: "100px",
+          }}
+        >
+          {pathname == "/" ? (
+            <>
+              <span
+                style={{
+                  paddingLeft: 10,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                <ShoppingOutlined />
+                お買い物リスト
+              </span>
+            </>
+          ) : (
+            <>
+              <span
+                style={{
+                  paddingLeft: 10,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+              <Button
+                type="text"
+                icon={<ArrowLeftOutlined />}
+                onClick={() => handleGoBack()}
+              ></Button>
+                {listName}
+                
+              {isShare ? (
+                <Tooltip title="共有中">
+                  <Button
+                    type="text"
+                    icon={<LinkOutlined />}
+                    // TODO:ダークモードが解ける
+                    onClick={() =>
+                      modal.info(
+                        ShareConfirm(
+                          "リストを共有しています",
+                          shoppingList?.list_key!,
+                          shoppingList?.name!
+                        )
+                      )
+                    }
+                  ></Button>
+                </Tooltip>
+              ) : null}
+              </span>
+              
+            </>
+          )}
         </Col>
         <Col flex="none">
           <Row justify="end">

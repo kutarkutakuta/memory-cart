@@ -44,6 +44,7 @@ import {
   TwitterIcon,
   TwitterShareButton,
 } from "react-share";
+import ShareConfirm from "../Menu/ShareConfirm/ShareConfirm";
 
 interface ShoppingCardProps {
   item: ShoppingList;
@@ -142,74 +143,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
       icon: <LinkOutlined />,
       onClick: () => {
         shareShoppingList(item.id).then((share_key) => {
-          modal.info({
-            title: "リストを共有しました。",
-            content: (
-              <>
-                <div>次のURLを共有相手に送って下さい。</div>
-                <Space.Compact style={{ width: "100%" }}>
-                  <Input
-                    value={
-                      "https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key
-                    }
-                    readOnly
-                    bordered={false}
-                    style={{ color: "#000", backgroundColor: "#323232" }}
-                  />
-                  <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        "https://memory-cart.onrender.com/kaimono?key=" +
-                          share_key
-                      );
-                      messageApi.info("クリップボードにURLをコピーしました。");
-                    }}
-                  >
-                    <CopyOutlined />
-                  </Button>
-                </Space.Compact>
-                <Space style={{ width: "100%" }}>
-                  <EmailShareButton
-                    url={
-                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key)
-                    }
-                    title={item.name!}
-                  >
-                    <EmailIcon size={40} round />
-                  </EmailShareButton>
-                  <FacebookShareButton
-                    url={
-                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key)
-                    }
-                    quote={item.name!}
-                  >
-                    <FacebookIcon size={40} round />
-                  </FacebookShareButton>
-                  <TwitterShareButton
-                    url={
-                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key)
-                    }
-                    title={item.name!}
-                  >
-                    <TwitterIcon size={40} round />
-                  </TwitterShareButton>
-                  <LineShareButton
-                    url={
-                      encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-                      share_key)
-                    }
-                    title={item.name!}
-                  >
-                    <LineIcon size={40} round />
-                  </LineShareButton>
-                </Space>
-              </>
-            ),
-          });
+          modal.info(ShareConfirm("リストを共有しました。", share_key!, item.name!));
         });
       },
       disabled: item.isShare,
@@ -297,7 +231,12 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
             <Col>
               {item.isShare ? (
                 <Tooltip title="共有中">
-                  <Tag icon={<LinkOutlined />} color="#4169E1"></Tag>
+                  <Button
+                type="text"
+                icon={<LinkOutlined />}
+                size="small"
+                onClick={()=>modal.info(ShareConfirm("リストを共有しています", item.list_key, item.name!))}
+              ></Button>
                 </Tooltip>
               ) : null}
               <Dropdown menu={{ items }} placement="bottomRight">

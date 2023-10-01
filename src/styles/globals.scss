@@ -51,7 +51,10 @@ header {
   top: 0; /* ヘッダーをページ上端に配置 */
   left: 0; /* ヘッダーをページ左端に配置 */
   width: 100%; /* ヘッダーの幅をページ幅に合わせる */
-  z-index: 20; /* ヘッダーを他の要素の上に表示する */
+  z-index: 10; /* ヘッダーを他の要素の上に表示する */
+  * {
+    font-size: larger;
+  }
 }
 
 main {
@@ -59,13 +62,13 @@ main {
     background-color: var(--sub-header-background-color);
     color: var(--sub-header-color);
     position: fixed;
-    top: 40px; /* メインヘッダーの高さに合わせて配置 */
+    top: 42px; /* メインヘッダーの高さに合わせて配置 */
     left: 0;
     width: 100%;
-    z-index: 10;
+    z-index: 20;
     padding-right: 5px;
   }
-  margin-top: 70px; /* ヘッダーの高さに合わせてメインコンテンツを下にスペースを確保 */
+  margin-top: 72px; /* ヘッダーの高さに合わせてメインコンテンツを下にスペースを確保 */
   padding: 10px; /* メインコンテンツの内側の余白を設定 */
 }
 

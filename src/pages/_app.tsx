@@ -29,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
       const newtheme: ThemeConfig = {
         algorithm: appSetting?.theme == "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: {
-          fontSize: Number(appSetting?.font_size.replace("px", ""))!,
+          fontSize: appSetting?.font_size,
           colorLink: "#00FFFF",
         },
       };

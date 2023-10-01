@@ -9,7 +9,7 @@ export interface AppSetting {
   id: number;
   user_name: string;
   theme: string;
-  font_size: string;
+  font_size: number;
   notification: boolean;
   ip_address: string;
 }
@@ -77,7 +77,7 @@ const useMasterStore = create<MasterState>((set) => ({
           id: 1,
           user_name: "Guest",
           theme: "dark",
-          font_size: "16",
+          font_size: 16,
           notification: false,
           ip_address: "",
         };
