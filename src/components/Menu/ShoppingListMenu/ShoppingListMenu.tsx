@@ -5,24 +5,12 @@ const { TextArea } = Input;
 const { confirm } = Modal;
 import {
   FormOutlined,
-  CopyOutlined,
   ExclamationCircleFilled,
-  QuestionCircleOutlined,
 } from "@ant-design/icons";
 
 import useShoppingListStore from "@/stores/useShoppingListStore";
 import { useShoppingListMenu } from "./useShoppingListMenu";
 import { useEffect, useRef } from "react";
-import {
-  EmailIcon,
-  EmailShareButton,
-  FacebookIcon,
-  FacebookShareButton,
-  LineIcon,
-  LineShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-} from "react-share";
 
 export function ShoppingListMenu() {
   // メニュー制御用Hook
@@ -124,76 +112,7 @@ export function ShoppingListMenu() {
           >
             キャンセル
           </Button>
-          {selectedList?.isShare ? (
-            <>
-              <div>
-                共有URL　
-                <Tooltip title="共有相手にURLを送ります。">
-                  <QuestionCircleOutlined />
-                </Tooltip>
-              </div>
-              <Space.Compact style={{ width: "100%" }}>
-                <Input
-                  value={
-                    "https://memory-cart.onrender.com/kaimono?key=" +
-                    selectedList?.list_key
-                  }
-                  readOnly
-                  bordered={false}
-                  style={{ color: "#000", backgroundColor: "#323232" }}
-                />
-                <Button
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      "https://memory-cart.onrender.com/kaimono?key=" +
-                        selectedList?.list_key
-                    );
-                    messageApi.info("クリップボードにURLをコピーしました。");
-                  }}
-                >
-                  <CopyOutlined />
-                </Button>
-              </Space.Compact>
-              <Space style={{ width: "100%" }}>
-                <EmailShareButton
-                  url={
-                    "https://memory-cart.onrender.com/kaimono?key=" +
-                      selectedList?.list_key
-                  }
-                  title={selectedList?.name!}
-                >
-                  <EmailIcon size={40} round />
-                </EmailShareButton>
-                <FacebookShareButton
-                  url={encodeURIComponent(
-                    "https://memory-cart.onrender.com/kaimono?key=" +
-                      selectedList?.list_key
-                  )}
-                  quote={selectedList?.name!}
-                >
-                  <FacebookIcon size={40} round />
-                </FacebookShareButton>
-                <TwitterShareButton
-                  url={encodeURIComponent(
-                    "https://memory-cart.onrender.com/kaimono?key=" +
-                      selectedList?.list_key
-                  )}
-                  title={selectedList?.name!}
-                >
-                  <TwitterIcon size={40} round />
-                </TwitterShareButton>
-                <LineShareButton
-                  url={encodeURIComponent(
-                    "https://memory-cart.onrender.com/kaimono?key=" +
-                      selectedList?.list_key
-                  )}
-                  title={selectedList?.name!}
-                >
-                  <LineIcon size={40} round />
-                </LineShareButton>
-              </Space>
-            </>
-          ) : null}
+          
         </Space>
       </Drawer>
     </>
