@@ -163,17 +163,13 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           if (a.id && b.id) {
             const comp = a.id - b.id;
             if (comp != 0) return comp;
-          }
-          else if (b.id) {
+          } else if (b.id) {
             return -1;
-          }
-          else if (a.id) {
+          } else if (a.id) {
             return 1;
           }
-          else {
-            // 登録日が同じなら名前でソート
-            return a.name.localeCompare(b.name);
-          }
+          // 登録日が同じなら名前でソート
+          return a.name.localeCompare(b.name);
         });
         sortShoppingItem(newItems);
       },
@@ -218,18 +214,13 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           if (cat_a && cat_b) {
             const comp = cat_a - cat_b;
             if (comp != 0) return comp;
-          }
-          else if (cat_b) {
+          } else if (cat_b) {
             return -1;
-          }
-          else if (cat_a) {
+          } else if (cat_a) {
             return 1;
           }
-          else{
-            // カテゴリが同じなら名前でソート
-            return a.name.localeCompare(b.name);
-          }
-
+          // カテゴリが同じなら名前でソート
+          return a.name.localeCompare(b.name);
         });
         sortShoppingItem(newItems);
       },
