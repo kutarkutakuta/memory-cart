@@ -151,7 +151,7 @@ const MyHeader = () => {
                 <Button
                   type="text"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => handleGoBack()}
+                  onClick={() => router.push("/")}  // 品物から戻る先はトップページ固定
                 ></Button>
                 {listName}
 

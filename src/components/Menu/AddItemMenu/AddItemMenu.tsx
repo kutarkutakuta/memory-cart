@@ -121,7 +121,9 @@ export function AddItemMenu() {
         }
         placement={"right"}
         open={openFlag["AddItemMenu"]}
-        onClose={() => closeMenu("AddItemMenu")}
+        onClose={() => {
+          closeMenu("AddItemMenu");
+        }}
       >
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
           <Select
