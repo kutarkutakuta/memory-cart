@@ -27,7 +27,7 @@ export function ShoppingListMenu() {
 
   useEffect(() => {
     initialFormData(selectedList);
-    if(selectedList) inputRef.current?.focus();
+    if(selectedList) setTimeout(() => { inputRef.current.focus(); }, 500);
   }, [openFlag["ShoppingListMenu"]]);
 
   useEffect(() => {

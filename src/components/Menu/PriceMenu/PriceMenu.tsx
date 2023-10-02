@@ -25,15 +25,15 @@ export function PriceMenu() {
     usePriceHistoryStore();
   // メニュー制御用Hook
   const { openFlag, selectedItem, closeMenu } = useMenuStore();
-  // フォーカス制御用Ref
-  const inputRef = useRef<any | null>(null);
   // フォーム制御用Hook
   const { formData, initialFormData, handleChange } = usePriceMenu();
+  // フォーカス制御用Ref
+  const inputRef = useRef<any | null>(null);
   useEffect(() => {
     initialFormData(selectedItem);
     if (selectedItem) {
       fetchPriceHistories(selectedItem.category_name!, selectedItem.name);
-      inputRef.current?.focus();
+      setTimeout(() => { inputRef.current.focus(); }, 500);
     }
   }, [openFlag["PriceMenu"]]);
 

@@ -13,7 +13,7 @@ import {
 import { PlusCircleOutlined } from "@ant-design/icons";
 
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useFavoriteItemStore, {
   FavoriteItem,
@@ -30,7 +30,8 @@ export function AddItemMenu() {
   const [messageApi, contextHolder] = message.useMessage();
   // 品物用Hook
   const { shoppingItems, addShoppingItem } = useShoppingItemStore();
-
+  // フォーカス制御用Ref
+  const inputRef = useRef<any | null>(null);
   // 初期化
   useEffect(() => {
     if (selectedList) {
@@ -38,6 +39,7 @@ export function AddItemMenu() {
       setAddItems([]);
       setCategoryName(null);
       setViewItemCount(25);
+      setTimeout(() => { inputRef.current.focus(); }, 500);
     }
   }, [openFlag["AddItemMenu"]]);
 
@@ -123,6 +125,7 @@ export function AddItemMenu() {
       >
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
           <Select
+              ref = {inputRef} 
             mode="tags"
             style={{ width: "100%" }}
             placeholder="品物の名前(複数可)"
