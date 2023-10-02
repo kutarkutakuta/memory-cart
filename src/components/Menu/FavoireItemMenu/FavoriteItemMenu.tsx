@@ -4,7 +4,6 @@ import {
   Divider,
   Drawer,
   Input,
-  InputRef,
   Select,
   Space,
   Tag,
@@ -73,7 +72,6 @@ export function FavoriteItemMenu() {
 
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const inputRef = useRef<InputRef>(null);
 
   const { token } = theme.useToken();
 
@@ -154,7 +152,6 @@ export function FavoriteItemMenu() {
             <Space size={[0, 8]} wrap>
               {inputVisible ? (
                 <Input
-                  ref={inputRef}
                   type="text"
                   size="small"
                   maxLength={20}

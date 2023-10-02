@@ -3,12 +3,19 @@ import { Button, Drawer, Input, Space, Select, Form } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 import useMasterStore from "@/stores/useMasterStore";
+import { useEffect, useState } from "react";
 
 export function SettingMenu() {
   // メニュー用Hook
   const { openFlag, closeMenu } = useMenuStore();
   // マスター用Hook
   const { appSetting, updateSetting } = useMasterStore();
+
+  const [userName, setUserName] = useState("");
+  
+  useEffect(() => {
+    setUserName(appSetting?.user_name!);
+  }, [openFlag["SettingMenu"]]);
 
   return (
     <>
@@ -29,8 +36,8 @@ export function SettingMenu() {
             <Input
               placeholder="ユーザー名"
               maxLength={20}
-              value={appSetting?.user_name}
-              onChange={(e) => updateSetting({ user_name: e.target.value })}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </Form.Item>
           <Form.Item label="フォントサイズ">
@@ -65,6 +72,7 @@ export function SettingMenu() {
           <Button
             style={{ width: "100%" }}
             onClick={() => {
+              updateSetting({ user_name:  userName});
               closeMenu("SettingMenu");
             }}
           >

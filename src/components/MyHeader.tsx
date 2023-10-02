@@ -51,16 +51,7 @@ const MyHeader = () => {
   const handleGoBack = () => {
     // 履歴が存在する場合のみ戻る操作を実行
     if (router && router.back) {
-      if (
-        !document.referrer ||
-        (document.referrer &&
-          document.referrer.indexOf(window.location.origin) === -1)
-      ) {
-        // 自分のサイト外のページに戻る場合、トップページに遷移
-        router.push("/");
-      } else {
-        router.back();
-      }
+      router.back();
     } else {
       // 履歴が存在しない場合ホームページにリダイレクト
       router.push("/");

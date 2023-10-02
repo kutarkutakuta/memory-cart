@@ -27,7 +27,7 @@ export function ShoppingListMenu() {
 
   useEffect(() => {
     initialFormData(selectedList);
-    inputRef.current?.focus();
+    if(selectedList) inputRef.current?.focus();
   }, [openFlag["ShoppingListMenu"]]);
 
   useEffect(() => {

@@ -31,9 +31,9 @@ export function PriceMenu() {
   const { formData, initialFormData, handleChange } = usePriceMenu();
   useEffect(() => {
     initialFormData(selectedItem);
-    inputRef.current?.focus();
     if (selectedItem) {
       fetchPriceHistories(selectedItem.category_name!, selectedItem.name);
+      inputRef.current?.focus();
     }
   }, [openFlag["PriceMenu"]]);
 
@@ -53,7 +53,7 @@ export function PriceMenu() {
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
           <Space.Compact>
             <InputNumber
-              ref={inputRef}
+              ref = {inputRef} 
               inputMode="decimal"
               placeholder="価格"
               prefix="￥"
@@ -106,25 +106,28 @@ export function PriceMenu() {
           {priceHistories.length ? (
             <>
               ☆価格履歴☆
-              <table style={{width:"100%", }}>
-                  {priceHistories.map((item) => {
-                    return (
-                      <>
-                        <tr>
-                          <td style={{width:"90px", verticalAlign:"top"}}>{item.updated_at.toLocaleDateString()}</td>
-                          <td>
-                            ￥ {item.price.toLocaleString()}
-                            {item.amount
-                              ? " (" +
-                                item.amount.toLocaleString() +
-                                item.unit +
-                                ")"
-                              : null}
-                          </td>
-                        </tr>
-                      </>
-                    );
-                  })}
+              <table style={{ width: "100%" }}>
+                {priceHistories.map((item) => {
+                  return (
+                    <>
+                      <tr>
+                        <td style={{ width: "90px"}}>
+                          {item.updated_at.toLocaleDateString()}　
+                          {/* [{item.updated_user}] */}
+                        </td>
+                        <td style={{ width: "auto" }}>
+                          ￥ {item.price.toLocaleString()}
+                          {item.amount
+                            ? " (" +
+                              item.amount.toLocaleString() +
+                              item.unit +
+                              ")"
+                            : null}
+                        </td>
+                      </tr>
+                    </>
+                  );
+                })}
               </table>
             </>
           ) : (
