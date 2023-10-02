@@ -89,7 +89,7 @@ export function PriceMenu() {
             type="primary"
             style={{ width: "100%" }}
             onClick={() => {
-              upsertPriceHistory(selectedItem!);
+              upsertPriceHistory(selectedItem!,formData);
               updateShoppingItems([selectedItem?.id!], formData).then(() =>
                 closeMenu("PriceMenu")
               );

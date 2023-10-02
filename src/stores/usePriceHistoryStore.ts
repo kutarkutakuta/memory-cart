@@ -25,7 +25,8 @@ interface PriceHistoryState {
   priceHistories: PriceHistory[];
   fetchPriceHistories: (category_name: string, name: string) => Promise<void>;
   upsertPriceHistory: (
-    shoppingItem: ShoppingItem
+    shoppingItem: ShoppingItem,
+    changes: { [keyPath: string]: any }
   ) => Promise<void>;
 }
 
@@ -54,6 +55,7 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
     },
     upsertPriceHistory: async (
       shoppingItem,
+      changes
     ) => {
       set({ loading: true, error: null });
       try {
@@ -71,18 +73,18 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
         const priceItem = await localdb.price_histories.where(keys).first();
         if (priceItem) {
           await localdb.price_histories.update(priceItem.id!, {
-            price: shoppingItem.buying_price,
-            amount: shoppingItem.buying_amount,
-            unit: shoppingItem.buying_unit,
+            price: changes.buying_price,
+            amount: changes.buying_amount,
+            unit: changes.buying_unit,
             updated_user: appSetting?.user_name,
             updated_at: new Date(),
           });
         } else {
           await localdb.price_histories.add({
             ...keys,
-            price: shoppingItem.buying_price!,
-            amount: shoppingItem.buying_amount!,
-            unit: shoppingItem.buying_unit!,
+            price: changes.buying_price!,
+            amount: changes.buying_amount!,
+            unit: changes.buying_unit!,
             updated_user: appSetting?.user_name!,
             updated_at: new Date(),
           });

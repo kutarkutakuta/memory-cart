@@ -82,7 +82,7 @@ const MyDocument = () => (
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet"
       />
-      <link rel="manifest" href="manifest.webmanifest" />
+      {/* <link rel="manifest" href="manifest.webmanifest" /> */}
       <meta name="theme-color" content="#1976d2" />
     </Head>
     <body>
