@@ -58,8 +58,8 @@ export function ShareInfoMenu() {
           </EmailShareButton>
           <FacebookShareButton
             url={
-              encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-              share_key)
+              "https://memory-cart.onrender.com/kaimono?key=" +
+              share_key
             }
             quote={list_name}
           >
@@ -67,8 +67,8 @@ export function ShareInfoMenu() {
           </FacebookShareButton>
           <TwitterShareButton
             url={
-              encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-              share_key)
+              "https://memory-cart.onrender.com/kaimono?key=" +
+              share_key
             }
             title={list_name}
           >
@@ -76,8 +76,8 @@ export function ShareInfoMenu() {
           </TwitterShareButton>
           <LineShareButton
             url={
-              encodeURIComponent("https://memory-cart.onrender.com/kaimono?key=" +
-              share_key)
+              "https://memory-cart.onrender.com/kaimono?key=" +
+              share_key
             }
             title={list_name}
           >
