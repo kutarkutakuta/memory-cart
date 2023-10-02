@@ -18,6 +18,7 @@ import {
   Col,
   Dropdown,
   MenuProps,
+  Modal,
   Row,
   Space,
   Spin,
@@ -35,6 +36,7 @@ import {
   OrderedListOutlined,
   SortAscendingOutlined,
   SyncOutlined,
+  ExclamationCircleFilled,
 } from "@ant-design/icons";
 import { useCallback, useState } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
@@ -110,6 +112,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
     fetchShoppingItems,
   } = useShoppingItemStore();
 
+  // メッセージ用Hook
+  const [modal, contextHolder] = Modal.useModal();
+
+  // 買い物済みでソートする
   const [boughtOrder, SetboughtOrder] = useState(true);
 
   // ドラッグ後の並び替え処理
@@ -145,7 +151,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       icon: <OrderedListOutlined />,
       onClick: () => {
         const newItems = shoppingItems.sort((a, b) => {
-          // 購入済みでソートする場合
+          // 買い物済みでソートする場合
           if (boughtOrder) {
             if (a.finished_at && !b.finished_at) {
               return 1;
@@ -276,25 +282,46 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       label: "買い物済を全て削除",
       icon: <DeleteOutlined />,
       onClick: () => {
-        removeShoppingItems(
-          shoppingItems
-            .filter((itm) => itm.finished_at != null)
-            .map((itm) => itm.id!)
-        );
+        modal.confirm({
+          title: "買い物済を全て削除します",
+          icon: <ExclamationCircleFilled />,
+          content: "よろしいですか？",
+          okText: "削除",
+          okType: "danger",
+          cancelText: "キャンセル",
+          onOk: () => {
+            removeShoppingItems(
+              shoppingItems
+                .filter((itm) => itm.finished_at != null)
+                .map((itm) => itm.id!)
+            );
+          },
+        });
       },
     },
     {
       key: "4",
-      label: "全て削除",
+      label: "品物を全て削除",
       icon: <DeleteFilled />,
       onClick: () => {
-        removeShoppingItems(shoppingItems.map((itm) => itm.id!));
+        modal.confirm({
+          title: "品物を全て削除します",
+          icon: <ExclamationCircleFilled />,
+          content: "よろしいですか？",
+          okText: "削除",
+          okType: "danger",
+          cancelText: "キャンセル",
+          onOk: () => {
+            removeShoppingItems(shoppingItems.map((itm) => itm.id!));
+          },
+        });
       },
     },
   ];
 
   return (
     <div>
+      {contextHolder}
       <Row justify="space-between" wrap={false} className="sub-header">
         <Col flex="auto">
           <Row justify="start">
@@ -321,9 +348,10 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
                   <Button
                     type={"text"}
                     icon={<SyncOutlined />}
-                    onClick={() => 
-                      fetchShoppingItems(shoppingList?.list_key!)
-                      .then(()=>message.info("データをサーバーと同期しました。"))
+                    onClick={() =>
+                      fetchShoppingItems(shoppingList?.list_key!).then(() =>
+                        message.info("データをサーバーと同期しました。")
+                      )
                     }
                   ></Button>
                 ) : null}

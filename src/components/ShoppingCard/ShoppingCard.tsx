@@ -17,6 +17,7 @@ import {
   Dropdown,
   MenuProps,
   Popover,
+  Modal,
 } from "antd";
 import {
   HolderOutlined,
@@ -25,13 +26,13 @@ import {
   ExclamationCircleTwoTone,
   MessageTwoTone,
   DeleteOutlined,
+  ExclamationCircleFilled,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingCard.module.scss";
 import useMenuStore from "@/stores/useMenuStore";
 import useMasterStore from "@/stores/useMasterStore";
 
-const { Paragraph } = Typography;
 
 interface ShoppingCardProps {
   item: ShoppingItem;
@@ -48,14 +49,15 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     borderRadius: 5,
   };
 
-  const { removeShoppingItems, updateShoppingItems } = useShoppingItemStore();
-
-  // メニュー制御用Hook
-  const { openMenu } = useMenuStore();
-
   // マスター用Hook
   const { categories } = useMasterStore();
-
+  // 品物用Hook
+  const { removeShoppingItems, updateShoppingItems } = useShoppingItemStore();
+  // メニュー制御用Hook
+  const { openMenu } = useMenuStore();
+ // メッセージ用Hook
+ const [modal, contextHolder] = Modal.useModal();
+ 
   // メニュー項目
   const items: MenuProps["items"] = [
     {
@@ -68,7 +70,17 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       key: "2",
       label: "品物の削除",
       icon: <DeleteOutlined />,
-      onClick: () => removeShoppingItems([item.id!]),
+      onClick: () => modal.confirm({
+        title: item.name + "を削除します",
+        icon: <ExclamationCircleFilled />,
+        content:"よろしいですか？",
+        okText: "削除",
+        okType: "primary",
+        cancelText: "キャンセル",
+        onOk: () => {
+          removeShoppingItems([item.id!]);
+        },
+      }),
     },
     {
       type: "divider",
@@ -97,6 +109,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...attributes}
       {...listeners}
     >
+      {contextHolder}
       <Row wrap={false} align={"middle"}>
         <Col
           flex="none"
