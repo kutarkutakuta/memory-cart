@@ -1,5 +1,5 @@
 import { Button, Input, Space, message, Modal, App, theme   } from "antd";
-import { EmailIcon, EmailShareButton, FacebookIcon, FacebookShareButton, LineIcon, LineShareButton, TwitterIcon, TwitterShareButton } from "react-share";
+import { EmailIcon, EmailShareButton, FacebookIcon, FacebookShareButton, LineIcon, LineShareButton, TwitterIcon, TwitterShareButton } from "@ciaran0/react-share";
 import {
     CopyOutlined,
   } from "@ant-design/icons";
