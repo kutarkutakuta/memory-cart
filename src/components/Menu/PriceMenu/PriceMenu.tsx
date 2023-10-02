@@ -112,14 +112,13 @@ export function PriceMenu() {
                 <tbody>
                   {priceHistories.map((item) => {
                     return (
-                      <>
                         <tr key={item.id}>
                           <td style={{ width: "90px" }}>
                             {item.updated_at.toLocaleDateString()}　
                             {/* [{item.updated_user}] */}
                           </td>
                           <td style={{ width: "auto" }}>
-                            ￥ {item.price ? item.price.toLocaleString() : ""}
+                            {item.price ? "￥" + item.price.toLocaleString() : ""}
                             {item.amount
                               ? " (" +
                                 item.amount.toLocaleString() +
@@ -128,7 +127,6 @@ export function PriceMenu() {
                               : null}
                           </td>
                         </tr>
-                      </>
                     );
                   })}
                 </tbody>
