@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import MyHeader from "@/components/MyHeader";
 import { Divider } from "antd";
 
-const HomePage = () => {
+const Privacy = () => {
   return (
     <>
       <header>
@@ -22,4 +22,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Privacy;

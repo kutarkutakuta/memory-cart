@@ -15,7 +15,7 @@ import {
 import MyHeader from "@/components/MyHeader";
 import { Divider } from "antd";
 
-const HomePage = () => {
+const Help = () => {
   return (
     <>
       <header>
@@ -96,4 +96,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Help;

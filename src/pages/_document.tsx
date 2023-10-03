@@ -12,7 +12,6 @@ const MyDocument = () => (
         name="description"
         content="買い物リストをメモしたり共有したり。面倒な登録が一切不要ですぐ使えます。"
       />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
       {/* <!-- Facebook:カード用--> */}
       <meta property="og:url" content="https://okaimono.onrender.com" />
       <meta property="og:type" content="website" />
@@ -90,8 +89,8 @@ const MyDocument = () => (
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet"
       />
-      {/* <link rel="manifest" href="manifest.webmanifest" /> */}
-      <meta name="theme-color" content="#1976d2" />
+      <link rel="manifest" href="manifest.webmanifest" />
+      <meta name="theme-color" content="#ccc8aa" />
     </Head>
     <body>
       <Main />

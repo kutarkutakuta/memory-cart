@@ -7,7 +7,7 @@ import useMasterStore from "@/stores/useMasterStore";
 import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
 import { ShareInfoMenu } from "@/components/Menu/ShareInfoMenu/ShareInfoMenu";
 
-const HomePage = () => {
+const Index = () => {
   // マスター取得
   const { fetchData } = useMasterStore();
   const { fetchFavoriteItems } = useFavoriteItemStore();
@@ -30,4 +30,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Index;

@@ -11,7 +11,7 @@ import { Spin, message } from "antd";
 import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
 import { ShareInfoMenu } from "@/components/Menu/ShareInfoMenu/ShareInfoMenu";
 
-const HomePage = () => {
+const Kaimono = () => {
   const searchParams = useSearchParams();
 
   // マスター取得
@@ -60,4 +60,4 @@ const HomePage = () => {
     </>
   );
 };
-export default HomePage;
+export default Kaimono;
