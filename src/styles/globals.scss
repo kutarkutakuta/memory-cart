@@ -5,6 +5,16 @@
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
+  --foreground-color: #000000;
+  --background-color: #ccc8aa;
+
+  --header-color: #ccc8aa;
+  --header-background-color: #191717;
+
+  --sub-header-color: #dcd8ba;
+  --sub-header-background-color: #7d7c7c;
+}
+:root[theme="dark"] {
   --foreground-color: #ffffff;
   --background-color: #1e1e1e;
 
@@ -28,24 +38,13 @@
 
 :root[theme="green"] {
   --foreground-color: #000000;
-  --background-color: #D0E7D2;
+  --background-color: #d0e7d2;
 
   --header-color: #f6eacf;
-  --header-background-color: #79AC78;
+  --header-background-color: #79ac78;
 
   --sub-header-color: #1e1e1e;
-  --sub-header-background-color: #B0D9B1;
-}
-
-:root[theme="modern"] {
-  --foreground-color: #000000;
-  --background-color: #CCC8AA;
-
-  --header-color: #CCC8AA;
-  --header-background-color: #191717;
-
-  --sub-header-color: #DCD8BA;
-  --sub-header-background-color: #7D7C7C;
+  --sub-header-background-color: #b0d9b1;
 }
 
 * {
@@ -103,16 +102,15 @@ a {
   color: inherit;
   text-decoration: none;
 }
-.ant-drawer-header{
+.ant-drawer-header {
   background-color: var(--sub-header-background-color);
   * {
     color: var(--sub-header-color);
   }
 }
-.ant-drawer-body{
+.ant-drawer-body {
   color: var(--foreground-color);
   background: var(--background-color);
-
 }
 
 @media (prefers-color-scheme: dark) {

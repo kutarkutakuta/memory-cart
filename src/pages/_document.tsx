@@ -5,12 +5,14 @@ import type { DocumentContext } from "next/document";
 
 const MyDocument = () => (
   <Html lang="ja">
-    <Head>
-      <meta title="Memory Cart"></meta>
+    <Head title="Memory Cart">
+      
+      <meta charSet="utf-8" />
       <meta
         name="description"
-        content="買い物リストをメモしたり共有したり。面倒な登録は一切不要ですぐ使えます。"
+        content="買い物リストをメモしたり共有したり。面倒な登録が一切不要ですぐ使えます。"
       />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
       {/* <!-- Facebook:カード用--> */}
       <meta property="og:url" content="https://okaimono.onrender.com" />
       <meta property="og:type" content="website" />

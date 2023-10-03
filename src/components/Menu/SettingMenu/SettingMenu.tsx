@@ -57,10 +57,10 @@ export function SettingMenu() {
             <Select
               placeholder="テーマカラー"
               options={[
+                { value: "modern", label: "モダン" },
                 { value: "dark", label: "ダーク" },
                 { value: "light", label: "ライト" },
                 { value: "green", label: "グリーン" },
-                { value: "modern", label: "モダン" },
               ]}
               value={appSetting?.theme}
               onChange={(e) => updateSetting({ theme: e })}

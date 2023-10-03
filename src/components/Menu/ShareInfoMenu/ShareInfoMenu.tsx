@@ -31,7 +31,7 @@ export function ShareInfoMenu() {
             }
             readOnly
             bordered={false}
-            style={{ color: "#000", backgroundColor: "#323232" }}
+            style={{ color: "#000", backgroundColor: "gray" }}
           />
           <Button
             onClick={() => {
