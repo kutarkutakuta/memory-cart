@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.onrender.memory_cart.twa",
+      "sha256_cert_fingerprints": [
+        "C9:15:01:B9:16:04:40:0A:A2:B9:D6:0C:93:FC:3D:6A:42:1C:CD:07:60:EA:09:FD:56:EE:64:D9:A6:DA:77:6F"
+      ]
+    }
+  }
+]
