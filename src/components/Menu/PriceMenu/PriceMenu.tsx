@@ -89,7 +89,7 @@ export function PriceMenu() {
             type="primary"
             style={{ width: "100%" }}
             onClick={() => {
-              upsertPriceHistory(selectedItem!,formData);
+              upsertPriceHistory(selectedItem!, formData);
               updateShoppingItems([selectedItem?.id!], formData).then(() =>
                 closeMenu("PriceMenu")
               );
@@ -112,21 +112,23 @@ export function PriceMenu() {
                 <tbody>
                   {priceHistories.map((item) => {
                     return (
-                        <tr key={item.id}>
-                          <td style={{ width: "90px" }}>
-                            {item.updated_at.toLocaleDateString()}　
-                            {/* [{item.updated_user}] */}
-                          </td>
-                          <td style={{ width: "auto" }}>
-                            {item.price ? "￥" + item.price.toLocaleString() : ""}
-                            {item.amount
-                              ? " (" +
-                                item.amount.toLocaleString() +
-                                item.unit +
-                                ")"
-                              : null}
-                          </td>
-                        </tr>
+                      <tr key={item.id}>
+                        <td style={{ width: "90px" }}>
+                          {item.record_date.toLocaleDateString()}　
+                        </td>
+                        <td style={{ width: "auto" }}>
+                          {item.price
+                            ? "￥" +
+                              item.price.toLocaleString() +
+                              (item.amount
+                                ? " (" +
+                                  item.amount.toLocaleString() + 
+                                  (item.unit || "") +
+                                  ")"
+                                : "")
+                            : ""}
+                        </td>
+                      </tr>
                     );
                   })}
                 </tbody>

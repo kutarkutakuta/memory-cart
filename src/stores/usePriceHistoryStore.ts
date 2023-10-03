@@ -12,6 +12,7 @@ export interface PriceHistory {
   item_key: string;
   name: string;
   category_name: string;
+  record_date: Date;
   price: number;
   amount: number | null;
   unit: string | null;
@@ -44,7 +45,7 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
         const priceHistories = await localdb.price_histories
           .where({
             name: name,
-            category_name: category_name,
+            category_name: category_name || "",
           })
           .toArray();
         set({ priceHistories: priceHistories });
@@ -66,7 +67,8 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
           list_key: shoppingItem.list_key,
           item_key: shoppingItem.item_key,
           name: shoppingItem.name,
-          category_name: shoppingItem.category_name!,
+          category_name: shoppingItem.category_name || "",
+          record_date : new Date(new Date().toDateString()),
         };
 
         // ローカルDBのデータを取得
