@@ -97,29 +97,37 @@ const useMasterStore = create<MasterState>((set) => ({
       let categories = await localdb.categories
         .orderBy("order_number")
         .toArray();
-      if (categories.length === 0) {
-        // 初期データをサーバーDBから取得
-        const { data, error } = await supabase
-          .from("categories")
-          .select("*")
-          .order("order_number");
-        if (error) console.error(error);
-        categories = data as Category[];
-        await localdb.categories.bulkAdd(categories);
+      // サーバーDBに接続できたら更新
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from("categories")
+        .select("*")
+        .order("order_number");
+      if (categoriesError) {
+        console.error(categoriesError);
+      } else {
+        if (categoriesData && categoriesData.length > 0) {
+          categories = categoriesData as Category[];
+          await localdb.units.clear();
+          await localdb.units.bulkAdd(categories);
+        }
       }
       set({ categories });
 
       // units
       let units = await localdb.units.orderBy("order_number").toArray();
-      if (units.length === 0) {
-        // 初期データをサーバーDBから取得
-        const { data, error } = await supabase
-          .from("units")
-          .select("*")
-          .order("order_number");
-        if (error) console.error(error);
-        units = data as Unit[];
-        await localdb.units.bulkAdd(units);
+      // サーバーDBに接続できたら更新
+      const { data: unitsData, error: unitsError } = await supabase
+        .from("units")
+        .select("*")
+        .order("order_number");
+      if (unitsError) {
+        console.error(unitsError);
+      } else {
+        if (unitsData && unitsData.length > 0) {
+          units = unitsData as Unit[];
+          await localdb.units.clear();
+          await localdb.units.bulkAdd(units);
+        }
       }
       set({ units });
 
@@ -127,15 +135,19 @@ const useMasterStore = create<MasterState>((set) => ({
       let common_items = await localdb.common_items
         .orderBy("order_number")
         .toArray();
-      if (common_items.length === 0) {
-        // 初期データをサーバーDBから取得
-        const { data, error } = await supabase
-          .from("common_items")
-          .select("*")
-          .order("order_number");
-        if (error) console.error(error);
-        common_items = data as CommonItem[];
-        await localdb.common_items.bulkAdd(common_items);
+      // サーバーDBに接続できたら更新
+      const { data: commonItemsData, error: commonItemsError } = await supabase
+        .from("common_items")
+        .select("*")
+        .order("order_number");
+      if (commonItemsError) {
+        console.error(commonItemsError);
+      } else {
+        if (commonItemsData && commonItemsData.length > 0) {
+          common_items = commonItemsData as CommonItem[];
+          await localdb.units.clear();
+          await localdb.units.bulkAdd(common_items);
+        }
       }
       set({ commonItems: common_items });
 
