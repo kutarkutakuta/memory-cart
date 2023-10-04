@@ -47,7 +47,9 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
             name: name,
             category_name: category_name || "",
           })
-          .toArray();
+          .reverse()
+          .sortBy("updated_at")
+
         set({ priceHistories: priceHistories });
         set({ loading: false });
       } catch (error: any) {
