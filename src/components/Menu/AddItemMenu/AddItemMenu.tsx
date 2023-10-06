@@ -39,7 +39,9 @@ export function AddItemMenu() {
       setAddItems([]);
       setCategoryName(null);
       setViewItemCount(25);
-      setTimeout(() => { inputRef.current.focus(); }, 500);
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 500);
     }
   }, [openFlag["AddItemMenu"]]);
 
@@ -74,17 +76,19 @@ export function AddItemMenu() {
     }
   }, [commonItems, favoriteItems, searchMode, categoryName, viewItemCount]);
 
-  const handleTagClick = (value: string) => {
-    if (
-      addItems.findIndex((m) => m == value) < 0 &&
-      shoppingItems.findIndex((m) => m.name == value) < 0
-    ) {
-      const newItems = [...addItems, value];
-      setAddItems(newItems);
-    } else {
-      messageApi.warning(`${value}は追加済みです`);
+  useEffect(() => {
+    if (addItems.length > 0) {
+      addItems.forEach((addName) => {
+        if (shoppingItems.findIndex((m) => m.name == addName) > -1) {
+          messageApi.warning(`${addName}は追加済みです`);
+        } else {
+          addShoppingItem(list_key!, addName);
+          messageApi.success(`${addName}を追加しました`);
+        }
+      });
+      setAddItems([]);
     }
-  };
+  }, [addItems]);
 
   // 追加する品物の名前用の項目
   const [itemOptions, setItemOptions] = useState<SelectProps["options"]>([]);
@@ -115,8 +119,22 @@ export function AddItemMenu() {
       <Drawer
         title={
           <>
-            <PlusCircleOutlined />
-            <span style={{ paddingLeft: 4 }}>品物を追加</span>
+            {/* <span style={{ paddingLeft: 4 }}>品物の追加</span> */}
+            <Select
+              ref={inputRef}
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="品物の名前"
+              value={addItems}
+              suffixIcon={null}
+              notFoundContent={null}
+              onSearch={handleItemSearch}
+              options={(itemOptions || []).map((d) => ({
+                value: d.value,
+                label: d.text,
+              }))}
+              onChange={(e) => setAddItems(e)}
+            />
           </>
         }
         placement={"right"}
@@ -126,23 +144,7 @@ export function AddItemMenu() {
         }}
       >
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
-          <Select
-              ref = {inputRef} 
-            mode="tags"
-            style={{ width: "100%" }}
-            placeholder="品物の名前(複数可)"
-            value={addItems}
-            suffixIcon={null}
-            notFoundContent={null}
-            onSearch={handleItemSearch}
-            options={(itemOptions || []).map((d) => ({
-              value: d.value,
-              label: d.text,
-            }))}
-            onChange={(e) => setAddItems(e)}
-          />
-
-          <Divider style={{ margin: 0 }}></Divider>
+          {/* <Divider style={{ margin: 0 }}></Divider> */}
           <Select
             style={{ width: "100%" }}
             onChange={(e) => {
@@ -179,7 +181,7 @@ export function AddItemMenu() {
                 <Tag
                   key={m.id}
                   style={{ cursor: "pointer" }}
-                  onClick={() => handleTagClick(m.name!)}
+                  onClick={() => setAddItems([m.name!])}
                 >
                   {m.name}
                 </Tag>
@@ -192,7 +194,7 @@ export function AddItemMenu() {
                 <Tag
                   key={m.id}
                   style={{ cursor: "pointer" }}
-                  onClick={() => handleTagClick(m.name!)}
+                  onClick={() => setAddItems([m.name!])}
                 >
                   {m.name}
                 </Tag>
@@ -212,22 +214,6 @@ export function AddItemMenu() {
             </div>
           ) : null}
           <Divider style={{ margin: 0 }}></Divider>
-          <Button
-            type="primary"
-            style={{ width: "100%" }}
-            onClick={() => {
-              if (addItems.length > 0) {
-                addItems.forEach((name) => {
-                  addShoppingItem(list_key!, name);
-                });
-                closeMenu("AddItemMenu");
-              } else {
-                messageApi.warning("品物を追加してください。");
-              }
-            }}
-          >
-            追加
-          </Button>
 
           <Button
             style={{ width: "100%" }}
@@ -235,7 +221,7 @@ export function AddItemMenu() {
               closeMenu("AddItemMenu");
             }}
           >
-            キャンセル
+            Close
           </Button>
         </Space>
       </Drawer>
