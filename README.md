@@ -1,40 +1,73 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Memory Cart
+買い物リストをメモ、共有できるアプリです。面倒な登録が一切不要ですぐ使えます。  
 
-## Getting Started
+＜製品の特徴＞  
+・買い物リストを無制限に作成。  
+・品物の登録も無制限。  
+・買い物リスト単位でコピー。  
+・面倒な登録不要で誰とでも共有。  
+・広告なし！  
+  
 
-First, run the development server:
+## URL
+https://memory-cart.onrender.com/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 使用技術
+- 使用言語: HTML, CSS, SASS, TypeScript
+- フレームワーク: Next.js 13.5.3 (React 18.2.0), Ant Design 5.9.3
+- データベース: PostgreSQL 14.1
+- プラットフォーム: [supabase](https://supabase.com/), [render](https://render.com/)
+- その他ツール: Github, Visual Studio Code
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 仕様
+- システム構成
+![システム構成図 drawio](https://github.com/kutarkutakuta/ffxi_renkei_navi_next/assets/122729867/b2295078-cc78-4f44-9f09-4ab7542cf909)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## 主な機能
+### 1. カテゴリ分け  
+・登録済みの一般的な品物名から自動的にカテゴリ分け。  
+・カテゴリ数は30以上。一般的な品物名の数は580以上。  
+・品物にカテゴリのタグが付くので分かりやすい。  
+・品物追加がカテゴリと一般的な品物から探せるので簡単。  
+  
+### 2. お気に入り  
+・お気に入りに登録しておくと品物追加が簡単。  
+  
+### 3. 品物情報  
+・任意で数量と単位の指定可能。  
+・「高くても買う」「安かったら買う」「価格を見て決める」の優先度が付けられる。  
+・メモも付けられるので間違った買い物を防げる。  
+  
+### 3. 並び替え  
+・買い物リストや品物の並び替えはドラッグ＆ドロップで簡単。  
+・「アイウエオ順」「カテゴリ順」「登録順」に一括並び替えも可能。  
+  
+### 4 金額入力  
+・金額を入力して過去の履歴と比較。  
+  
+### 5 ユーザー設定  
+・4種類のテーマから見た目を自分好みに変更。  
+・フォントサイズも4段階から選べる。  
+  
+### 6. Web  
+・Web版もあるからPCでも編集できる。  
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## 作成に至る経緯と感想
+よく買い物を頼まれる自分のために作成しました。
+「こんなに高いならいらなかったのに・・・」..
+「そんなに安いなら買ってきてよー」..
+「1個って言ったけど1袋のことだよー」..
+など、なかなか伝わりづらい妻の思いが夫に届きやすい買い物リストを目指しました。
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 技術者として
+Next.jsの見聞をより深めようと挑戦しました。--
+フルスタック型フレームワークのAngularも良いんですが、Next.jsは学習コストが少なくて自由度が高いのが良いですね。それでいて必要な機能は揃っているのでバランスが良いです。  
+何と言ってもReact Hooksがすごく良いです。  
+状態管理が簡素化されて副作用も制御できて可読性も再利用性もあがります。  
+--
+バックエンドは最近お気に入りのsupabaseでサクッと構築。--
+RDBのPostgreSQLがフリーで使えて、ほぼプログラミングレスでRESTful APIを自動生成してくれるのも嬉しい。いつか業務でも採用したいです。--
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+---
+[Kutakutar@FF11](https://twitter.com/kutakutar_ff11)
