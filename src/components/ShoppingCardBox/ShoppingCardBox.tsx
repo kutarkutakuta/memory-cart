@@ -239,7 +239,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
               SetboughtOrder(!boughtOrder);
             }}
           >
-            買い物済と分ける
+            チェック済と分ける
           </Checkbox>
         </div>
       ),
@@ -250,7 +250,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   const menuItems: MenuProps["items"] = [
     {
       key: "1",
-      label: "全て買い物前に戻す",
+      label: "全てのチェックを外す",
       icon: <BorderOutlined />,
       onClick: () => {
         updateShoppingItems(
@@ -261,7 +261,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
     },
     {
       key: "2",
-      label: "全て買い物済にする",
+      label: "全てチェックする",
       icon: <CheckSquareOutlined />,
       onClick: () => {
         updateShoppingItems(
@@ -275,7 +275,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
     },
     {
       key: "3",
-      label: "買い物済を全て削除",
+      label: "チェック済を全て削除",
       icon: <DeleteOutlined />,
       onClick: () => {
         modal.confirm({
@@ -297,7 +297,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
     },
     {
       key: "4",
-      label: "品物を全て削除",
+      label: "全て削除",
       icon: <DeleteFilled />,
       onClick: () => {
         modal.confirm({
