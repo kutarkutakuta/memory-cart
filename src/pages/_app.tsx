@@ -15,14 +15,35 @@ const mytheme: ThemeConfig = {
 
 export default function App({ Component, pageProps }: AppProps) {
   const { appSetting } = useMasterStore();
-  const [data, setData] = useState<ThemeConfig>(mytheme);
+  const [themeData, setThemeData] = useState<ThemeConfig>(mytheme);
+
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
+    // キャッシュからスタイル情報を読み込む
+    const themeName = localStorage.getItem('themeName');
+    const fontSize = localStorage.getItem('fontSize');
+    if (themeName && fontSize) {
+      setStyle(themeName, Number(fontSize));
+    }
+  }, []);
+
+  useEffect(() => {
+    
     if (appSetting) {
-      document.documentElement.setAttribute("theme", appSetting.theme);
+      // 初回レンダリング時はキャッシュを使用するので無視
+      if(!isFirstRender) setStyle(appSetting.theme, appSetting.font_size)
+      setIsFirstRender(false);
+      localStorage.setItem('themeName',appSetting.theme)
+      localStorage.setItem('fontSize', appSetting.font_size.toString())
+    }
+  }, [appSetting]);
+
+  const setStyle = (themeName: string, fontSize:number) =>{
+    document.documentElement.setAttribute("theme", themeName);
 
       let colorPrimary = "#1890ff";
-      switch (appSetting?.theme) {
+      switch (themeName) {
         case "light":
           colorPrimary = "#ffc53d";
           break;
@@ -36,20 +57,18 @@ export default function App({ Component, pageProps }: AppProps) {
 
       const newtheme: ThemeConfig = {
         algorithm:
-          appSetting?.theme == "dark"
+        themeName == "dark"
             ? theme.darkAlgorithm
             : theme.defaultAlgorithm,
         token: {
-          fontSize: appSetting?.font_size,
+          fontSize: fontSize,
           colorPrimary: colorPrimary,
         },
       };
-      setData(newtheme);
-    }
-  }, [appSetting]);
-
+      setThemeData(newtheme);
+  }
   return (
-    <ConfigProvider theme={data}>
+    <ConfigProvider theme={themeData}>
       <Component {...pageProps} />
     </ConfigProvider>
   );

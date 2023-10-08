@@ -14,25 +14,30 @@ import { ShareInfoMenu } from "@/components/Menu/ShareInfoMenu/ShareInfoMenu";
 const Kaimono = () => {
   const searchParams = useSearchParams();
 
+  // 買物リスト操作用Hook
+  const { info, error, shoppingList, fetchShoppingItems, startPolling, clearShoppingItems } =
+    useShoppingItemStore();
+
   // マスター取得
   const { fetchData } = useMasterStore();
   const { fetchFavoriteItems } = useFavoriteItemStore();
   useEffect(() => {
-    const list_key = searchParams.get("key");
-    if (list_key) {
-      fetchShoppingItems(list_key);
-      fetchData();
-      fetchFavoriteItems();
+    if(searchParams){
+      const list_key = searchParams.get("key");
+      if (list_key) {
+        fetchShoppingItems(list_key);
+        startPolling(list_key);
+        fetchData();
+        fetchFavoriteItems();
+      }
     }
+    
     return () => {
       // ページを離れる際のクリーンアップ
       clearShoppingItems(); // データを初期化
     };
   }, [searchParams]);
 
-  // 買物リスト操作用Hook
-  const { info, error, shoppingList, fetchShoppingItems, clearShoppingItems } =
-    useShoppingItemStore();
 
   // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();

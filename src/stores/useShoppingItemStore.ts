@@ -53,6 +53,7 @@ interface ShoppingItemState {
  */
 const useShoppingItemStore = create<ShoppingItemState>((set) => {
   let pollTimer: NodeJS.Timeout;
+  const pollInterval = 30000;
 
   return {
     shoppingList: null,
@@ -324,7 +325,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       const { fetchShoppingItems } = useShoppingItemStore.getState();
       const poll = async () => {
         await fetchShoppingItems(list_key);
-        pollTimer = setTimeout(poll, 5000);
+        pollTimer = setTimeout(poll, pollInterval);
       };
       poll();
     },

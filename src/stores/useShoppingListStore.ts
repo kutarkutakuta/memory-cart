@@ -49,14 +49,50 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
     set({ loading: true, error: null });
     try {
       // ローカルDBから取得
-      const data = await localdb.shopping_lists
+      const clientLists = await localdb.shopping_lists
         .orderBy("order_number")
         .toArray();
 
-      // TODO:共有中の場合サーバをチェックしてなければ共有解除
-
-      set({ shoppingLists: data });
+      // いったんセット
+      set({ shoppingLists: clientLists });
       set({ loading: false });
+
+      // 共有中のリストをチェック
+      const processArray = async ()=> {
+        for (let lst of clientLists.filter(lst=>lst.isShare)) {
+          // サーバーDBから買い物リストを取得
+          const { data: serverList, error: erro1 } = await supabase
+          .from("shopping_lists")
+          .select("*")
+          .eq("list_key", lst.list_key)
+          .single();
+          if (erro1) {
+            console.error(erro1);
+          }
+          else if (serverList.length == 0){
+            // なければ共有解除
+            await localdb.shopping_lists.update(lst.id, {isShare: false});
+            lst.isShare = false;
+          }
+          else{
+            // 情報更新
+            await localdb.shopping_lists.update(lst.id, {
+             name: serverList.name,
+             memo: serverList.memo,
+             updated_user: serverList.updated_user,
+           });
+            lst.name = serverList.name;
+            lst.memo = serverList.memo;
+            lst.updated_user = serverList.updated_user;
+          }
+       }
+       return clientLists
+      }
+
+      processArray().then(ret=>{
+        set({ shoppingLists: ret });
+      });
+
     } catch (error: any) {
       set({ error, loading: false });
     }
