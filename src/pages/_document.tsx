@@ -5,8 +5,8 @@ import type { DocumentContext } from "next/document";
 
 const MyDocument = () => (
   <Html lang="ja">
-    <Head title="Memory Cart">
-      
+    <title>Memory Cart - 買い物リスト メモ共有</title>
+    <Head>
       <meta charSet="utf-8" />
       <meta
         name="description"
