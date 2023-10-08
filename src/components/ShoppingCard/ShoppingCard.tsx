@@ -209,9 +209,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                   </div>
                 }
               >
-                <Button type="text" shape="circle" size={"small"}>
-                  ￥
-                </Button>
+                 <Tag style={{cursor:"pointer"}}>￥</Tag>
               </Popover>
             ) : null}
           </div>
