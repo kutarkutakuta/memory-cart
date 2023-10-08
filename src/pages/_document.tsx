@@ -39,10 +39,6 @@ const MyDocument = () => (
         content="https://okaimono.onrender.com/assets/icons/icon-128x128.png"
       />
 
-      <meta
-        name="google-site-verification"
-        content="eKWsAU6fruzFLUVXCaNJ1VF4-8tcVAZrHDUYUNmsGOE"
-      />
       <link
         rel="icon"
         type="image/png"
