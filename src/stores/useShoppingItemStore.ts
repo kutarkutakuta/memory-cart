@@ -46,7 +46,7 @@ interface ShoppingItemState {
   ) => Promise<void>;
   removeShoppingItems: (ids: number[]) => Promise<void>;
   sortShoppingItem: (shoppingItems: ShoppingItem[]) => void;
-  startPolling: (list_key: string) => void;
+  startPolling: (list_key: string) => Promise<void>;
 }
 
 /**
@@ -372,13 +372,18 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       // ステート更新
       set({ shoppingItems });
     },
-    startPolling: (list_key) => {
+    startPolling: async (list_key) => {
       const { fetchShoppingItems } = useShoppingItemStore.getState();
       const poll = async () => {
         await fetchShoppingItems(list_key);
         pollTimer = setTimeout(poll, pollInterval);
       };
-      poll();
+      let local_list = await localdb.shopping_lists
+          .filter((m) => m.list_key == list_key)
+          .first();
+      if(local_list && local_list.isShare){
+        poll();
+      }
     },
   };
 });

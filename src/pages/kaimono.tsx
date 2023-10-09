@@ -33,6 +33,7 @@ const Kaimono = () => {
         fetchData();
         fetchFavoriteItems();
         fetchShoppingList();
+        startPolling(list_key);
       }
     }
     
@@ -41,13 +42,6 @@ const Kaimono = () => {
       clearShoppingItems(); // データを初期化
     };
   }, [searchParams]);
-  
-  // 共有の場合だけポーリング開始
-  useEffect(() => {
-    if (shoppingList && shoppingList.isShare) {
-      startPolling(shoppingList.list_key);
-    }
-  }, [shoppingList]);
 
   // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();
