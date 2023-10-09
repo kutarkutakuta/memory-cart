@@ -18,6 +18,8 @@ import {
   MenuProps,
   Popover,
   Modal,
+  Select,
+  message,
 } from "antd";
 import {
   HolderOutlined,
@@ -27,11 +29,14 @@ import {
   MessageTwoTone,
   DeleteOutlined,
   ExclamationCircleFilled,
+  CopyOutlined,
 } from "@ant-design/icons";
 
 import styles from "./ShoppingCard.module.scss";
 import useMenuStore from "@/stores/useMenuStore";
 import useMasterStore from "@/stores/useMasterStore";
+import useShoppingListStore, { ShoppingList } from "@/stores/useShoppingListStore";
+import { useState } from "react";
 
 
 interface ShoppingCardProps {
@@ -51,13 +56,18 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
 
   // マスター用Hook
   const { categories } = useMasterStore();
+  // 買物リスト用Hook
+  const { shoppingLists } = useShoppingListStore();
   // 品物用Hook
-  const { removeShoppingItems, updateShoppingItems } = useShoppingItemStore();
+  const { removeShoppingItems, updateShoppingItems, copyShoppingItem } = useShoppingItemStore();
   // メニュー制御用Hook
   const { openMenu } = useMenuStore();
  // メッセージ用Hook
  const [modal, contextHolder] = Modal.useModal();
- 
+ // メッセージ用Hook
+ const [messageApi, contextHolder2] = message.useMessage();
+
+
   // メニュー項目
   const items: MenuProps["items"] = [
     {
@@ -68,6 +78,12 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "2",
+      label: "品物のコピー",
+      icon: <CopyOutlined />,
+      onClick: () => handleOpenCopy(),
+    },
+    {
+      key: "3",
       label: "品物の削除",
       icon: <DeleteOutlined />,
       onClick: () => modal.confirm({
@@ -75,6 +91,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
         icon: <ExclamationCircleFilled />,
         content:"よろしいですか？",
         okText: "削除",
+        
         okType: "primary",
         cancelText: "キャンセル",
         onOk: () => {
@@ -86,7 +103,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       type: "divider",
     },
     {
-      key: "3",
+      key: "4",
       label: "￥ 金額を入力",
       onClick: () => openMenu("PriceMenu", undefined, item),
     },
@@ -101,6 +118,15 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     });
   };
 
+  const [openCopy, setOpenCopy] = useState(false);
+  const [selectedListKey, setSelectedListKey]= useState<string | null>(null);
+  const [deleteFromList, setDeleteFromList]= useState<boolean>(false);
+  const handleOpenCopy = ()=>{
+    setSelectedListKey(null);
+    setDeleteFromList(false);
+    setOpenCopy(true);
+  }
+
   return (
     <div
       ref={setNodeRef}
@@ -110,6 +136,42 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
       {...listeners}
     >
       {contextHolder}
+      {contextHolder2}
+
+      <Modal
+        title={`${item.name}をコピーします`}
+        open={openCopy}
+        onOk={() => {
+          if(selectedListKey){
+            copyShoppingItem(selectedListKey, item)
+            .then(()=>{
+              if(deleteFromList) {
+                removeShoppingItems([item.id!]);
+              }
+              messageApi.success(`コピーしました`);
+              setOpenCopy(false);
+            })
+          }
+          else{
+            messageApi.error("コピー先の買い物リストを選択して下さい");
+          }
+          
+        }}
+        onCancel={()=>setOpenCopy(false)}
+      >
+        <Select
+            showSearch
+            allowClear
+            style={{ width: "100%" }}
+            placeholder="コピー先の買い物リスト"
+            options={shoppingLists.filter(m=>m.list_key !== item.list_key).map((m) => ({ label: m.name, value: m.list_key }))}
+            value={selectedListKey}
+            onChange={(e) => setSelectedListKey(e)}
+          />
+          <br/>
+        <Checkbox checked={deleteFromList} onChange={()=>setDeleteFromList(!deleteFromList)}>このリストから削除する</Checkbox>
+      </Modal>
+
       <Row wrap={false} align={"middle"}>
         <Col
           flex="none"

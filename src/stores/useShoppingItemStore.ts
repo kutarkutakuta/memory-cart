@@ -39,6 +39,7 @@ interface ShoppingItemState {
   fetchShoppingItems: (list_key: string) => Promise<void>;
   clearShoppingItems: () => void;
   addShoppingItem: (list_key: string, name: string) => Promise<void>;
+  copyShoppingItem: (list_key: string, source: ShoppingItem) => Promise<void>;
   updateShoppingItems: (
     ids: number[],
     changes: { [keyPath: string]: any }
@@ -168,7 +169,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         const { favoriteItems } = useFavoriteItemStore.getState();
 
         // 名称からカテゴリを取得
-        const categroy_name =
+        const category_name =
           favoriteItems.find((itm) => itm.name == name)?.category_name ||
           commonItems.find((m) => m.name == name)?.category_name;
 
@@ -184,7 +185,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           item_key: nanoid(),
           order_number: shoppingItems.length + 1,
           name: name,
-          category_name: categroy_name,
+          category_name: category_name,
           created_user: appSetting?.user_name!,
           updated_user: appSetting?.user_name!,
         };
@@ -213,6 +214,56 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         set((state) => ({
           shoppingItems: [...state.shoppingItems, addItem],
         }));
+        set({ loading: false });
+      } catch (error: any) {
+        set({ error, loading: false });
+      }
+    },
+    copyShoppingItem: async (list_key, source) => {
+      set({ loading: true, error: null });
+      try {
+        // マスター用Hook
+        const { appSetting } = useMasterStore.getState();
+
+        const addItem: ShoppingItem = {
+          list_key: list_key,
+          item_key: nanoid(),
+          order_number: 0,
+          name: source.name,
+          category_name: source.category_name,
+          amount: source.amount,
+          unit: source.unit,
+          priority: source.priority,
+          memo: source.memo,
+          buying_amount: source.buying_amount,
+          buying_unit: source.buying_unit,
+          buying_price: source.buying_price,
+          created_user: appSetting?.user_name!,
+          updated_user: appSetting?.user_name!,
+        };
+
+        // ローカルDBへ追加
+        const newId = await localdb.shopping_items.add(addItem);
+        addItem.id = newId;
+
+        // 共有の場合サーバDBにも追加
+        const {data} = await supabase.from("shopping_list").select("*")
+          .eq("list_key", list_key)
+          .single();
+
+        if (data && data.isShare) {
+          const { error } = await supabase.from("shopping_items").insert({
+            ...addItem,
+            created_ip_address: appSetting?.ip_address!,
+            updated_ip_address: appSetting?.ip_address!,
+          });
+          if (error) throw error;
+        }
+
+        // // ステート更新
+        // set((state) => ({
+        //   shoppingItems: [...state.shoppingItems, addItem],
+        // }));
         set({ loading: false });
       } catch (error: any) {
         set({ error, loading: false });

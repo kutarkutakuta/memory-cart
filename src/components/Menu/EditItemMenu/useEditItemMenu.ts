@@ -1,7 +1,4 @@
 import { ShoppingItem } from "@/stores/useShoppingItemStore";
-import useShoppingListStore, {
-  ShoppingList,
-} from "@/stores/useShoppingListStore";
 import { useState } from "react";
 
 /**

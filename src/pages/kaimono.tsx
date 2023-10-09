@@ -10,11 +10,15 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import { Spin, message } from "antd";
 import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
 import { ShareInfoMenu } from "@/components/Menu/ShareInfoMenu/ShareInfoMenu";
+import useShoppingListStore from "@/stores/useShoppingListStore";
 
 const Kaimono = () => {
   const searchParams = useSearchParams();
 
-  // 買物リスト操作用Hook
+  // 買い物リスト用Hook
+  const { fetchShoppingList } =  useShoppingListStore();
+
+  // 品物用Hook
   const { info, error, shoppingList, fetchShoppingItems, startPolling, clearShoppingItems } =
     useShoppingItemStore();
 
@@ -26,9 +30,9 @@ const Kaimono = () => {
       const list_key = searchParams.get("key");
       if (list_key) {
         fetchShoppingItems(list_key);
-        startPolling(list_key);
         fetchData();
         fetchFavoriteItems();
+        fetchShoppingList();
       }
     }
     
@@ -37,7 +41,13 @@ const Kaimono = () => {
       clearShoppingItems(); // データを初期化
     };
   }, [searchParams]);
-
+  
+  // 共有の場合だけポーリング開始
+  useEffect(() => {
+    if (shoppingList && shoppingList.isShare) {
+      startPolling(shoppingList.list_key);
+    }
+  }, [shoppingList]);
 
   // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();
