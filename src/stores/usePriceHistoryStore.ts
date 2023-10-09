@@ -2,6 +2,7 @@ import { create } from "zustand";
 import localdb from "@/lib/localdb";
 import { ShoppingItem } from "./useShoppingItemStore";
 import useMasterStore from "./useMasterStore";
+import supabase from "@/lib/supabase";
 
 /**
  * 価格履歴
@@ -24,7 +25,9 @@ interface PriceHistoryState {
   loading: boolean;
   error: Error | null;
   priceHistories: PriceHistory[];
+  globalPriceHistories: PriceHistory[];
   fetchPriceHistories: (category_name: string, name: string) => Promise<void>;
+  fetchGlobalPriceHistories: (category_name: string, name: string) => Promise<void>;
   upsertPriceHistory: (
     shoppingItem: ShoppingItem,
     changes: { [keyPath: string]: any }
@@ -39,6 +42,7 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
     loading: false,
     error: null,
     priceHistories: [],
+    globalPriceHistories: [],
     fetchPriceHistories: async (category_name, name) => {
       set({ loading: true, error: null });
       try {
@@ -51,6 +55,23 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
           .sortBy("updated_at")
 
         set({ priceHistories: priceHistories });
+        set({ loading: false });
+      } catch (error: any) {
+        set({ error, loading: false });
+      }
+    },
+    fetchGlobalPriceHistories: async (category_name, name) => {
+      set({ loading: true, error: null });
+      try {
+        const {data, error} = await supabase
+            .from("price_histories")
+            .select("*")
+            .eq("name", name)
+            .eq("category_name", category_name || "")
+            .order("updated_at", {ascending: false});
+          if (error) throw error;
+
+        set({ globalPriceHistories: data as PriceHistory[] });
         set({ loading: false });
       } catch (error: any) {
         set({ error, loading: false });
@@ -93,6 +114,52 @@ const usePriceHistoryStore = create<PriceHistoryState>((set) => {
             updated_at: new Date(),
           });
         }
+
+        const serverUpserat = async ()=>{
+          const {data} = await supabase
+              .from("price_histories")
+              .select("*")
+              .eq("list_key", keys.list_key)
+              .eq("item_key", keys.item_key)
+              .eq("name", keys.name)
+              .eq("category_name", keys.category_name)
+              .eq("record_date", keys.record_date.toLocaleDateString())
+              .single();
+          if(data){
+            const { error } = await supabase
+            .from("price_histories")
+            .update({
+              price: changes.buying_price,
+              amount: changes.buying_amount,
+              unit: changes.buying_unit,
+              updated_user: appSetting?.user_name,
+              updated_ip_address: appSetting?.ip_address,
+            })
+            .eq("list_key", keys.list_key)
+            .eq("item_key", keys.item_key)
+            .eq("name", keys.name)
+            .eq("category_name", keys.category_name)
+            .eq("record_date", keys.record_date.toLocaleDateString());
+            if (error) console.error(error);
+          }
+          else{
+            const { error } = await supabase.from("price_histories").insert({
+              list_key: keys.list_key,
+              item_key: keys.item_key,
+              name: keys.name,
+              category_name: keys.category_name || "",
+              record_date : keys.record_date.toLocaleDateString(),
+              price: changes.buying_price,
+              amount: changes.buying_amount,
+              unit: changes.buying_unit,
+              updated_user: appSetting?.user_name,
+              updated_ip_address: appSetting?.ip_address,
+            });
+            if (error) console.error(error);
+          }
+        }
+        serverUpserat();
+          
         set({ loading: false });
       } catch (error: any) {
         set({ error, loading: false });
