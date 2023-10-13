@@ -471,7 +471,12 @@ const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
           created_user: serverData.created_user,
           updated_user: serverData.updated_user,
         };
-        await localdb.shopping_items.add(addItem);
+        try{
+          await localdb.shopping_items.add(addItem);
+        }
+        catch(e){
+          console.warn(e);
+        }
       }
     }
 

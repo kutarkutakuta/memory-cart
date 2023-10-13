@@ -24,8 +24,8 @@ class OkaimonoDatabase extends Dexie {
       units: "++id, order_number, name",
       favorite_items: "++id, order_number, name, category_name",
       common_items: "++id, order_number, name, category_name",
-      shopping_lists: "id, list_key, order_number, name",
-      shopping_items: "++id, list_key, item_key, order_number, name",
+      shopping_lists: "id, &list_key, order_number, name",
+      shopping_items: "++id, list_key, item_key, order_number, name, &[list_key+item_key]",
       price_histories: "++id, [list_key+item_key+name+category_name+record_date], [name+category_name] ",
     });
     this.app_settings = this.table("app_settings");

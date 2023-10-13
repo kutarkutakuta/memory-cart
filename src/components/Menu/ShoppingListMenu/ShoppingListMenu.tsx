@@ -38,26 +38,6 @@ export function ShoppingListMenu() {
       });
   }, [error]);
 
-  const showDeleteConfirm = () => {
-    confirm({
-      title: selectedList?.isShare
-        ? "共有中のリストを削除しようとしています！"
-        : "リストを削除します",
-      icon: <ExclamationCircleFilled />,
-      content:
-        (selectedList?.isShare
-          ? "サーバー上の共有データも削除するには共有解除を行ってください。"
-          : "削除したリストは元に戻せません。") + "削除しますか？",
-      okText: "削除",
-      okType: "danger",
-      cancelText: "キャンセル",
-      onOk() {
-        removeShoppingList(formData.id!);
-        closeMenu("ShoppingListMenu");
-      },
-    });
-  };
-
   return (
     <>
       {contextHolder}
