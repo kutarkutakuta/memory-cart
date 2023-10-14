@@ -13,7 +13,7 @@ const MyDocument = () => (
         content="買い物リストをメモしたり共有したり。面倒な登録が一切不要ですぐ使えます。"
       />
       {/* <!-- Facebook:カード用--> */}
-      <meta property="og:url" content="https://okaimono.onrender.com" />
+      <meta property="og:url" content="https://memory-cart.onrender.com" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Memory Cart" />
       <meta
@@ -22,13 +22,13 @@ const MyDocument = () => (
       />
       <meta
         property="og:image"
-        content="https://renkei-navi.onrender.com/assets/icons/icon-128x128.png"
+        content="https://memory-cart.onrender.com/assets/icons/icon-128x128.png"
       />
       {/* <!-- twitter:カード用--> */}
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:site" content="@kutakutar_ff11" />
-      <meta name="twitter:domain" content="okaimono.onrender.com" />
-      <meta name="twitter:url" content="https://okaimono.onrender.com" />
+      <meta name="twitter:domain" content="memory-cart.onrender.com" />
+      <meta name="twitter:url" content="https://memory-cart.onrender.com" />
       <meta name="twitter:title" content="Memory Cart" />
       <meta
         name="twitter:description"
@@ -36,7 +36,7 @@ const MyDocument = () => (
       />
       <meta
         name="twitter:image"
-        content="https://okaimono.onrender.com/assets/icons/icon-128x128.png"
+        content="https://memory-cart.onrender.com/assets/icons/icon-128x128.png"
       />
 
       <link
