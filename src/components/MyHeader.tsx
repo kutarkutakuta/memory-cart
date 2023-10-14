@@ -2,15 +2,7 @@ import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 
-import {
-  Button,
-  Col,
-  Dropdown,
-  MenuProps,
-  Row,
-  Space,
-  Tooltip,
-} from "antd";
+import { Button, Col, Dropdown, MenuProps, Row, Space, Tooltip } from "antd";
 import {
   QuestionCircleOutlined,
   ArrowLeftOutlined,
@@ -34,7 +26,7 @@ const MyHeader = () => {
   const { openMenu } = useMenuStore();
 
   // 買物リスト操作用Hook
-  const { shoppingList } = useShoppingItemStore();
+  const { shoppingList, shoppingItems } = useShoppingItemStore();
 
   const [listName, setListName] = useState<string>("");
   const [isShare, setisShare] = useState<boolean>(false);
@@ -128,11 +120,11 @@ const MyHeader = () => {
                   textOverflow: "ellipsis",
                 }}
               >
-              <Button
-                type="text"
-                icon={<ArrowLeftOutlined />}
-                onClick={() => handleGoBack()}
-              ></Button>
+                <Button
+                  type="text"
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => handleGoBack()}
+                ></Button>
                 {pathname == "/help" ? "ヘルプ" : ""}
                 {pathname == "/privacy" ? "プライバシーポリシー" : ""}
               </span>
@@ -151,27 +143,31 @@ const MyHeader = () => {
                 <Button
                   type="text"
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => router.push("/")}  // 品物から戻る先はトップページ固定
+                  onClick={() => router.push("/")} // 品物から戻る先はトップページ固定
                 ></Button>
                 {listName}
 
                 {isShare ? (
                   <Button
-                  type="text"
-                  icon={<LinkOutlined />}
-                  onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
-                ></Button>
+                    type="text"
+                    icon={<LinkOutlined />}
+                    onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
+                  ></Button>
                 ) : null}
               </span>
             </>
-          ) :null
-
-          }
+          ) : null}
         </Col>
         <Col flex="none">
           <Row justify="end">
             <Col>
               <Space>
+                {pathname === "/kaimono" ? (
+                  <span style={{ opacity: 0.9, fontSize: "0.7em" }}>
+                    {shoppingItems.length} items (
+                    {shoppingItems.filter((m) => m.finished_at == null).length})
+                  </span>
+                ) : null}
                 <Dropdown menu={{ items }} placement="bottomRight">
                   <Button type="text" icon={<SettingOutlined />}></Button>
                 </Dropdown>

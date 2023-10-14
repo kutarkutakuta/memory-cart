@@ -330,7 +330,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
                 品物を追加
               </Button>
               {/* ローディングをここに置く */}
-              <span>
+              <span style={{paddingLeft:5}}>
                 <Spin spinning={loading}></Spin>
               </span>
             </Col>
