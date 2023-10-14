@@ -87,6 +87,10 @@ const MyDocument = () => (
       />
       <link rel="manifest" href="manifest.webmanifest" />
       <meta name="theme-color" content="#ccc8aa" />
+      <meta
+        name="google-site-verification"
+        content="eKWsAU6fruzFLUVXCaNJ1VF4-8tcVAZrHDUYUNmsGOE"
+      />
     </Head>
     <body>
       <Main />
