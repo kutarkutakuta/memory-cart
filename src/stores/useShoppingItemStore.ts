@@ -99,7 +99,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
             });
           } else if (server_list) {
             // サーバーからローカルへ同期
-            fetchFromServer(local_list, server_list);
+            await fetchFromServer(local_list);
             // ローカルの買物リストを更新
             await localdb.shopping_lists.update(local_list.id!, {
               name: server_list.name,
@@ -242,16 +242,12 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           updated_user: appSetting?.user_name!,
         };
 
-        // ローカルDBへ追加
-        const newId = await localdb.shopping_items.add(addItem);
-        addItem.id = newId;
-
-        // 共有の場合サーバDBにも追加
-        const {data} = await supabase.from("shopping_list").select("*")
-          .eq("list_key", list_key)
-          .single();
-
-        if (data && data.isShare) {
+        // 共有の場合サーバDBに追加
+        let local_list = await localdb.shopping_lists
+        .filter((m) => m.list_key == list_key)
+        .first();
+        
+        if (local_list && local_list.isShare) {
           const { error } = await supabase.from("shopping_items").insert({
             ...addItem,
             created_ip_address: appSetting?.ip_address!,
@@ -259,6 +255,10 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           });
           if (error) throw error;
         }
+        
+        // ローカルDBへ追加
+        const newId = await localdb.shopping_items.add(addItem);
+        addItem.id = newId;
 
         // // ステート更新
         // set((state) => ({
@@ -393,7 +393,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
  * @param local_list
  * @param server_list
  */
-const fetchFromServer = async (local_list: ShoppingList, server_list: any) => {
+const fetchFromServer = async (local_list: ShoppingList) => {
 
   // サーバーDBからデータ取得
   const { data, error: erro1 } = await supabase
