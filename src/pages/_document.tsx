@@ -22,7 +22,7 @@ const MyDocument = () => (
       />
       <meta
         property="og:image"
-        content="https://memory-cart.onrender.com/assets/icons/icon-128x128.png"
+        content="https://memory-cart.onrender.com/assets/icons/128x128.png"
       />
       {/* <!-- twitter:カード用--> */}
       <meta name="twitter:card" content="summary" />
@@ -36,7 +36,7 @@ const MyDocument = () => (
       />
       <meta
         name="twitter:image"
-        content="https://memory-cart.onrender.com/assets/icons/icon-128x128.png"
+        content="https://memory-cart.onrender.com/assets/icons/128x128.png"
       />
 
       <link
