@@ -16,18 +16,18 @@ export function SearchMenu() {
 
   // フォーカス制御用Ref
   const inputRef = useRef<any | null>(null);
+  const [inputValue, setInputValue] = useState<string>("");
 
   useEffect(() => {
     if (openFlag["SearchMenu"]) {
-      // setInputValue("");
-      // search("");
+      setInputValue(searchText);
       setTimeout(() => {
         inputRef.current.focus();
       }, 500);
     }
   }, [openFlag["SearchMenu"]]);
 
-  const handleInputChange = (text: string) => {
+  const handleSearch = (text: string) => {
     search(text);
   };
 
@@ -44,18 +44,15 @@ export function SearchMenu() {
         open={openFlag["SearchMenu"]}
         onClose={() => closeMenu("SearchMenu")}
       >
-        <Input
-          ref={inputRef}
-          type="text"
+        <Input.Search
           placeholder="品物名"
-          prefix={<SearchOutlined />}
-          maxLength={20}
+          ref={inputRef}
+          style={{ width: "100%" }}
           allowClear
-          style={{
-            width: "100%",
-          }}
-          value={searchText}
-          onChange={(e) => handleInputChange(e.target.value)}
+          maxLength={25}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onSearch={(e) => handleSearch(e)}
         />
 
         <Divider></Divider>
