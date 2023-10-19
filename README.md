@@ -22,7 +22,7 @@ https://memory-cart.onrender.com/
 
 ## 仕様
 - システム構成
-![システム構成図 drawio](https://github.com/kutarkutakuta/ffxi_renkei_navi_next/assets/122729867/b2295078-cc78-4f44-9f09-4ab7542cf909)
+![image](https://github.com/kutarkutakuta/ffxi-item-navi/assets/122729867/6da44342-22cd-41f7-a9bc-be4299fbd81d)
 
 ## 主な機能
 ### 1. カテゴリ分け  
