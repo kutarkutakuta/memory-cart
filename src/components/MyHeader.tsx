@@ -12,11 +12,13 @@ import {
   HeartOutlined,
   ShoppingOutlined,
   SafetyOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
 import { SettingMenu } from "./Menu/SettingMenu/SettingMenu";
 import { FavoriteItemMenu } from "./Menu/FavoireItemMenu/FavoriteItemMenu";
+import { SearchMenu } from "./Menu/SearchMenu/SearchMenu";
 
 const MyHeader = () => {
   const pathname = usePathname();
@@ -54,9 +56,12 @@ const MyHeader = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "ユーザー設定",
-      icon: <UserOutlined />,
-      onClick: () => openMenu("SettingMenu"),
+      label: "品物検索",
+      icon:<SearchOutlined />,
+      onClick: () => openMenu("SearchMenu"),
+    },
+    {
+      type: "divider",
     },
     {
       key: "2",
@@ -65,19 +70,22 @@ const MyHeader = () => {
       onClick: () => openMenu("FavoriteItemMenu"),
     },
     {
-      type: "divider",
-    },
-    {
       key: "3",
-      label: "プライバシーポリシー",
-      icon: <SafetyOutlined />,
-      onClick: () => router.push(`/privacy`),
+      label: "ユーザー設定",
+      icon: <UserOutlined />,
+      onClick: () => openMenu("SettingMenu"),
     },
     {
       type: "divider",
     },
     {
       key: "4",
+      label: "プライバシーポリシー",
+      icon: <SafetyOutlined />,
+      onClick: () => router.push(`/privacy`),
+    },
+    {
+      key: "5",
       label: "ヘルプ",
       icon: <QuestionCircleOutlined />,
       onClick: () => router.push(`/help`),
@@ -178,6 +186,7 @@ const MyHeader = () => {
       </Row>
       <SettingMenu></SettingMenu>
       <FavoriteItemMenu></FavoriteItemMenu>
+      <SearchMenu></SearchMenu>
     </>
   );
 };
