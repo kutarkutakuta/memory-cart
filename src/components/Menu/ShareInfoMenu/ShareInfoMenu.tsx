@@ -59,16 +59,9 @@ export function ShareInfoMenu() {
           <Space style={{ width: "100%", paddingTop: "10px"}}>
           <QRCodeCanvas style={{marginLeft:25}}
             value={"https://memory-cart.onrender.com/kaimono?key=" + share_key}
-            size={100}
-            level={"L"}
-            imageSettings={{
-              src: "/favicon.ico",
-              x: undefined,
-              y: undefined,
-              height: 24,
-              width: 24,
-              excavate: true,
-            }}
+            size={128}
+            includeMargin={true}
+            level={"M"}
           />
           </Space>
           
