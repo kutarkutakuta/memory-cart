@@ -197,7 +197,7 @@ export function EditItemMenu() {
               alt="Amazon fresh"
               src="assets/stores/amazon-fresh.png"
               preview={false}
-              style={{ height: 25 }}
+              style={{ height: 20 }}
             ></Image>
           </Link>
           <Link
