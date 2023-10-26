@@ -2,14 +2,16 @@
 import useMenuStore from "@/stores/useMenuStore";
 import {
   Button,
+  Divider,
   Drawer,
+  Image,
   Input,
   InputNumber,
   Select,
   Space,
   message,
 } from "antd";
-import { EditOutlined, HeartTwoTone } from "@ant-design/icons";
+import { EditOutlined, HeartTwoTone, SearchOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 
 import useMasterStore from "@/stores/useMasterStore";
@@ -19,6 +21,8 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useFavoriteItemStore, {
   FavoriteItem,
 } from "@/stores/useFavoriteItemStore";
+import Link from "next/link";
+import NextImage from "next/image";
 
 export function EditItemMenu() {
   // メニュー制御用Hook
@@ -52,11 +56,15 @@ export function EditItemMenu() {
       setFavoriteItem(null);
       messageApi.success("お気に入りから削除しました。");
     } else {
-      addFavoriteItem(selectedItem?.category_name!, selectedItem?.name!)
-      .finally(()=>getFavoriteItem(selectedItem?.name!).then((ret) => {
-        setFavoriteItem(ret);
-        messageApi.success("お気に入りに登録しました。");
-      }));
+      addFavoriteItem(
+        selectedItem?.category_name!,
+        selectedItem?.name!
+      ).finally(() =>
+        getFavoriteItem(selectedItem?.name!).then((ret) => {
+          setFavoriteItem(ret);
+          messageApi.success("お気に入りに登録しました。");
+        })
+      );
     }
   };
 
@@ -100,7 +108,9 @@ export function EditItemMenu() {
             />
             <Button
               type={"text"}
-              icon={<HeartTwoTone twoToneColor={favoriteItem ? "#eb2f96" : ""} />}
+              icon={
+                <HeartTwoTone twoToneColor={favoriteItem ? "#eb2f96" : ""} />
+              }
               onClick={() => handleChangeFavorite()}
             ></Button>
           </Space>
@@ -171,6 +181,58 @@ export function EditItemMenu() {
           >
             キャンセル
           </Button>
+        </Space>
+
+        <Divider orientation="left" plain>
+          <SearchOutlined />
+          ネットスーパーで検索
+        </Divider>
+
+        <Space direction="vertical">
+          <Link
+            href={`https://www.amazon.co.jp/s?k=${encodeURIComponent(selectedItem?.name!)}&i=amazonfresh`}
+            target="_blank"
+          >
+            <Image
+              alt="Amazon fresh"
+              src="assets/stores/amazon-fresh.png"
+              preview={false}
+              style={{ height: 25 }}
+            ></Image>
+          </Link>
+          <Link
+            href={`https://www.amazon.co.jp/s?k=${encodeURIComponent(selectedItem?.name!)}&i=life`}
+            target="_blank"
+          >
+            <Image
+              alt="Amazon ライフ"
+              src="assets/stores/life.png"
+              preview={false}
+              style={{ height: 25 }}
+            ></Image>
+          </Link>
+          <Link
+            href={`https://sm.rakuten.co.jp/search?keyword=${encodeURIComponent(selectedItem?.name!)}`}
+            target="_blank"
+          >
+            <Image
+              alt="楽天西友"
+              src="assets/stores/rakuten-seiyu.png"
+              preview={false}
+              style={{ height: 20 }}
+            ></Image>
+          </Link>
+          <Link
+            href={`https://www.iy-net.jp/pc/search/?search-word=${encodeURIComponent(selectedItem?.name!)}`}
+            target="_blank"
+          >
+            <Image
+              alt="イトーヨーカドー"
+              src="assets/stores/ito-y.png"
+              preview={false}
+              style={{ height: 18 }}
+            ></Image>
+          </Link>
         </Space>
       </Drawer>
     </>
