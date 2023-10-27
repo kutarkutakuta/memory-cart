@@ -18,6 +18,7 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useFavoriteItemStore, {
   FavoriteItem,
 } from "@/stores/useFavoriteItemStore";
+import { useTimer } from "react-timer-hook";
 
 export function AddItemMenu() {
   // メニュー制御用Hook
@@ -134,9 +135,16 @@ export function AddItemMenu() {
     if (!recognition) return;
     if (isRecording) {
       recognition.start();
+      // タイマー開始
+      const time = new Date();
+      time.setSeconds(time.getSeconds() + 2);
+      restart(time, true);
     } else {
+      if(text.length > 0) setAddItems([text]);
       recognition.stop();
       setText("");
+      // タイマー停止
+      resume();
     }
   }, [isRecording]);
 
@@ -148,21 +156,32 @@ export function AddItemMenu() {
         if (results[i].isFinal) {
           setText((prevText) => prevText + results[i][0].transcript);
           setTranscript("");
-
-          //録音停止
-          setIsRecording(false);
-
+          // タイマー再開
+          const time = new Date();
+          time.setSeconds(time.getSeconds() + 0.25);
+          restart(time, true);
         } else {
           setTranscript(results[i][0].transcript);
+          // タイマー再開
+          const time = new Date();
+          time.setSeconds(time.getSeconds() + 0.25);
+          restart(time, true);
         }
       }
     };
   }, [recognition]);
 
-  useEffect(() => {
-    if(text.length > 0) setAddItems([text]);
-  }, [text]);
-
+  const {
+    seconds,
+    resume,
+    restart,
+  } = useTimer({
+    expiryTimestamp: new Date(),
+    onExpire: () => {
+      setIsRecording(false);
+    },
+  });
+  
   return (
     <>
       {contextHolder}
