@@ -140,9 +140,11 @@ export function AddItemMenu() {
       time.setSeconds(time.getSeconds() + 2);
       restart(time, true);
     } else {
-      if(text.length > 0) setAddItems([text]);
       recognition.stop();
-      setText("");
+      setText((prevText) => {
+        if(prevText.length > 0) setAddItems([prevText]);
+        return "";
+      });
       // タイマー停止
       resume();
     }
@@ -158,7 +160,7 @@ export function AddItemMenu() {
           setTranscript("");
           // タイマー再開
           const time = new Date();
-          time.setSeconds(time.getSeconds() + 0.5);
+          time.setSeconds(time.getSeconds() + 0.6);
           restart(time, true);
         } else {
           setTranscript(results[i][0].transcript);
