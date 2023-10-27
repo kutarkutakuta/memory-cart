@@ -158,7 +158,7 @@ export function AddItemMenu() {
           setTranscript("");
           // タイマー再開
           const time = new Date();
-          time.setSeconds(time.getSeconds() + 0.3);
+          time.setSeconds(time.getSeconds() + 0.5);
           restart(time, true);
         } else {
           setTranscript(results[i][0].transcript);
