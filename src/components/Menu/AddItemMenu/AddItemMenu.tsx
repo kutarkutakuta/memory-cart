@@ -158,13 +158,13 @@ export function AddItemMenu() {
           setTranscript("");
           // タイマー再開
           const time = new Date();
-          time.setSeconds(time.getSeconds() + 0.25);
+          time.setSeconds(time.getSeconds() + 0.3);
           restart(time, true);
         } else {
           setTranscript(results[i][0].transcript);
           // タイマー再開
           const time = new Date();
-          time.setSeconds(time.getSeconds() + 0.25);
+          time.setSeconds(time.getSeconds() + 1);
           restart(time, true);
         }
       }
