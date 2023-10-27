@@ -10,7 +10,7 @@ import {
   Tag,
   message,
 } from "antd";
-import { AudioOutlined, AudioMutedOutlined } from "@ant-design/icons";
+import { AudioOutlined, AudioTwoTone } from "@ant-design/icons";
 
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
 import { useEffect, useRef, useState } from "react";
@@ -18,7 +18,6 @@ import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useFavoriteItemStore, {
   FavoriteItem,
 } from "@/stores/useFavoriteItemStore";
-import { useTimer } from "react-timer-hook";
 
 export function AddItemMenu() {
   // メニュー制御用Hook
@@ -115,7 +114,6 @@ export function AddItemMenu() {
   };
 
   const [isRecording, setIsRecording] = useState(false);
-  const [text, setText] = useState<string>("");
   const [transcript, setTranscript] = useState<string>("");
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(
     null
@@ -125,8 +123,8 @@ export function AddItemMenu() {
     if (typeof window !== "undefined") {
       const recognition = new webkitSpeechRecognition();
       recognition.lang = "ja-JP";
-      recognition.continuous = true;
-      recognition.interimResults = true;
+      recognition.continuous = false;  // 発言の終わりで録音を止めるかどうか
+      recognition.interimResults = true;  // 中間の結果を返す
       setRecognition(recognition);
     }
   }, []);
@@ -135,18 +133,8 @@ export function AddItemMenu() {
     if (!recognition) return;
     if (isRecording) {
       recognition.start();
-      // タイマー開始
-      const time = new Date();
-      time.setSeconds(time.getSeconds() + 2);
-      restart(time, true);
     } else {
       recognition.stop();
-      setText((prevText) => {
-        if(prevText.length > 0) setAddItems([prevText]);
-        return "";
-      });
-      // タイマー停止
-      resume();
     }
   }, [isRecording]);
 
@@ -155,35 +143,20 @@ export function AddItemMenu() {
     recognition.onresult = (event) => {
       const results = event.results;
       for (let i = event.resultIndex; i < results.length; i++) {
-        if (results[i].isFinal) {
-          setText((prevText) => prevText + results[i][0].transcript);
-          setTranscript("");
-          // タイマー再開
-          const time = new Date();
-          time.setSeconds(time.getSeconds() + 0.6);
-          restart(time, true);
-        } else {
-          setTranscript(results[i][0].transcript);
-          // タイマー再開
-          const time = new Date();
-          time.setSeconds(time.getSeconds() + 1);
-          restart(time, true);
-        }
+        setTranscript(results[i][0].transcript);
       }
+    };
+    recognition.onaudioend = ()=>{
+      setTimeout(() => {
+        setTranscript((prev)=>{
+          setAddItems([prev]);
+          return "";
+        });
+      }, 500);
+      setIsRecording(false);
     };
   }, [recognition]);
 
-  const {
-    seconds,
-    resume,
-    restart,
-  } = useTimer({
-    expiryTimestamp: new Date(),
-    onExpire: () => {
-      setIsRecording(false);
-    },
-  });
-  
   return (
     <>
       {contextHolder}
@@ -207,7 +180,8 @@ export function AddItemMenu() {
                 onChange={(e) => setAddItems(e)}
               />
               <Button
-                icon={isRecording ? <AudioMutedOutlined /> : <AudioOutlined />}
+                icon={isRecording ? <AudioTwoTone /> : <AudioOutlined />}
+                style={{color:"red"}}
                 onClick={() => {
                   setIsRecording((prev) => !prev);
                 }}
