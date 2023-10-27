@@ -29,13 +29,14 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
+    "@babel/traverse": ">=7.23.2",
     "@types/node": "^20.7.0",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
+    "@types/webspeechapi": "^0.0.29",
     "eslint": "^8.50.0",
     "eslint-config-next": "^13.5.3",
     "sass": "^1.68.0",
-    "typescript": "^5.2.2",
-    "@babel/traverse": ">=7.23.2"
+    "typescript": "^5.2.2"
   }
 }

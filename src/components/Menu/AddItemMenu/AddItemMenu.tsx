@@ -10,7 +10,7 @@ import {
   Tag,
   message,
 } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { AudioOutlined, AudioMutedOutlined } from "@ant-design/icons";
 
 import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
 import { useEffect, useRef, useState } from "react";
@@ -113,28 +113,85 @@ export function AddItemMenu() {
     }
   };
 
+  const [isRecording, setIsRecording] = useState(false);
+  const [text, setText] = useState<string>("");
+  const [transcript, setTranscript] = useState<string>("");
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "ja-JP";
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      setRecognition(recognition);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!recognition) return;
+    if (isRecording) {
+      recognition.start();
+    } else {
+      recognition.stop();
+      setText("");
+    }
+  }, [isRecording]);
+
+  useEffect(() => {
+    if (!recognition) return;
+    recognition.onresult = (event) => {
+      const results = event.results;
+      for (let i = event.resultIndex; i < results.length; i++) {
+        if (results[i].isFinal) {
+          setText((prevText) => prevText + results[i][0].transcript);
+          setTranscript("");
+
+          //録音停止
+          setIsRecording(false);
+
+        } else {
+          setTranscript(results[i][0].transcript);
+        }
+      }
+    };
+  }, [recognition]);
+
+  useEffect(() => {
+    if(text.length > 0) setAddItems([text]);
+  }, [text]);
+
   return (
     <>
       {contextHolder}
       <Drawer
         title={
           <>
-            {/* <span style={{ paddingLeft: 4 }}>品物の追加</span> */}
-            <Select
-              ref={inputRef}
-              mode="tags"
-              style={{ width: "100%" }}
-              placeholder="品物の名前"
-              value={addItems}
-              suffixIcon={null}
-              notFoundContent={null}
-              onSearch={handleItemSearch}
-              options={(itemOptions || []).map((d) => ({
-                value: d.value,
-                label: d.text,
-              }))}
-              onChange={(e) => setAddItems(e)}
-            />
+            <Space.Compact block>
+              <Select
+                ref={inputRef}
+                mode="tags"
+                style={{ width: "100%" }}
+                placeholder={transcript || "品物の名前"} 
+                value={addItems}
+                suffixIcon={null}
+                notFoundContent={null}
+                onSearch={handleItemSearch}
+                options={(itemOptions || []).map((d) => ({
+                  value: d.value,
+                  label: d.text,
+                }))}
+                onChange={(e) => setAddItems(e)}
+              />
+              <Button
+                icon={isRecording ? <AudioMutedOutlined /> : <AudioOutlined />}
+                onClick={() => {
+                  setIsRecording((prev) => !prev);
+                }}
+              ></Button>
+            </Space.Compact>
           </>
         }
         placement={"right"}
