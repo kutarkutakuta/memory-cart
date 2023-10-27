@@ -128,16 +128,7 @@ export function AddItemMenu() {
       setRecognition(recognition);
     }
   }, []);
-
-  useEffect(() => {
-    if (!recognition) return;
-    if (isRecording) {
-      recognition.start();
-    } else {
-      recognition.stop();
-    }
-  }, [isRecording]);
-
+  
   useEffect(() => {
     if (!recognition) return;
     recognition.onresult = (event) => {
@@ -146,14 +137,20 @@ export function AddItemMenu() {
         setTranscript(results[i][0].transcript);
       }
     };
+    recognition.onaudiostart =()=>{
+      setIsRecording(true);
+    };
     recognition.onaudioend = ()=>{
       setTimeout(() => {
         setTranscript((prev)=>{
-          setAddItems([prev]);
+          if(prev.length > 0) setAddItems([prev]);
           return "";
         });
       }, 500);
       setIsRecording(false);
+    };
+    recognition.onerror =(ev)=>{
+      console.error(ev);
     };
   }, [recognition]);
 
@@ -180,10 +177,9 @@ export function AddItemMenu() {
                 onChange={(e) => setAddItems(e)}
               />
               <Button
-                icon={isRecording ? <AudioTwoTone /> : <AudioOutlined />}
-                style={{color:"red"}}
+                icon={isRecording ? <AudioTwoTone twoToneColor="#eb2f96" /> : <AudioOutlined />}
                 onClick={() => {
-                  setIsRecording((prev) => !prev);
+                  isRecording ? recognition?.stop() : recognition?.start();
                 }}
               ></Button>
             </Space.Compact>
