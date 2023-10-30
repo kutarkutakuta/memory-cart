@@ -53,6 +53,7 @@ interface ShoppingItemState {
  * 買い物品操作用Hook
  */
 const useShoppingItemStore = create<ShoppingItemState>((set) => {
+  let isPolling = false;
   let pollTimer: NodeJS.Timeout;
   const pollInterval = 30000;
 
@@ -147,6 +148,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           .toArray();
         set({ shoppingItems: items });
         set({ loading: false });
+        console.debug("fetchShoppingItems:" + list_key);
       }
     },
     clearShoppingItems: () => {
@@ -158,7 +160,9 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         loading: false,
       });
       // ポーリングも停止！
+      console.debug("clearShoppingItems");
       clearTimeout(pollTimer);
+      isPolling = false;
     },
     addShoppingItem: async (list_key, name) => {
       set({ loading: true, error: null });
@@ -244,9 +248,9 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
 
         // 共有の場合サーバDBに追加
         let local_list = await localdb.shopping_lists
-        .filter((m) => m.list_key == list_key)
-        .first();
-        
+          .filter((m) => m.list_key == list_key)
+          .first();
+
         if (local_list && local_list.isShare) {
           const { error } = await supabase.from("shopping_items").insert({
             ...addItem,
@@ -255,7 +259,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           });
           if (error) throw error;
         }
-        
+
         // ローカルDBへ追加
         const newId = await localdb.shopping_items.add(addItem);
         addItem.id = newId;
@@ -373,16 +377,21 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       set({ shoppingItems });
     },
     startPolling: async (list_key) => {
-      const { fetchShoppingItems } = useShoppingItemStore.getState();
+      isPolling = true;
+      console.debug("startPolling:" + list_key);
       const poll = async () => {
-        await fetchShoppingItems(list_key);
-        pollTimer = setTimeout(poll, pollInterval);
+        const { fetchShoppingItems } = useShoppingItemStore.getState();
+        if (isPolling) {
+          await fetchShoppingItems(list_key);
+          clearTimeout(pollTimer);
+          pollTimer = setTimeout(poll, pollInterval);
+        }
       };
       let local_list = await localdb.shopping_lists
-          .filter((m) => m.list_key == list_key)
-          .first();
-      if(local_list && local_list.isShare){
-        poll();
+        .filter((m) => m.list_key == list_key)
+        .first();
+      if (local_list && local_list.isShare) {
+        pollTimer = setTimeout(poll, pollInterval);
       }
     },
   };
@@ -394,7 +403,6 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
  * @param server_list
  */
 const fetchFromServer = async (local_list: ShoppingList) => {
-
   // サーバーDBからデータ取得
   const { data, error: erro1 } = await supabase
     .from("shopping_items")
@@ -471,10 +479,9 @@ const fetchFromServer = async (local_list: ShoppingList) => {
           created_user: serverData.created_user,
           updated_user: serverData.updated_user,
         };
-        try{
+        try {
           await localdb.shopping_items.add(addItem);
-        }
-        catch(e){
+        } catch (e) {
           console.warn(e);
         }
       }
