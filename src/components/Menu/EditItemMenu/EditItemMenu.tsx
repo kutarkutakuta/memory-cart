@@ -197,7 +197,7 @@ export function EditItemMenu() {
               alt="Amazon fresh"
               src="assets/stores/amazon-fresh.png"
               preview={false}
-              style={{ height: 20 }}
+              style={{ height: 19 }}
             ></Image>
           </Link>
           <Link
@@ -230,7 +230,18 @@ export function EditItemMenu() {
               alt="イトーヨーカドー"
               src="assets/stores/ito-y.png"
               preview={false}
-              style={{ height: 18 }}
+              style={{ height: 17 }}
+            ></Image>
+          </Link>
+          <Link
+            href={`https://www.yodobashi.com/category/157851/?word=${encodeURIComponent(selectedItem?.name!)}`}
+            target="_blank"
+          >
+            <Image
+              alt="ヨドバシ"
+              src="assets/stores/yodobashi.png"
+              preview={false}
+              style={{ height: 30 }}
             ></Image>
           </Link>
         </Space>
