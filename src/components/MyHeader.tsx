@@ -57,7 +57,7 @@ const MyHeader = () => {
     {
       key: "1",
       label: "品物検索",
-      icon:<SearchOutlined />,
+      icon: <SearchOutlined />,
       onClick: () => openMenu("SearchMenu"),
     },
     {
@@ -94,7 +94,7 @@ const MyHeader = () => {
 
   return (
     <>
-      <Row wrap={false} align={"middle"}>
+      <Row wrap={false}>
         <Col
           flex="auto"
           style={{
@@ -166,22 +166,18 @@ const MyHeader = () => {
             </>
           ) : null}
         </Col>
-        <Col flex="none">
-          <Row justify="end">
-            <Col>
-              <Space>
-                {pathname === "/kaimono" ? (
-                  <span style={{ opacity: 0.9, fontSize: "0.7em" }}>
-                    {shoppingItems.length} items (
-                    {shoppingItems.filter((m) => m.finished_at == null).length})
-                  </span>
-                ) : null}
-                <Dropdown menu={{ items }} placement="bottomRight">
-                  <Button type="text" icon={<SettingOutlined />}></Button>
-                </Dropdown>
-              </Space>
-            </Col>
-          </Row>
+        <Col style={{ display: "flex", paddingRight: 5, marginTop: -2 }}>
+          {pathname === "/kaimono" ? (
+            <span style={{ opacity: 0.9, fontSize: "smaller", marginTop: 10 }}>
+              {shoppingItems.length} items (
+              {shoppingItems.filter((m) => m.finished_at == null).length})
+            </span>
+          ) : null}
+        </Col>
+        <Col>
+          <Dropdown menu={{ items }} placement="bottomRight">
+            <Button type="text" icon={<SettingOutlined />}></Button>
+          </Dropdown>
         </Col>
       </Row>
       <SettingMenu></SettingMenu>
