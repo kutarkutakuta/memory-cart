@@ -55,7 +55,7 @@ interface ShoppingItemState {
 const useShoppingItemStore = create<ShoppingItemState>((set) => {
   let isPolling = false;
   let pollTimer: NodeJS.Timeout;
-  const pollInterval = 30000;
+  const pollInterval = 60000;
 
   return {
     shoppingList: null,

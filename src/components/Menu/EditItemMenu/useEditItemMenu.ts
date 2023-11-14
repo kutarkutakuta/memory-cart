@@ -52,7 +52,7 @@ export function useEditItemMenu() {
    * @param member
    */
   const handleChange = (name: string, value: any) => {
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value ?? "" });
   };
 
   return {
