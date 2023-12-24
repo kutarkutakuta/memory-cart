@@ -2,7 +2,7 @@ import { create } from "zustand";
 import supabase from "@/lib/supabase";
 import localdb from "@/lib/localdb";
 import useMasterStore from "./useMasterStore";
-import {} from "swr";
+import { } from "swr";
 import { nanoid } from "nanoid";
 import { ShoppingList } from "./useShoppingListStore";
 import useFavoriteItemStore from "./useFavoriteItemStore";
@@ -408,12 +408,13 @@ const fetchFromServer = async (local_list: ShoppingList) => {
     .from("shopping_items")
     .select("*")
     .eq("list_key", local_list.list_key);
-  // オフラインの可能性があるのでThrowしない
-  if (erro1) console.error(erro1);
-
-  // サーバーDBからデータ取得できたらローカルDBへ反映
-  // データが存在しない場合は同期しない（全部消えちゃうので）
-  if (data && data.length > 0) {
+  
+  if (erro1){
+    // オフラインの可能性があるのでThrowしない
+    console.error(erro1);
+  }
+  else if (data) {
+    // サーバーDBからローカルDBへ反映
     for (const serverData of data) {
       // ローカルDBから取得
       const localData = await localdb.shopping_items
@@ -500,6 +501,7 @@ const fetchFromServer = async (local_list: ShoppingList) => {
       );
     }
   }
+
 };
 
 /**

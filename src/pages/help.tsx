@@ -42,7 +42,7 @@ const Help = () => {
         <h3>■使い方</h3>
         <div style={{ paddingLeft: "20px" }}>
           <ol>
-            <li style={{ fontWeight: "bold" }}>
+            <li style={{ fontWeight: "bold",paddingTop:5 }}>
               リストの追加/編集/削除
               <ol>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
@@ -65,7 +65,7 @@ const Help = () => {
                 </li>
               </ol>
             </li>
-            <li style={{ fontWeight: "bold" }}>
+            <li style={{ fontWeight: "bold",paddingTop:5 }}>
               リストの共有/共有解除
               <ol>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
@@ -94,7 +94,7 @@ const Help = () => {
                 </li>
               </ol>
             </li>
-            <li style={{ fontWeight: "bold" }}>
+            <li style={{ fontWeight: "bold",paddingTop:5 }}>
               リストのコピー
               <ol>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
@@ -104,7 +104,7 @@ const Help = () => {
                 </li>
               </ol>
             </li>
-            <li style={{ fontWeight: "bold" }}>
+            <li style={{ fontWeight: "bold",paddingTop:5 }}>
               品物の追加/編集/削除
               <ol>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
@@ -141,7 +141,7 @@ const Help = () => {
                 </li>
               </ol>
             </li>
-            <li style={{ fontWeight: "bold" }}>
+            <li style={{ fontWeight: "bold",paddingTop:5 }}>
               その他設定等
               <ol>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
