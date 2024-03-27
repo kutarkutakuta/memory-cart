@@ -42,9 +42,7 @@ import { useCallback, useState } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
 import ShoppingCard from "../ShoppingCard/ShoppingCard";
 import useMenuStore from "@/stores/useMenuStore";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { ShoppingList } from "@/stores/useShoppingListStore";
-import useMasterStore from "@/stores/useMasterStore";
 
 // #region dnd-kit用の制御
 // data-enable-dnd="true" が指定されている要素のみドラッグ可能にする
@@ -99,13 +97,12 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   // メニュー制御用Hook
   const { openMenu } = useMenuStore();
 
-  // マスター用Hook
-  const { categories } = useMasterStore();
-
   // 買物品操作用Hook
   const {
     shoppingItems,
     loading,
+    sortType,
+    boughtOrder,
     sortShoppingItem,
     updateShoppingItems,
     removeShoppingItems,
@@ -115,8 +112,6 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   // メッセージ用Hook
   const [modal, contextHolder] = Modal.useModal();
 
-  // 買い物済みでソートする
-  const [boughtOrder, SetboughtOrder] = useState(true);
 
   // ドラッグ後の並び替え処理
   const handleDragEnd = useCallback(
@@ -137,7 +132,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           })
           .indexOf(over.id);
         const newItems = arrayMove(shoppingItems, oldIndex, newIndex);
-        sortShoppingItem(newItems);
+        sortShoppingItem(newItems, undefined, boughtOrder);
       }
     },
     [shoppingItems, sortShoppingItem]
@@ -146,32 +141,11 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   // 並び替え項目
   const sortItems: MenuProps["items"] = [
     {
-      key: "1",
-      label: "登録順",
-      icon: <OrderedListOutlined />,
+      key: "3",
+      label: "カテゴリー順",
+      icon: <DatabaseOutlined />,
       onClick: () => {
-        const newItems = shoppingItems.sort((a, b) => {
-          // 買い物済みでソートする場合
-          if (boughtOrder) {
-            if (a.finished_at && !b.finished_at) {
-              return 1;
-            } else if (!a.finished_at && b.finished_at) {
-              return -1;
-            }
-          }
-          // 登録日でソート　→　IDでソート
-          if (a.id && b.id) {
-            const comp = a.id - b.id;
-            if (comp != 0) return comp;
-          } else if (b.id) {
-            return -1;
-          } else if (a.id) {
-            return 1;
-          }
-          // 登録日が同じなら名前でソート
-          return a.name.localeCompare(b.name);
-        });
-        sortShoppingItem(newItems);
+        sortShoppingItem(shoppingItems, "Categroy", boughtOrder);
       },
     },
     {
@@ -179,50 +153,15 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       label: "アイウエオ順",
       icon: <SortAscendingOutlined />,
       onClick: () => {
-        const newItems = shoppingItems.sort((a, b) => {
-          // 購入済みでソートする場合
-          if (boughtOrder) {
-            if (a.finished_at && !b.finished_at) {
-              return 1;
-            } else if (!a.finished_at && b.finished_at) {
-              return -1;
-            }
-          }
-          // 名前でソート
-          return a.name.localeCompare(b.name);
-        });
-        sortShoppingItem(newItems);
+        sortShoppingItem(shoppingItems, "Alphabet", boughtOrder);
       },
     },
     {
-      key: "3",
-      label: "カテゴリー順",
-      icon: <DatabaseOutlined />,
+      key: "1",
+      label: "登録順",
+      icon: <OrderedListOutlined />,
       onClick: () => {
-        const newItems = shoppingItems.sort((a, b) => {
-          // 購入済みでソートする場合
-          if (boughtOrder) {
-            if (a.finished_at && !b.finished_at) {
-              return 1;
-            } else if (!a.finished_at && b.finished_at) {
-              return -1;
-            }
-          }
-          // カテゴリでソート
-          const cat_a = categories.find((m) => m.name == a.category_name)?.id;
-          const cat_b = categories.find((m) => m.name == b.category_name)?.id;
-          if (cat_a && cat_b) {
-            const comp = cat_a - cat_b;
-            if (comp != 0) return comp;
-          } else if (cat_b) {
-            return -1;
-          } else if (cat_a) {
-            return 1;
-          }
-          // カテゴリが同じなら名前でソート
-          return a.name.localeCompare(b.name);
-        });
-        sortShoppingItem(newItems);
+        sortShoppingItem(shoppingItems, "ID", boughtOrder);
       },
     },
     {
@@ -236,7 +175,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
             checked={boughtOrder}
             onChange={(e) => {
               e.stopPropagation();
-              SetboughtOrder(!boughtOrder);
+              sortShoppingItem(shoppingItems, undefined, !boughtOrder);
             }}
           >
             チェック済と分ける

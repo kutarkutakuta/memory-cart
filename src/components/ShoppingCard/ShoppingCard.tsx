@@ -178,9 +178,9 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
           style={{ paddingRight: "10px", cursor: "grab", touchAction: "none" }}
           data-enable-dnd="true"
         >
-          <div style={{ paddingLeft: 5, paddingRight: 5 }}>
+          {/* <div style={{ paddingLeft: 5, paddingRight: 5 }}>
             <HolderOutlined />
-          </div>
+          </div> */}
         </Col>
         <Col flex="auto">
           <Space>

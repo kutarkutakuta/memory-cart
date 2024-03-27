@@ -229,17 +229,6 @@ export function FavoriteItemMenu() {
         ) : null}
 
         <Divider></Divider>
-        {/* <Button
-            type="primary"
-            style={{ width: "100%" }}
-            onClick={(e) => {
-              addItems.forEach((name) => {
-                addShoppingItem(list_key!, name);
-              });
-            }}
-          >
-            登録
-          </Button> */}
 
         <Button
           style={{ width: "100%" }}

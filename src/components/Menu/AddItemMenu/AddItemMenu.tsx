@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { AudioOutlined, AudioTwoTone } from "@ant-design/icons";
 
-import useMasterStore, { Category, CommonItem } from "@/stores/useMasterStore";
+import useMasterStore, { CommonItem } from "@/stores/useMasterStore";
 import { useEffect, useRef, useState } from "react";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useFavoriteItemStore, {
@@ -29,7 +29,7 @@ export function AddItemMenu() {
   // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();
   // 品物用Hook
-  const { shoppingItems, addShoppingItem } = useShoppingItemStore();
+  const { shoppingItems, addShoppingItem, updateShoppingItems } = useShoppingItemStore();
   // フォーカス制御用Ref
   const inputRef = useRef<any | null>(null);
   // 初期化
@@ -79,8 +79,13 @@ export function AddItemMenu() {
   useEffect(() => {
     if (addItems.length > 0) {
       addItems.forEach((addName) => {
-        if (shoppingItems.findIndex((m) => m.name == addName) > -1) {
-          messageApi.warning(`${addName}は追加済みです`);
+        const item = shoppingItems.find((m) => m.name == addName);
+        if(item){
+          const amount = (item.amount ? item.amount : 1) + 1;
+          updateShoppingItems([item.id!], {
+            amount: amount,
+          });
+          messageApi.warning(`${addName}が ${amount} に増えました`);
         } else {
           addShoppingItem(list_key!, addName);
           messageApi.success(`${addName}を追加しました`);

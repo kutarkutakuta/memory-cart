@@ -36,6 +36,8 @@ interface ShoppingItemState {
   loading: boolean;
   error: Error | null;
   info: string | null;
+  sortType: 'Categroy' | 'Alphabet' | 'ID' | undefined;
+  boughtOrder: boolean;
   fetchShoppingItems: (list_key: string) => Promise<void>;
   clearShoppingItems: () => void;
   addShoppingItem: (list_key: string, name: string) => Promise<void>;
@@ -45,7 +47,7 @@ interface ShoppingItemState {
     changes: { [keyPath: string]: any }
   ) => Promise<void>;
   removeShoppingItems: (ids: number[]) => Promise<void>;
-  sortShoppingItem: (shoppingItems: ShoppingItem[]) => void;
+  sortShoppingItem: (shoppingItems: ShoppingItem[], sortType: 'Categroy' | 'Alphabet' | 'ID' | undefined, boughtOrder: boolean) => void;
   startPolling: (list_key: string) => Promise<void>;
 }
 
@@ -63,6 +65,8 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
     loading: false,
     error: null,
     info: null,
+    sortType: "Categroy",
+    boughtOrder: true,
     fetchShoppingItems: async (list_key) => {
       set({ loading: true, error: null, info: null });
       try {
@@ -178,7 +182,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
           commonItems.find((m) => m.name == name)?.category_name;
 
         // 追加データ
-        const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
+        const { shoppingList, shoppingItems, sortType ,boughtOrder, sortShoppingItem } = useShoppingItemStore.getState();
 
         if (!shoppingList) {
           throw new Error("リストが特定できないため処理できません。");
@@ -215,10 +219,16 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         }
 
         // ステート更新
-        set((state) => ({
-          shoppingItems: [...state.shoppingItems, addItem],
-        }));
+        set((state) => {
+  
+          const newItems = [...state.shoppingItems, addItem];
+          // ソート
+          sortShoppingItem(newItems,sortType, boughtOrder);
+
+          return {shoppingItems: newItems}
+        });
         set({ loading: false });
+
       } catch (error: any) {
         set({ error, loading: false });
       }
@@ -367,14 +377,91 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         set({ error, loading: false });
       }
     },
-    sortShoppingItem: (shoppingItems) => {
+    sortShoppingItem: (shoppingItems, sortType, boughtOrder) => {
+
+      switch(sortType){
+        case "Categroy" :
+          
+          // マスター用Hook
+          const { categories } = useMasterStore.getState();
+
+          const newItems1 = shoppingItems.sort((a, b) => {
+            // 購入済みでソートする場合
+            if (boughtOrder) {
+              if (a.finished_at && !b.finished_at) {
+                return 1;
+              } else if (!a.finished_at && b.finished_at) {
+                return -1;
+              }
+            }
+            // カテゴリでソート
+            const cat_a = categories.find((m) => m.name == a.category_name)?.id;
+            const cat_b = categories.find((m) => m.name == b.category_name)?.id;
+            if (cat_a && cat_b) {
+              const comp = cat_a - cat_b;
+              if (comp != 0) return comp;
+            } else if (cat_b) {
+              return -1;
+            } else if (cat_a) {
+              return 1;
+            }
+            // カテゴリが同じなら名前でソート
+            return a.name.localeCompare(b.name);
+          });
+          shoppingItems = newItems1;
+          break;
+        case "Alphabet" :
+          const newItems2 = shoppingItems.sort((a, b) => {
+            // 購入済みでソートする場合
+            if (boughtOrder) {
+              if (a.finished_at && !b.finished_at) {
+                return 1;
+              } else if (!a.finished_at && b.finished_at) {
+                return -1;
+              }
+            }
+            // 名前でソート
+            return a.name.localeCompare(b.name);
+          });
+          shoppingItems = newItems2;
+           break;
+        default:
+          const newItems3 = shoppingItems.sort((a, b) => {
+            // 買い物済みでソートする場合
+            if (boughtOrder) {
+              if (a.finished_at && !b.finished_at) {
+                return 1;
+              } else if (!a.finished_at && b.finished_at) {
+                return -1;
+              }
+            }
+            // 登録日でソート　→　IDでソート
+            if (a.id && b.id) {
+              const comp = a.id - b.id;
+              if (comp != 0) return comp;
+            } else if (b.id) {
+              return -1;
+            } else if (a.id) {
+              return 1;
+            }
+            // 登録日が同じなら名前でソート
+            return a.name.localeCompare(b.name);
+          });
+          shoppingItems = newItems3;
+          break;
+      }
+
       shoppingItems.forEach((item, i) => {
         item.order_number = i + 1;
         localdb.shopping_items.update(item.id!, item);
       });
 
       // ステート更新
-      set({ shoppingItems });
+      set(state => ({
+        shoppingItems,
+        sortType: sortType || state.sortType,
+        boughtOrder,
+      }));
     },
     startPolling: async (list_key) => {
       isPolling = true;
