@@ -301,7 +301,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         );
 
         // ステート更新用の変数を準備
-        const { shoppingList, shoppingItems } = useShoppingItemStore.getState();
+        const { shoppingList, shoppingItems, sortType, boughtOrder, sortShoppingItem } = useShoppingItemStore.getState();
         const newItems = shoppingItems.map((n) => {
           return ids.findIndex((id) => id === n.id) > -1
             ? { ...n, ...changes }
@@ -333,7 +333,12 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
         }
 
         // ステート更新
-        set({ shoppingItems: newItems });
+        set(() => {
+          // ソート
+          sortShoppingItem(newItems, sortType, boughtOrder);
+          return {shoppingItems: newItems}
+        });
+        
         set({ loading: false });
       } catch (error: any) {
         set({ error, loading: false });
