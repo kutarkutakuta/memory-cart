@@ -1,6 +1,6 @@
 import useMenuStore from "@/stores/useMenuStore";
 import { Button, Divider, Drawer, Input } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, ExportOutlined } from "@ant-design/icons";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -70,7 +70,7 @@ export function SearchMenu() {
                       closeMenu("SearchMenu");
                     }}
                   >
-                    {result.shoppingList.name} →
+                    {result.shoppingList.name} <ExportOutlined />
                   </Button>
                   <table style={{ width: "100%" }}>
                     <tbody>
@@ -79,6 +79,17 @@ export function SearchMenu() {
                           <tr key={item.item_key}>
                             <td style={{ width: "auto", paddingLeft: 25 }}>
                               {item.name}
+                              <span
+                                style={{
+                                  fontSize: "smaller",
+                                  opacity: 0.7,
+                                  textAlign: "center",
+                                  whiteSpace: "nowrap",
+                                  paddingLeft: 4,
+                                }}
+                              >
+                                {item.amount}{item.unit}
+                              </span>
                             </td>
                           </tr>
                         );
