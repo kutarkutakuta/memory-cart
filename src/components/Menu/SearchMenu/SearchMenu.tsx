@@ -55,9 +55,11 @@ export function SearchMenu() {
           onSearch={(e) => handleSearch(e)}
         />
 
-        <Divider></Divider>
         {!searchResults ? null : (
           <>
+            <Divider style={{ fontSize: "0.9em" }} orientation="left" plain>
+              検索結果
+            </Divider>
             {searchResults.map((result) => {
               return (
                 <>

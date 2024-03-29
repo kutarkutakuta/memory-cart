@@ -143,11 +143,9 @@ export function FavoriteItemMenu() {
 
         {!categoryName ? null : (
           <>
-            {/* <Divider orientation="left" plain>
-              ☆ 登録中の品物 ☆
-            </Divider> */}
-            <br />
-            <br />
+            <Divider style={{ fontSize: "0.9em" }} orientation="left" plain>
+              お気に入り品
+            </Divider>
 
             <Space size={[0, 8]} wrap>
               {inputVisible ? (
@@ -200,7 +198,7 @@ export function FavoriteItemMenu() {
         {categoryName ? (
           <>
             <Divider style={{ fontSize: "0.9em" }} orientation="left" plain>
-              ▽ 一般的な品物から探す ▽
+              一般的な品物
             </Divider>
             <Space size={[0, 8]} wrap>
               {viewCommons.map((m) => (

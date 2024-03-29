@@ -197,20 +197,16 @@ export function AddItemMenu() {
         }}
       >
         <Space direction="vertical" size="small" style={{ display: "flex" }}>
-          {/* <Divider style={{ margin: 0 }}></Divider> */}
-          <Select
-            style={{ width: "100%" }}
-            onChange={(e) => {
+          <Radio.Group onChange={(e) => {
               setViewItemCount(20);
-              setSearchMode(e);
-            }}
-            options={[
-              { value: 1, label: "お気に入りから探す" },
-              { value: 2, label: "一般的な品物から探す" },
-            ]}
-            value={searchMode}
-          />
-
+              setSearchMode(e.target.value);
+            }} value={searchMode}>
+            <Space direction="vertical">
+              <Radio value={2}>一般的な品物から探す</Radio>
+              <Radio value={1}>お気に入りから探す</Radio>
+            </Space>
+          </Radio.Group>
+          <Divider style={{ margin: 0 }}></Divider>
           <Select
             showSearch
             allowClear

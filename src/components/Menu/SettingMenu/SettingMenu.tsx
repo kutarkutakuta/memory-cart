@@ -1,5 +1,5 @@
 import useMenuStore from "@/stores/useMenuStore";
-import { Button, Drawer, Input, Space, Select, Form } from "antd";
+import { Button, Drawer, Input, Space, Select, Form, Divider } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 import useMasterStore from "@/stores/useMasterStore";
@@ -12,7 +12,7 @@ export function SettingMenu() {
   const { appSetting, updateSetting } = useMasterStore();
 
   const [userName, setUserName] = useState("");
-  
+
   useEffect(() => {
     setUserName(appSetting?.user_name!);
   }, [openFlag["SettingMenu"]]);
@@ -68,17 +68,17 @@ export function SettingMenu() {
           </Form.Item>
         </Form>
 
-        <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-          <Button
-            style={{ width: "100%" }}
-            onClick={() => {
-              updateSetting({ user_name:  userName});
-              closeMenu("SettingMenu");
-            }}
-          >
-            Close
-          </Button>
-        </Space>
+        <Divider></Divider>
+
+        <Button
+          style={{ width: "100%" }}
+          onClick={() => {
+            updateSetting({ user_name: userName });
+            closeMenu("SettingMenu");
+          }}
+        >
+          Close
+        </Button>
       </Drawer>
     </>
   );
