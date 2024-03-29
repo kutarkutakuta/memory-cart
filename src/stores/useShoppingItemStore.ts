@@ -36,7 +36,7 @@ interface ShoppingItemState {
   loading: boolean;
   error: Error | null;
   info: string | null;
-  sortType: 'Categroy' | 'Alphabet' | 'ID' | undefined;
+  sortType: 'Categroy' | 'Alphabet' | 'ID';
   boughtOrder: boolean;
   fetchShoppingItems: (list_key: string) => Promise<void>;
   clearShoppingItems: () => void;
@@ -47,7 +47,7 @@ interface ShoppingItemState {
     changes: { [keyPath: string]: any }
   ) => Promise<void>;
   removeShoppingItems: (ids: number[]) => Promise<void>;
-  sortShoppingItem: (shoppingItems: ShoppingItem[], sortType: 'Categroy' | 'Alphabet' | 'ID' | undefined, boughtOrder: boolean) => void;
+  sortShoppingItem: (shoppingItems: ShoppingItem[], sortType: 'Categroy' | 'Alphabet' | 'ID', boughtOrder: boolean) => void;
   startPolling: (list_key: string) => Promise<void>;
 }
 
@@ -383,11 +383,6 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
       }
     },
     sortShoppingItem: (shoppingItems, sortType, boughtOrder) => {
-
-      // sortTypeの指定がない場合は既定のものを採用
-      if(!sortType){
-        sortType = useShoppingItemStore.getState().sortType;
-      }
 
       switch(sortType){
         case "Categroy" :

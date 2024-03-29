@@ -132,7 +132,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           })
           .indexOf(over.id);
         const newItems = arrayMove(shoppingItems, oldIndex, newIndex);
-        sortShoppingItem(newItems, undefined, boughtOrder);
+        sortShoppingItem(newItems, sortType, boughtOrder);
       }
     },
     [shoppingItems, sortShoppingItem]
@@ -175,7 +175,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
             checked={boughtOrder}
             onChange={(e) => {
               e.stopPropagation();
-              sortShoppingItem(shoppingItems, undefined, !boughtOrder);
+              sortShoppingItem(shoppingItems, sortType, !boughtOrder);
             }}
           >
             チェック済と分ける
