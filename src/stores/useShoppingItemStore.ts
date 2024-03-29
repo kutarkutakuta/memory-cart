@@ -384,6 +384,11 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
     },
     sortShoppingItem: (shoppingItems, sortType, boughtOrder) => {
 
+      // sortTypeの指定がない場合は既定のものを採用
+      if(!sortType){
+        sortType = useShoppingItemStore.getState().sortType;
+      }
+
       switch(sortType){
         case "Categroy" :
           
@@ -399,6 +404,7 @@ const useShoppingItemStore = create<ShoppingItemState>((set) => {
                 return -1;
               }
             }
+
             // カテゴリでソート
             const cat_a = categories.find((m) => m.name == a.category_name)?.id;
             const cat_b = categories.find((m) => m.name == b.category_name)?.id;
