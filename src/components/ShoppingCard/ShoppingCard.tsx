@@ -203,23 +203,16 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
                 }}
               >
                 {item.name}
-              </span>
-              <span
-                style={{
-                  fontSize: "smaller",
-                  opacity: 0.7,
-                  textAlign: "center",
-                  whiteSpace: "nowrap",
-                  paddingLeft: 4,
-                }}
-              >
-                <span style={{ marginTop: -5, padding: -5 }}>
-                  {" "}
-                  {item.amount ? <span>{item.amount}</span> : null}
-                </span>
-                <span style={{ marginTop: -5 }}>
-                  {" "}
-                  {item.amount ? <span>{item.unit}</span> : null}
+                <span
+                  style={{
+                    fontSize: "smaller",
+                    opacity: 0.7,
+                    textAlign: "center",
+                    whiteSpace: "nowrap",
+                    paddingLeft: 4,
+                  }}
+                >
+                  {item.amount}{item.unit}
                 </span>
               </span>
             </Button>
