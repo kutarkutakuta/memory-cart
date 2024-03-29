@@ -135,11 +135,11 @@ const ShoppingListBox = () => {
                 icon={<PlusCircleOutlined />}
                 onClick={() => {
                   addShoppingList().then(() =>
-                    messageApi.success("リストを追加しました。")
+                    messageApi.success("買い物リストを追加しました。")
                   );
                 }}
               >
-                リストを追加
+                買い物リストを追加
               </Button>
             </Col>
           </Row>

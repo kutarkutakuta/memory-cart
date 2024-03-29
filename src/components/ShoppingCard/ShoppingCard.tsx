@@ -79,13 +79,13 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "2",
-      label: "品物のコピー",
+      label: "コピー",
       icon: <CopyOutlined />,
       onClick: () => handleOpenCopy(),
     },
     {
       key: "3",
-      label: "品物の削除",
+      label: "削除",
       icon: <DeleteOutlined />,
       onClick: () =>
         modal.confirm({

@@ -136,7 +136,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         memo: "",
         isShare: false,
         itemCount: null,
-        finishedCount: null,
+        finishedCount: 0,
         created_user: appSetting?.user_name!,
         updated_user: appSetting?.user_name!,
       };
@@ -144,6 +144,7 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       if (copyItem) {
         addList.name = copyItem.name + "_コピー";
         addList.memo = copyItem.memo;
+        addList.itemCount = copyItem.itemCount;
       }
 
       // ローカルDBへ追加

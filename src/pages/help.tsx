@@ -5,7 +5,7 @@ import {
   EditOutlined,
   FormOutlined,
   LinkOutlined,
-  FolderAddOutlined,
+  CopyOutlined,
   DisconnectOutlined,
   DeleteFilled,
   DeleteOutlined,
@@ -43,64 +43,57 @@ const Help = () => {
         <div style={{ paddingLeft: "20px" }}>
           <ol>
             <li style={{ fontWeight: "bold",paddingTop:5 }}>
-              リストの追加/編集/削除
+              買い物リストの追加/編集/削除
               <ol>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
                   ［<PlusCircleOutlined />
-                  リストを追加］リストを追加します。
+                  買い物リストを追加］買い物リストを追加します。
                 </li>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
                   ［
                   <FormOutlined />
-                  リストの編集］リスト名の変更やメモを追加します。
+                  名前の変更］買い物リストの名前変更やメモを追加します。
+                </li>
+                <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
+                  ［
+                  <CopyOutlined />
+                  コピー］買い物リストに紐づいた品物も含めてコピーした新しい買い物リストを追加します。
                 </li>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
                   ［
                   <DeleteFilled />
-                  リストの削除］リストに紐づいた品物も含めて削除します。
+                  削除］買い物リストに紐づいた品物も含めて削除します。
                   <br />
                   <div style={{ color: "#cf1322" }}>
-                    ※共有は解除されないので、サーバー上の共有データも削除したい場合は先に共有解除してください。
+                    ※共有は解除されないので、サーバー上の共有データも削除したい場合は先に共有を解除してください。
                   </div>
                 </li>
               </ol>
             </li>
             <li style={{ fontWeight: "bold",paddingTop:5 }}>
-              リストの共有/共有解除
+              共有/共有解除
               <ol>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
                   ［
                   <LinkOutlined />
-                  リストを共有する］リストを共有します。
-                  共有したリストはサーバーに登録されます共有URLが発行されます。共有相手にこの共有URLを送ります。
-                  <br /> 共有URLへアクセスすると自動的にリストが作成されます。
+                  共有する］買い物リストを共有します。
+                  共有した買い物リストはサーバーに登録されて共有URLが発行されます。共有したい相手にこの共有URLを送ります。
+                  <br /> 共有URLへアクセスすると自動的に買い物リストが作成されます。
                   <br />
-                  品物の追加/変更/削除は自動的に同期されますが、並び順は同期されません。
-                  <br />
-                  共有リストはオフラインだと参照のみ可能で編集はできません。
+                  共有中の買い物リストはオフラインだと参照のみ可能で編集できません。
                 </li>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
                   ［
                   <DisconnectOutlined />
-                  リストの共有を解除］リストの共有を解除します。
+                  共有を解除］買い物リストの共有を解除します。
                   共有を解除するとサーバー上のデータが削除されて、全ての共有相手の共有が解除されます。
                   <br />
                   <div style={{ color: "#cf1322" }}>
-                    ※共有解除後もリストは削除されないのでそのまま使用できます。
+                    ※共有解除後もクライアントにあるデータをそのまま使用できます。
                   </div>
                   <div style={{ color: "#cf1322" }}>
-                    ※共有解除後に再びリストを共有すると共有URLが新しく発行されるので、再度共有相手に共有URLを送ってください。
+                    ※共有解除後に再び買い物リストを共有すると共有URLが新しく発行されるので、再度共有相手に共有URLを送ってください。
                   </div>
-                </li>
-              </ol>
-            </li>
-            <li style={{ fontWeight: "bold",paddingTop:5 }}>
-              リストのコピー
-              <ol>
-                <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
-                  ［
-                  <FolderAddOutlined />
-                  コピーしてリストを追加］リストに紐づいた品物も含めてコピーした新しいリストを追加します。
                 </li>
               </ol>
             </li>
@@ -133,8 +126,13 @@ const Help = () => {
                 </li>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
                   ［
+                  <CopyOutlined />
+                  コピー］コピー先の買い物リストを指定して品物をコピーします。
+                </li>
+                <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
+                  ［
                   <DeleteOutlined />
-                  品物の削除］品物を削除します。
+                  削除］品物を削除します。
                 </li>
                 <li style={{ fontWeight: "normal", listStyleType: "disc" }}>
                   ［￥金額を入力］品物の金額を入力します。履歴に登録されるので過去の金額と比較できます。

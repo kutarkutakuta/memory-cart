@@ -14,7 +14,7 @@ import {
 import {
   FormOutlined,
   LinkOutlined,
-  FolderAddOutlined,
+  CopyOutlined,
   HolderOutlined,
   MoreOutlined,
   ArrowRightOutlined,
@@ -90,24 +90,34 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "2",
-      label: "リストの編集",
+      label: "名前の変更",
       icon: <FormOutlined />,
       onClick: () => openMenu("ShoppingListMenu", item),
     },
     {
+      key: "6",
+      label: "コピー",
+      icon: <CopyOutlined />,
+      onClick: () => {
+        addShoppingList(item).then(() =>
+          messageApi.info(item.name + "をコピーしました。")
+        );
+      },
+    },
+    {
       key: "3",
-      label: "リストの削除",
+      label: "削除",
       icon: <DeleteFilled />,
       onClick: () => {
         modal.confirm({
           title: item.isShare
-            ? "共有中のリストを削除しようとしています！"
-            : "リストを削除します",
+            ? "共有中の買い物リストを削除しようとしています！"
+            : item.name + "を削除します",
           icon: <ExclamationCircleFilled />,
           content:
             (item.isShare
-              ? "サーバー上の共有データは削除されません。サーバー上の共有データも削除するには共有解除を行ってください。"
-              : "削除したリストは元に戻せません。") + "削除しますか？",
+              ? "サーバー上の共有データを削除したい場合は先に共有を解除してください。" + item.name + "を削除しますか？"
+              : "よろしいですか？") ,
           okText: "削除",
           okType: "danger",
           cancelText: "キャンセル",
@@ -124,7 +134,7 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "4",
-      label: "リストを共有する",
+      label: "共有する",
       icon: <LinkOutlined />,
       onClick: () => {
         shareShoppingList(item.id).then((share_key) => {
@@ -136,17 +146,17 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
     },
     {
       key: "5",
-      label: "リストの共有を解除",
+      label: "共有を解除",
       icon: <DisconnectOutlined />,
       onClick: async () => {
         modal.confirm({
-          title: "リストの共有を解除します。",
+          title: "共有を解除します。",
           icon: <ExclamationCircleFilled />,
           content: (
             <>
-              サーバー上の共有データが削除されて、共有相手全員の共有が解除されます。
+              サーバー上の共有データが削除されます。
               <br />
-              共有を解除しますか？
+              よろしいですか？
             </>
           ),
           okText: "共有解除",
@@ -154,25 +164,12 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
           cancelText: "キャンセル",
           onOk: () => {
             unShareShoppingList(item.id!).then(() =>
-              messageApi.info("リストの共有を解除しました。")
+              messageApi.info("共有を解除しました。")
             );
           },
         });
       },
       disabled: !item.isShare,
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "6",
-      label: "コピーしてリストを追加",
-      icon: <FolderAddOutlined />,
-      onClick: () => {
-        addShoppingList(item).then(() =>
-          messageApi.info("コピーしたリストを追加しました。")
-        );
-      },
     },
   ];
 

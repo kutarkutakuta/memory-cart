@@ -111,10 +111,10 @@ const MyHeader = () => {
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  fontSize:"smaller",
                 }}
               >
-                <ShoppingOutlined />
-                {pathname == "/" ? "お買い物リスト" : ""}
+                Memory Cart - 買い物リスト メモ共有
               </span>
             </>
           ) : null}
