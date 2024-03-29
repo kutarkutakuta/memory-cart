@@ -114,7 +114,7 @@ const MyHeader = () => {
                   fontSize:"smaller",
                 }}
               >
-                Memory Cart - 買い物リスト メモ共有
+                Memory Cart
               </span>
             </>
           ) : null}
