@@ -167,10 +167,9 @@ const MyHeader = () => {
           ) : null}
         </Col>
         <Col style={{ display: "flex", paddingRight: 5, marginTop: -2 }}>
-          {pathname === "/kaimono" ? (
+          {pathname === "/kaimono" && shoppingItems.length > 0 ? (
             <span style={{ opacity: 0.9, fontSize: "smaller", marginTop: 10 }}>
-              {shoppingItems.length} items (
-              {shoppingItems.filter((m) => m.finished_at == null).length})
+              {shoppingItems.length} items ☑{shoppingItems.filter((m) => m.finished_at != null).length}
             </span>
           ) : null}
         </Col>

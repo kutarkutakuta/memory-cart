@@ -74,8 +74,10 @@ const ShoppingListBox = () => {
     sortShoppingList,
     addShoppingList,
     fetchShoppingList,
+    fetchItemCount,
     clearShoppingLists,
   } = useShoppingListStore();
+
   useEffect(() => {
     fetchShoppingList();
     return () => {
@@ -83,6 +85,10 @@ const ShoppingListBox = () => {
       clearShoppingLists();
     };
   }, []);
+  
+  useEffect(() => {
+    fetchItemCount();
+  }, [shoppingLists]);
 
   // メッセージ用Hook
   const [messageApi, contextHolder] = message.useMessage();

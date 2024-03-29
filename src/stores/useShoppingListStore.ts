@@ -16,6 +16,8 @@ export interface ShoppingList {
   name: string | null;
   memo: string | null;
   isShare: boolean;
+  itemCount: number | null;
+  finishedCount: number | null;
   created_user: string | null;
   updated_user: string | null;
 }
@@ -25,6 +27,7 @@ interface ShoppingListState {
   loading: boolean;
   error: Error | null;
   fetchShoppingList: () => Promise<void>;
+  fetchItemCount: () => Promise<void>;
   clearShoppingLists: () => void;
   addShoppingList: (copyItem?: ShoppingList) => Promise<void>;
   removeShoppingList: (id: number) => Promise<void>;
@@ -97,6 +100,21 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
       set({ error, loading: false });
     }
   },
+  fetchItemCount: async () => {
+    const { shoppingLists } = useShoppingListStore.getState();
+    shoppingLists.forEach(async shoppingList =>{
+       // ローカルDBのデータを取得
+       const items = await localdb.shopping_items
+       .filter((m) => m.list_key == shoppingList.list_key)
+       .toArray();
+
+       // TODO: 共有している場合は更新
+
+       shoppingList.itemCount = items.length;
+       shoppingList.finishedCount = items.filter((m) => m.finished_at != null).length;
+    });
+    set({ shoppingLists });
+  },
   clearShoppingLists: () => {
     set({ shoppingLists: [], loading: false, error: null });
   },
@@ -117,6 +135,8 @@ const useShoppingListStore = create<ShoppingListState>((set) => ({
         name: `買い物リスト${shoppingLists.length + 1}`,
         memo: "",
         isShare: false,
+        itemCount: null,
+        finishedCount: null,
         created_user: appSetting?.user_name!,
         updated_user: appSetting?.user_name!,
       };

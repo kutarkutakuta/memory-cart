@@ -628,6 +628,8 @@ export const addFromShareKey = async (list_key: string) => {
       name: listData.name,
       memo: listData.memo,
       isShare: true,
+      itemCount : null,
+      finishedCount : null,
       created_user: listData.created_user,
       updated_user: listData.updated_user,
     };

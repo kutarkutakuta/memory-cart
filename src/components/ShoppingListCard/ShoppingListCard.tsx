@@ -205,10 +205,22 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
               height: "auto",
               textAlign: "left",
               padding: 0,
+              width: "100%",
             }}
             onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
           >
             {item.name}
+          <span
+            style={{
+              fontSize: "smaller",
+              opacity: 0.7,
+              textAlign: "center",
+              whiteSpace: "nowrap",
+              paddingLeft: 4,
+            }}
+          >
+            {item.itemCount! > 0 ? <span>{item.itemCount} ☑{item.finishedCount}</span> : null}
+          </span>
           </Button>
         </Col>
         <Col flex="none">
