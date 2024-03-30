@@ -264,7 +264,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
         icon={<PlusCircleOutlined />}
         onClick={() => openMenu("AddItemMenu", shoppingList)}
       />
-      <Row justify="space-between" wrap={false} className="sub-header">
+      <Row justify="space-between" wrap={false} align="top" className="sub-header">
         <Col flex="auto" style={{ paddingLeft: 10 }}>
           {/* ローディングをここに置く */}
           <Spin spinning={loading}></Spin>

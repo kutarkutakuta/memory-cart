@@ -70,67 +70,54 @@ const MyHeader = () => {
           flex="auto"
           style={{
             paddingLeft: 5,
+            display: "flex",
+            alignItems: "center",
+            fontSize: "smaller",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            lineHeight: "1",
           }}
         >
           {pathname === "/" ? (
+            <span style={{marginTop: 4}}>Memory Cart</span>
+          ) : (
             <>
-              <span
-                style={{
-                  paddingLeft: 5,
-                  fontSize: "smaller",
-                }}
-              >
-                Memory Cart
-              </span>
-            </>
-          ) : null}
-          {pathname === "/kaimono" || pathname === "/help" || pathname === "/privacy" ? (
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "smaller",
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  lineHeight: "1",
-                }}
-              >
-                <Button
+              <Button
                 style={{
                   marginRight: 5,
-
                 }}
-                  type="text"
-                  icon={<ArrowLeftOutlined />}
-                  onClick={() => handleGoBack()}
-                ></Button>
+                type="text"
+                icon={<ArrowLeftOutlined />}
+                onClick={() => handleGoBack()}
+              ></Button>
 
-                {pathname === "/kaimono" ? (
-                  <>
-                    {listName}
-                    {isShare ? (
-                      <Button
-                        type="text"
-                        icon={<LinkOutlined />}
-                        onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
-                      ></Button>
-                    ) : null}
-                  </>
-                ) : null}
-                {pathname === "/help" ? "ヘルプ" : null}
-                {pathname === "/privacy" ? "プライバシーポリシー" : null}
-              </div>
+              {pathname === "/kaimono" ? (
+                <>
+                  {listName}
+                  {isShare ? (
+                    <Button
+                      type="text"
+                      icon={<LinkOutlined />}
+                      onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
+                    ></Button>
+                  ) : null}
+                </>
+              ) : null}
+              {pathname === "/help" ? "ヘルプ" : null}
+              {pathname === "/privacy" ? "プライバシーポリシー" : null}
             </>
-          ) : null}
-          
+          )}
         </Col>
         <Col>
           <Dropdown menu={{ items }} placement="bottomRight">
-            <div><Button
-              type="text"
-              icon={<QuestionCircleOutlined />}
-            ></Button>&nbsp;</div>
+            <div>
+              <Button
+                type="text"
+                size="small"
+                icon={<QuestionCircleOutlined />}
+              ></Button>
+              &nbsp;
+            </div>
           </Dropdown>
         </Col>
       </Row>
