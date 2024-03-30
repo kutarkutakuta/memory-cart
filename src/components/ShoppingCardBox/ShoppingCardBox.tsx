@@ -260,7 +260,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
       <FloatButton
         shape="circle"
         type="primary"
-        style={{ right: 25, bottom: 65}}
+        style={{ right: 26, bottom: 68, width:54, height: 54}}
         icon={<PlusCircleOutlined />}
         onClick={() => openMenu("AddItemMenu", shoppingList)}
       />
