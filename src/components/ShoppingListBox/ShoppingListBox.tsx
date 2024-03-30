@@ -12,7 +12,7 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { Button, Col, Row, message } from "antd";
+import { Button, Col, FloatButton, Row, message } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { useCallback, useEffect } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
@@ -126,9 +126,20 @@ const ShoppingListBox = () => {
   return (
     <div style={{ maxWidth: "500px" }}>
       {contextHolder}
+      <FloatButton
+        shape="circle"
+        type="primary"
+        style={{ right: 20, bottom: 60 }}
+        icon={<PlusCircleOutlined />}
+        onClick={() => {
+          addShoppingList().then(() =>
+            messageApi.success("買い物リストを追加しました。")
+          );
+        }}
+      />
       <Row justify="space-between" wrap={false} className="sub-header">
         <Col flex="none">
-          <Row justify="start">
+          {/* <Row justify="start">
             <Col>
               <Button
                 type="text"
@@ -142,7 +153,8 @@ const ShoppingListBox = () => {
                 買い物リストを追加
               </Button>
             </Col>
-          </Row>
+          </Row> */}
+          <div style={{paddingLeft:14}}>買い物リスト</div>
         </Col>
         <Col flex="auto">
           <Row justify="end">

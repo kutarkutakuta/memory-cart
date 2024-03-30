@@ -10,7 +10,7 @@ const MyFoorter = () => {
 
   return (
     <>
-      <Row wrap={false} gutter={10}>
+      <Row wrap={false} gutter={20}>
         <Col>
           <Button
             type="text"

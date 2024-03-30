@@ -17,6 +17,7 @@ import {
   Checkbox,
   Col,
   Dropdown,
+  FloatButton,
   MenuProps,
   Modal,
   Row,
@@ -256,28 +257,37 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   return (
     <div>
       {contextHolder}
+      <FloatButton
+        shape="circle"
+        type="primary"
+        style={{ right: 20, bottom: 60 }}
+        icon={<PlusCircleOutlined />}
+        onClick={() => openMenu("AddItemMenu", shoppingList)}
+      />
       <Row justify="space-between" wrap={false} className="sub-header">
-        <Col flex="auto">
-          <Row justify="start">
-            <Col>
-              <Button
-                type="text"
-                icon={<PlusCircleOutlined />}
-                onClick={() => openMenu("AddItemMenu", shoppingList)}
-              >
-                品物を追加
-              </Button>
-              {/* ローディングをここに置く */}
-              <span >
-                <Spin spinning={loading} size="small"></Spin>
-              </span>
-            </Col>
-          </Row>
+        <Col flex="auto" style={{ paddingLeft: 10 }}>
+          {/* ローディングをここに置く */}
+          <Spin spinning={loading}></Spin>
         </Col>
+        <Col flex="noen"></Col>
         <Col flex="noen">
           <Row justify="end">
             <Col>
               <Space>
+                {shoppingItems.length > 0 ? (
+                  <div
+                    style={{
+                      opacity: 0.9,
+                      fontSize: "smaller",
+                      paddingRight: 5,
+                      whiteSpace: "nowrap",
+                      textAlign: "right",
+                    }}
+                  >
+                    {shoppingItems.length} items ☑
+                    {shoppingItems.filter((m) => m.finished_at != null).length}
+                  </div>
+                ) : null}
                 {shoppingList?.isShare ? (
                   <Button
                     type={"text"}
@@ -300,20 +310,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           </Row>
         </Col>
       </Row>
-      {shoppingItems.length > 0 ? (
-        <div
-          style={{
-            opacity: 0.9,
-            fontSize: "smaller",
-            paddingRight: 5,
-            whiteSpace: "nowrap",
-            textAlign: "right",
-          }}
-        >
-          {shoppingItems.length} items ☑
-          {shoppingItems.filter((m) => m.finished_at != null).length}
-        </div>
-      ) : null}
+
       <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         <SortableContext
           items={shoppingItems.map((m) => m.id!)}

@@ -190,7 +190,7 @@ export function AddItemMenu() {
             </Space.Compact>
           </>
         }
-        placement={"right"}
+        placement={"left"}
         open={openFlag["AddItemMenu"]}
         onClose={() => {
           closeMenu("AddItemMenu");
