@@ -265,7 +265,7 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
         onClick={() => openMenu("AddItemMenu", shoppingList)}
       />
       <Row justify="space-between" wrap={false} align="top" className="sub-header">
-        <Col flex="auto" style={{ paddingLeft: 10, paddingTop:1 }}>
+        <Col flex="auto" style={{ paddingLeft: 10, paddingTop:2 }}>
           {/* ローディングをここに置く */}
           <Spin spinning={loading}></Spin>
         </Col>
