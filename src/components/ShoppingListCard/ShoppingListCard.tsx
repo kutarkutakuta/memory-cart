@@ -114,10 +114,11 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
             ? "共有中の買い物リストを削除しようとしています！"
             : item.name + "を削除します",
           icon: <ExclamationCircleFilled />,
-          content:
-            (item.isShare
-              ? "サーバー上の共有データを削除したい場合は先に共有を解除してください。" + item.name + "を削除しますか？"
-              : "よろしいですか？") ,
+          content: item.isShare
+            ? "サーバー上の共有データを削除したい場合は先に共有を解除してください。" +
+              item.name +
+              "を削除しますか？"
+            : "よろしいですか？",
           okText: "削除",
           okType: "danger",
           cancelText: "キャンセル",
@@ -206,18 +207,24 @@ const ShoppingListCard = ({ item }: ShoppingCardProps) => {
             }}
             onClick={() => router.push(`/kaimono?key=${item.list_key}`)}
           >
-            {item.name}
-          <span
-            style={{
-              fontSize: "smaller",
-              opacity: 0.7,
-              textAlign: "center",
-              whiteSpace: "nowrap",
-              paddingLeft: 4,
-            }}
-          >
-            {item.itemCount! > 0 ? <span>{item.itemCount} ☑{item.finishedCount}</span> : null}
-          </span>
+            <span>
+              {item.name}
+              <span
+                style={{
+                  fontSize: "smaller",
+                  opacity: 0.7,
+                  textAlign: "center",
+                  whiteSpace: "nowrap",
+                  paddingLeft: 4,
+                }}
+              >
+                {item.itemCount! > 0 ? (
+                  <span>
+                    {item.itemCount} ☑{item.finishedCount}
+                  </span>
+                ) : null}
+              </span>
+            </span>
           </Button>
         </Col>
         <Col flex="none">

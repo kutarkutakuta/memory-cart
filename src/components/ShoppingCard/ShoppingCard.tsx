@@ -266,7 +266,7 @@ const ShoppingCard = ({ item }: ShoppingCardProps) => {
             ) : null}
           </div>
         </Col>
-        <Col style={{ display: "flex", textAlign: "right" }}>
+        <Col style={{ display: "flex", marginRight:-8,}}>
           {item.category_name && item.category_name.includes("/") ? (
             <Tag
               color={

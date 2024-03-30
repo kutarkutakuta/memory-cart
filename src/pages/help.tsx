@@ -15,6 +15,7 @@ import {
 } from "@ant-design/icons";
 import MyHeader from "@/components/MyHeader";
 import { Divider } from "antd";
+import MyFoorter from "@/components/MyFooter";
 
 const Help = () => {
   return (
@@ -169,6 +170,9 @@ const Help = () => {
           kutakutar_ff11
         </a>
       </main>
+      <footer>
+        <MyFoorter></MyFoorter>
+      </footer>
     </>
   );
 };

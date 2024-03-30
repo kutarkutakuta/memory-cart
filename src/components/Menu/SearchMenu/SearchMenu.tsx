@@ -40,7 +40,7 @@ export function SearchMenu() {
             <span style={{ paddingLeft: 4 }}>品物検索</span>
           </>
         }
-        placement={"left"}
+        placement={"top"}
         open={openFlag["SearchMenu"]}
         onClose={() => closeMenu("SearchMenu")}
       >
@@ -57,12 +57,16 @@ export function SearchMenu() {
 
         {!searchResults ? null : (
           <>
-            <Divider style={{ fontSize: "0.9em" }} orientation="left" plain>
-              検索結果
-            </Divider>
+            {searchResults.length > 0 ? (
+              <Divider style={{ fontSize: "0.9em" }} orientation="left" plain>
+                検索結果
+              </Divider>
+            ) : (
+              ""
+            )}
             {searchResults.map((result) => {
               return (
-                <>
+                <div key={result.shoppingList.list_key}>
                   <Button
                     type="text"
                     onClick={() => {
@@ -90,7 +94,8 @@ export function SearchMenu() {
                                   paddingLeft: 4,
                                 }}
                               >
-                                {item.amount}{item.unit}
+                                {item.amount}
+                                {item.unit}
                               </span>
                             </td>
                           </tr>
@@ -98,20 +103,20 @@ export function SearchMenu() {
                       })}
                     </tbody>
                   </table>
-                </>
+                </div>
               );
             })}
           </>
         )}
 
-        <Divider></Divider>
+        {/* <Divider></Divider>
 
         <Button
           style={{ width: "100%" }}
           onClick={() => closeMenu("SearchMenu")}
         >
           Close
-        </Button>
+        </Button> */}
       </Drawer>
     </>
   );

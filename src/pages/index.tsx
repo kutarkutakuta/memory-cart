@@ -6,6 +6,7 @@ import { ShoppingListMenu } from "@/components/Menu/ShoppingListMenu/ShoppingLis
 import useMasterStore from "@/stores/useMasterStore";
 import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
 import { ShareInfoMenu } from "@/components/Menu/ShareInfoMenu/ShareInfoMenu";
+import MyFoorter from "@/components/MyFooter";
 
 const Index = () => {
   // マスター取得
@@ -24,6 +25,9 @@ const Index = () => {
       <main>
         <ShoppingListBox></ShoppingListBox>
       </main>
+      <footer>
+        <MyFoorter></MyFoorter>
+      </footer>
       <ShoppingListMenu></ShoppingListMenu>
       <ShareInfoMenu></ShareInfoMenu>
     </>

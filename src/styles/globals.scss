@@ -67,7 +67,10 @@ body {
 header {
   background-color: var(--header-background-color);
   color: var(--header-color);
-  padding: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  height: 42px;
   position: fixed; /* ヘッダーを固定位置に配置 */
   top: 0; /* ヘッダーをページ上端に配置 */
   left: 0; /* ヘッダーをページ左端に配置 */
@@ -88,14 +91,28 @@ main {
     left: 0;
     width: 100%;
     z-index: 20;
-    padding-left: 5px;
-    padding-right: 5px;
+    // padding-left: 5px;
+    padding-right: 10px;
     * {
       color: var(--sub-header-color);
     }
   }
   margin-top: 72px; /* ヘッダーの高さに合わせてメインコンテンツを下にスペースを確保 */
   padding: 10px; /* メインコンテンツの内側の余白を設定 */
+  padding-bottom: 65px;
+}
+
+footer{
+  width: 100%;
+  background-color: var(--header-background-color);
+  text-align: center;
+  padding: 8px 14px;
+  position: fixed;/*←絶対位置*/
+  bottom: 0; /*下に固定*/
+  * {
+    font-size: larger;
+    color: var(--header-color);
+  }
 }
 
 a {

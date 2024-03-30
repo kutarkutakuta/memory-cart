@@ -10,7 +10,11 @@ import {
   message,
   theme,
 } from "antd";
-import { PlusOutlined, HeartOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  HeartOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 
 import { useEffect, useRef, useState } from "react";
 import useFavoriteItemStore, {
@@ -125,7 +129,7 @@ export function FavoriteItemMenu() {
             <span style={{ paddingLeft: 4 }}>お気に入り品の登録</span>
           </>
         }
-        placement={"left"}
+        placement={"top"}
         open={openFlag["FavoriteItemMenu"]}
         onClose={() => closeMenu("FavoriteItemMenu")}
       >
@@ -143,8 +147,12 @@ export function FavoriteItemMenu() {
 
         {!categoryName ? null : (
           <>
-            <Divider style={{ fontSize: "0.9em" }} orientation="left" plain>
-              お気に入り品
+            <Divider
+              style={{ fontSize: "0.9em", fontWeight: "bolder" }}
+              orientation="left"
+              plain
+            >
+              <HeartOutlined /> お気に入り品
             </Divider>
 
             <Space size={[0, 8]} wrap>
@@ -194,11 +202,16 @@ export function FavoriteItemMenu() {
             </Space>
           </>
         )}
-
+        <br />
+        <br />
         {categoryName ? (
           <>
-            <Divider style={{ fontSize: "0.9em" }} orientation="left" plain>
-              一般的な品物
+            <Divider
+              style={{ fontSize: "0.9em", fontWeight: "bolder" }}
+              orientation="left"
+              plain
+            >
+              <AppstoreOutlined /> 一般的な品物
             </Divider>
             <Space size={[0, 8]} wrap>
               {viewCommons.map((m) => (
@@ -217,7 +230,6 @@ export function FavoriteItemMenu() {
                   type="link"
                   size="small"
                   onClick={() => setViewCommonCount(viewCommonCount + 50)}
-                  
                 >
                   <span style={{ fontSize: "small" }}>もっと表示</span>
                 </Button>
@@ -226,14 +238,14 @@ export function FavoriteItemMenu() {
           </>
         ) : null}
 
-        <Divider></Divider>
+        {/* <Divider></Divider>
 
         <Button
           style={{ width: "100%" }}
           onClick={() => closeMenu("FavoriteItemMenu")}
         >
           Close
-        </Button>
+        </Button> */}
       </Drawer>
     </>
   );

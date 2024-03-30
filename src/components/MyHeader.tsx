@@ -6,13 +6,8 @@ import { Button, Col, Dropdown, MenuProps, Row, Space, Tooltip } from "antd";
 import {
   QuestionCircleOutlined,
   ArrowLeftOutlined,
-  UserOutlined,
   LinkOutlined,
-  SettingOutlined,
-  HeartOutlined,
-  ShoppingOutlined,
   SafetyOutlined,
-  SearchOutlined,
 } from "@ant-design/icons";
 import useShoppingItemStore from "@/stores/useShoppingItemStore";
 import useMenuStore from "@/stores/useMenuStore";
@@ -48,35 +43,17 @@ const MyHeader = () => {
       router.back();
     } else {
       // 履歴が存在しない場合ホームページにリダイレクト
-      router.push("/");
     }
+    router.push("/");
   };
 
   // メニュー項目
   const items: MenuProps["items"] = [
     {
-      key: "1",
-      label: "品物検索",
-      icon: <SearchOutlined />,
-      onClick: () => openMenu("SearchMenu"),
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "2",
-      label: "お気に入り品の登録",
-      icon: <HeartOutlined />,
-      onClick: () => openMenu("FavoriteItemMenu"),
-    },
-    {
-      key: "3",
-      label: "ユーザー設定",
-      icon: <UserOutlined />,
-      onClick: () => openMenu("SettingMenu"),
-    },
-    {
-      type: "divider",
+      key: "5",
+      label: "ヘルプ",
+      icon: <QuestionCircleOutlined />,
+      onClick: () => router.push(`/help`),
     },
     {
       key: "4",
@@ -84,23 +61,15 @@ const MyHeader = () => {
       icon: <SafetyOutlined />,
       onClick: () => router.push(`/privacy`),
     },
-    {
-      key: "5",
-      label: "ヘルプ",
-      icon: <QuestionCircleOutlined />,
-      onClick: () => router.push(`/help`),
-    },
   ];
 
   return (
     <>
-      <Row wrap={false}>
+      <Row wrap={false} align="top">
         <Col
           flex="auto"
           style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            width: "100px",
+            paddingLeft: 5,
           }}
         >
           {pathname === "/" ? (
@@ -108,74 +77,60 @@ const MyHeader = () => {
               <span
                 style={{
                   paddingLeft: 5,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  fontSize:"smaller",
+                  fontSize: "smaller",
                 }}
               >
                 Memory Cart
               </span>
             </>
           ) : null}
-          {pathname === "/help" || pathname === "/privacy" ? (
+          {pathname === "/kaimono" || pathname === "/help" || pathname === "/privacy" ? (
             <>
-              <span
+              <div
                 style={{
-                  paddingLeft: 5,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "smaller",
                   textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  lineHeight: "1",
                 }}
               >
                 <Button
-                  type="text"
-                  icon={<ArrowLeftOutlined />}
-                  onClick={() => handleGoBack()}
-                ></Button>
-                {pathname == "/help" ? "ヘルプ" : ""}
-                {pathname == "/privacy" ? "プライバシーポリシー" : ""}
-              </span>
-            </>
-          ) : null}
-          {pathname === "/kaimono" ? (
-            <>
-              <span
                 style={{
-                  paddingLeft: 5,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                <Button
-                  type="text"
-                  icon={<ArrowLeftOutlined />}
-                  onClick={() => handleGoBack()}
-                ></Button>
-                {listName}
+                  marginRight: 5,
 
-                {isShare ? (
-                  <Button
-                    type="text"
-                    icon={<LinkOutlined />}
-                    onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
-                  ></Button>
+                }}
+                  type="text"
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => handleGoBack()}
+                ></Button>
+
+                {pathname === "/kaimono" ? (
+                  <>
+                    {listName}
+                    {isShare ? (
+                      <Button
+                        type="text"
+                        icon={<LinkOutlined />}
+                        onClick={() => openMenu("ShareInfoMenu", shoppingList!)}
+                      ></Button>
+                    ) : null}
+                  </>
                 ) : null}
-              </span>
+                {pathname === "/help" ? "ヘルプ" : null}
+                {pathname === "/privacy" ? "プライバシーポリシー" : null}
+              </div>
             </>
           ) : null}
-        </Col>
-        <Col style={{ display: "flex", paddingRight: 5, marginTop: -2 }}>
-          {pathname === "/kaimono" && shoppingItems.length > 0 ? (
-            <span style={{ opacity: 0.9, fontSize: "smaller", marginTop: 10 }}>
-              {shoppingItems.length} items ☑{shoppingItems.filter((m) => m.finished_at != null).length}
-            </span>
-          ) : null}
+          
         </Col>
         <Col>
           <Dropdown menu={{ items }} placement="bottomRight">
-            <Button type="text" icon={<SettingOutlined />}></Button>
+            <div><Button
+              type="text"
+              icon={<QuestionCircleOutlined />}
+            ></Button>&nbsp;</div>
           </Dropdown>
         </Col>
       </Row>

@@ -26,14 +26,19 @@ export function SettingMenu() {
             <span style={{ paddingLeft: 4 }}>ユーザー設定</span>
           </>
         }
-        placement={"left"}
+        placement={"top"}
         width={330}
         open={openFlag["SettingMenu"]}
         onClose={() => closeMenu("SettingMenu")}
       >
-        <Form>
+        <Form layout = {"horizontal"}
+        labelCol={{ flex: '160px' }}
+        labelAlign="right"
+        labelWrap
+        wrapperCol={{ flex: 1 }}
+        colon={false}>
           <Form.Item label="ユーザー名">
-            <Input
+            <Input style={{width: 180}}
               placeholder="ユーザー名"
               maxLength={20}
               value={userName}
@@ -41,7 +46,7 @@ export function SettingMenu() {
             />
           </Form.Item>
           <Form.Item label="フォントサイズ">
-            <Select
+            <Select style={{width: 180}}
               placeholder="フォントサイズ"
               options={[
                 { value: 14, label: "小さい" },
@@ -54,7 +59,7 @@ export function SettingMenu() {
             />
           </Form.Item>
           <Form.Item label="テーマカラー">
-            <Select
+            <Select style={{width: 180}}
               placeholder="テーマカラー"
               options={[
                 { value: "modern", label: "モダン" },
@@ -68,7 +73,7 @@ export function SettingMenu() {
           </Form.Item>
         </Form>
 
-        <Divider></Divider>
+        {/* <Divider></Divider>
 
         <Button
           style={{ width: "100%" }}
@@ -78,7 +83,7 @@ export function SettingMenu() {
           }}
         >
           Close
-        </Button>
+        </Button> */}
       </Drawer>
     </>
   );

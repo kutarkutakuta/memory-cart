@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import MyHeader from "@/components/MyHeader";
 import { Divider } from "antd";
+import MyFoorter from "@/components/MyFooter";
 
 const Privacy = () => {
   return (
@@ -18,6 +19,9 @@ const Privacy = () => {
           This application does not collect or publish any personal information.
         </div>
       </main>
+      <footer>
+        <MyFoorter></MyFoorter>
+      </footer>
     </>
   );
 };

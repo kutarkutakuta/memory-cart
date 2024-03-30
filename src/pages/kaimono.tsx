@@ -11,6 +11,7 @@ import { Spin, message } from "antd";
 import useFavoriteItemStore from "@/stores/useFavoriteItemStore";
 import { ShareInfoMenu } from "@/components/Menu/ShareInfoMenu/ShareInfoMenu";
 import useShoppingListStore from "@/stores/useShoppingListStore";
+import MyFoorter from "@/components/MyFooter";
 
 const Kaimono = () => {
   const searchParams = useSearchParams();
@@ -62,6 +63,9 @@ const Kaimono = () => {
       <main>
         <ShoppingCardBox shoppingList={shoppingList!} />
       </main>
+      <footer>
+        <MyFoorter></MyFoorter>
+      </footer>
       <AddItemMenu></AddItemMenu>
       <EditItemMenu></EditItemMenu>
       <PriceMenu></PriceMenu>

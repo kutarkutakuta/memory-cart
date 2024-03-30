@@ -112,7 +112,6 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
   // メッセージ用Hook
   const [modal, contextHolder] = Modal.useModal();
 
-
   // ドラッグ後の並び替え処理
   const handleDragEnd = useCallback(
     (event: { active: any; over: any }) => {
@@ -269,8 +268,8 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
                 品物を追加
               </Button>
               {/* ローディングをここに置く */}
-              <span style={{paddingLeft:5}}>
-                <Spin spinning={loading}></Spin>
+              <span >
+                <Spin spinning={loading} size="small"></Spin>
               </span>
             </Col>
           </Row>
@@ -301,6 +300,20 @@ const ShoppingCardBox = ({ shoppingList }: ShoppingListProps) => {
           </Row>
         </Col>
       </Row>
+      {shoppingItems.length > 0 ? (
+        <div
+          style={{
+            opacity: 0.9,
+            fontSize: "smaller",
+            paddingRight: 5,
+            whiteSpace: "nowrap",
+            textAlign: "right",
+          }}
+        >
+          {shoppingItems.length} items ☑
+          {shoppingItems.filter((m) => m.finished_at != null).length}
+        </div>
+      ) : null}
       <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         <SortableContext
           items={shoppingItems.map((m) => m.id!)}
