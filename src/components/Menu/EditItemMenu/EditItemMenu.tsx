@@ -162,6 +162,11 @@ export function EditItemMenu() {
             onChange={(e) => handleChange("memo", e.target.value)}
           />
 
+          <div style={{fontSize: "small", fontWeight:"lighter", textAlign:"right"}}>
+            作成者：{selectedItem?.created_user}　
+            更新者：{selectedItem?.updated_user}
+          </div>
+
           <Button
             type="primary"
             loading={loading}

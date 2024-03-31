@@ -40,9 +40,10 @@ export function SettingMenu() {
           <Form.Item label="ユーザー名">
             <Input style={{width: 180}}
               placeholder="ユーザー名"
-              maxLength={20}
+              maxLength={10}
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={e=>setUserName(e.target.value)}
+              onBlur={()=>updateSetting({ user_name: userName })}
             />
           </Form.Item>
           <Form.Item label="フォントサイズ">
