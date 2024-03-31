@@ -1,6 +1,6 @@
 import useMenuStore from "@/stores/useMenuStore";
-import { Button, Drawer, Input, Space, Select, Form, Divider } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Drawer, Input, Select, Form } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 
 import useMasterStore from "@/stores/useMasterStore";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ export function SettingMenu() {
       <Drawer
         title={
           <>
-            <UserOutlined />
+           <SettingOutlined />
             <span style={{ paddingLeft: 4 }}>ユーザー設定</span>
           </>
         }

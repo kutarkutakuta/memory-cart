@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { Button, Col, Row, Space } from "antd";
-import { HomeOutlined, SearchOutlined, HeartOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Col, Row } from "antd";
+import { HomeOutlined, SearchOutlined, HeartOutlined, SettingOutlined } from "@ant-design/icons";
 import useMenuStore from "@/stores/useMenuStore";
 const MyFoorter = () => {
   
@@ -35,7 +35,7 @@ const MyFoorter = () => {
         <Col>
           <Button
             type="text"
-            icon={<UserOutlined />}
+            icon={<SettingOutlined />}
             onClick={() => openMenu("SettingMenu")}
           ></Button>
         </Col>
