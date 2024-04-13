@@ -133,27 +133,18 @@ const ShoppingListBox = () => {
         icon={<PlusCircleOutlined />}
         onClick={() => {
           addShoppingList().then(() =>
-            messageApi.success("買い物リストを追加しました。")
+            messageApi.open({
+              type: 'success',
+              content: '買い物リストを追加しました。',
+              style: {
+                marginTop: '4vh',
+              },
+            })
           );
         }}
       />
       <Row justify="space-between" wrap={false} className="sub-header">
         <Col flex="none">
-          {/* <Row justify="start">
-            <Col>
-              <Button
-                type="text"
-                icon={<PlusCircleOutlined />}
-                onClick={() => {
-                  addShoppingList().then(() =>
-                    messageApi.success("買い物リストを追加しました。")
-                  );
-                }}
-              >
-                買い物リストを追加
-              </Button>
-            </Col>
-          </Row> */}
           <div style={{paddingLeft:14}}>買い物リスト</div>
         </Col>
         <Col flex="auto">

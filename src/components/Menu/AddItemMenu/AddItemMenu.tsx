@@ -85,10 +85,22 @@ export function AddItemMenu() {
           updateShoppingItems([item.id!], {
             amount: amount,
           });
-          messageApi.warning(`${addName}が ${amount} に増えました`);
+          messageApi.open({
+            type: 'warning',
+            content: `${addName}が ${amount} に増えました`,
+            style: {
+              marginTop: '4vh',
+            },
+          });
         } else {
           addShoppingItem(list_key!, addName);
-          messageApi.success(`${addName}を追加しました`);
+          messageApi.open({
+            type: 'success',
+            content: `${addName}を追加しました`,
+            style: {
+              marginTop: '4vh',
+            },
+          });
         }
       });
       setAddItems([]);
